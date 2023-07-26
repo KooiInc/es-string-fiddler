@@ -86,7 +86,7 @@ function XStringFactory() {
   });
   const value = str => str.valueOf();
 
-  const proxiedGetters = {
+  let proxiedGetters = {
     ...addDefaults({
       isProxied: () => true,
       wordsFirstUC: str => casingFactory(str).wordFirstUC,
@@ -110,6 +110,12 @@ function XStringFactory() {
     }),
     ...nativeOverrides
   };
+
+  proxiedGetters.addFN = () => (name, fn) =>
+    proxiedGetters[name] = str => (...args) => proxify(fn(str, ...args));
+
+  proxiedGetters.addProp = () => (name, fn) =>
+    proxiedGetters[name] = str => proxify(fn(str));
 
   const proxy = {
     get: ( target, key ) => {
