@@ -80,7 +80,7 @@ function XStringFactory() {
     get lower() { return proxify(str.toLowerCase()); },
     get upper() { return proxify(str.toUpperCase()); },
     get camel() { return proxify`${toCamelcase(str)}`; },
-    get wordFirstUC() { return proxify`${wordsFirstUp(str)}`; },
+    get wordsFirstUC() { return proxify`${wordsFirstUp(str)}`; },
     get dashed() { return proxify`${toDashedNotation(str)}`; },
     get firstUC() { return proxify(ucFirst(str)); },
   });
@@ -101,14 +101,13 @@ function XStringFactory() {
   const proxiedGetters = {
     ...addDefaults({
       isProxied: true,
-      wordsFirstUC: str => casingFactory(str).wordFirstUC,
+      wordsFirstUC: str => casingFactory(str).wordsFirstUC,
       toCamelCase: str => casingFactory(str).camel,
       toDashedNotation: str => casingFactory(str).dashed,
       ucFirst: str => casingFactory(str).firstUC,
       append: str => str2Append => proxify(`${str}${str2Append}`),
       lower: str => casingFactory(str).lower,
       upper: str => casingFactory(str).upper,
-      format,
       createRegExp,
       case: casingFactory,
       quote: quoteFactory,
@@ -132,6 +131,8 @@ function XStringFactory() {
 
   proxiedGetters.addProp = () => (name, fn) =>
     proxiedGetters[name] = str => proxify(fn(str));
+
+  proxiedGetters.methods = Object.getOwnPropertyNames(proxiedGetters);
 
   const proxy = {
     get: ( target, key ) => {
@@ -173,8 +174,7 @@ function XStringFactory() {
       cloneTo,
       set: cloneTo,
     };
-    const all = {...defaultXs, ...extensions};
-    return all;
+    return {...defaultXs, ...extensions};
   }
 
   function regExp(regexStr, ...args) {
