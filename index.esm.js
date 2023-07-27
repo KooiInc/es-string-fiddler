@@ -9,7 +9,7 @@ function XStringFactory() {
     .reduce( (acc, val) => ({...acc, [val]: str => (...args) =>
         proxify(str[val](...args))}), {});
   const interpolator = interpolateFactory();
-  const interpolate = str => (...tokens) => proxify`${interpolator(str, ...tokens)}`;
+  const format = str => (...tokens) => proxify`${interpolator(str, ...tokens)}`;
   const ucFirst = ([first, ...theRest]) => `${first.toUpperCase()}${theRest.join(``)}`;
   const toDashedNotation = str2Convert =>
     str2Convert.replace(/[A-Z]/g, a => `-${a.toLowerCase()}`).replace(/^-|-$/, ``);
@@ -84,23 +84,37 @@ function XStringFactory() {
     get dashed() { return proxify`${toDashedNotation(str)}`; },
     get firstUC() { return proxify(ucFirst(str)); },
   });
+  const quoteFactory = str => ({
+    get single() { return proxify(`'${str}'`)},
+    get double() { return proxify(`"${str}"`)},
+    get backtick() { return proxify(`\`${str}\``)},
+  });
   const value = str => str.valueOf();
+  const createRegExp = str => (str, ...args) => {
+    try {
+      return regExp(str, ...args);
+    } catch (err) {
+      return `Can't do this: ${err.message}`;
+    }
+  }
 
-  let proxiedGetters = {
+  const proxiedGetters = {
     ...addDefaults({
-      isProxied: () => true,
+      isProxied: true,
       wordsFirstUC: str => casingFactory(str).wordFirstUC,
       toCamelCase: str => casingFactory(str).camel,
       toDashedNotation: str => casingFactory(str).dashed,
       ucFirst: str => casingFactory(str).firstUC,
-      append: str => str2Append => proxify(str.concat(str2Append)),
+      append: str => str2Append => proxify(`${str}${str2Append}`),
       lower: str => casingFactory(str).lower,
       upper: str => casingFactory(str).upper,
-      interpolate,
+      format,
+      createRegExp,
       case: casingFactory,
+      quote: quoteFactory,
       value,
       insert,
-      format: interpolate,
+      format,
       toTag,
       truncate,
       replaceWords,
@@ -114,6 +128,8 @@ function XStringFactory() {
   proxiedGetters.addFN = () => (name, fn) =>
     proxiedGetters[name] = str => (...args) => proxify(fn(str, ...args));
 
+  proxiedGetters.addMethod = proxiedGetters.addFN;
+
   proxiedGetters.addProp = () => (name, fn) =>
     proxiedGetters[name] = str => proxify(fn(str));
 
@@ -122,7 +138,7 @@ function XStringFactory() {
       // native String methods overrides and extension methods
       // Note: 'object' test is when a key is a symbol (not likely, but possible)
       if (proxiedGetters[key] && !/valueof|tostring|object/i.test(key)) {
-        return proxiedGetters[key]?.(target);
+        return proxiedGetters[key] instanceof Function ? proxiedGetters[key](target) : proxiedGetters[key];
       }
 
       // native string methods that don't return a string
@@ -157,7 +173,20 @@ function XStringFactory() {
       cloneTo,
       set: cloneTo,
     };
-    return {...defaultXs, ...extensions};
+    const all = {...defaultXs, ...extensions};
+    return all;
+  }
+
+  function regExp(regexStr, ...args) {
+    const flags = args.length && Array.isArray(args.slice(-1)) ? args.pop().join(``) : ``;
+
+    return new RegExp(
+      (args.length &&
+        regexStr.raw.reduce( (a, v, i ) => a.concat(args[i-1] || ``).concat(v), ``) ||
+        regexStr.raw.join(``))
+        .split(`\n`)
+        .map( line => line.replace(/\s|\/\/.*$/g, ``).trim().replace(/(@s!)/g, ` `) )
+        .join(``), flags);
   }
 
   function interpolateFactory() {
