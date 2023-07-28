@@ -30,13 +30,14 @@ const tokens = [
   {world: \`you\`}, 
   {world: \`world\`}, 
   {world: \`galaxy\`}, 
-  {world: \`universe\`}, ];</code>
-  <div><b>Note</b>: you can call <code>$S</code> either as a tagged template function or as a normal function.
-  <br><b>Note 2</b>: properties/methods (also native (String.prototype)) returning a string 
+  {world: \`universe\`}, ];</code>`
+.wrapESComments
+.concat(`<div><b>Note</b>: you can call <code>$S</code> either as a tagged template function or as a normal function.
+  <br><b>Note 2</b>: properties/methods (also native (String.prototype)) returning a string
     can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a>.
-  <br><b>Note 3</b>: like regular ES-strings $S-strings are 
+  <br><b>Note 3</b>: like regular ES-strings $S-strings are
     <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a>
-  </div`.wrapESComments );
+  </div`) );
 
   log(`!!<b>Initial values</b>`);
   log(`<code>basic</code> ${basic.rQuot}<br>
@@ -45,22 +46,22 @@ const tokens = [
       <code>basic.isProxied</code> ${basic.isProxied}`);
 
   log(`!!<b id="manipulate">Manipulate strings</b></h3>`);
-  log(`<code class="codeBlock">hi1
-  .insert( $S\`there you have it &amp;hellip; \`
+  log( $S`<code class="codeBlock">hi1
+  .insert( $S\`there you have it &amp;hellip; \` // <= nested $S-string
     .ucFirst
     .insert(\`"\`) )
   .append( \` and  also: that's folks"\`)
-  .insert( $S\` IT \`
+  .insert( $S\` IT \` // <= oops, forgotten 'it'. So let's insert that.
     .toTag( \`b\`, {style:\`color:blue;background:#eee\`,title:\`post hoc insertion\` })
-    .toTag( \`i\`), -7 );</code> =&gt; ${
-    hi1
-      .insert( $S`there you have it &hellip; `
-        .ucFirst
-        .insert(`"`) )
-      .append(` and also: that's folks"`)
-      .insert($S` IT `
-        .toTag(`b`, { style:`color:blue;background:#eee`, title: `post hoc insertion` })
-        .toTag(`i`), -7)}`);
+    .toTag( \`i\`), -7 );</code>`.wrapESComments.concat(`=&gt; ${
+      hi1
+        .insert( $S`there you have it &hellip; `
+          .ucFirst
+          .insert(`"`) )
+        .append(` and also: that's folks"`)
+        .insert($S` IT `
+          .toTag(`b`, { style:`color:blue;background:#eee`, title: `post hoc insertion` })
+          .toTag(`i`), -7)}`) );
   const camelCased = $S`bla-bla and again bla`.toCamelCase;
   log(`<code>const camelCased = $S\`bla-bla and again bla\`.toCamelCase;</code><div>${
     camelCased.rQuot}</div>`);
@@ -80,7 +81,7 @@ const tokens = [
   log(`<code>yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(\`b\)</code><div>${
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
 
-  log(`!!<b id="format">Format with tokens</b> 
+  log(`!!<b id="format">Format with tokens</b>
   (see <a target="_blank" href="https://github.com/KooiInc/StringInterpolator">Github</a>)</div>`);
   const escaped4Log = $S`$S\`<li>\${hi\} {world}</li>\\n\``.escHTML;
   log(`<div><code>${escaped4Log}.format(...tokens).toTag(\`ul\`, {class: \`sub\`})</code></div>
@@ -101,17 +102,17 @@ const tokens = [
   log(`!!<b id="addMethOrProp">Create extra methods and properties</b>
   <div><b>Note</b>: make sure the added method or property lambda returns the resulting string</div>`);
   basic.addProp(`log`, str => { log(str); return str; })
-  log(`<code class="codeBlock">basic.addProp(\`log\`, str => { 
-  log(str); 
-  return str; 
+  log(`<code class="codeBlock">basic.addProp(\`log\`, str => {
+  log(str);
+  return str;
 } );
 basic.set(\`Hello\`).log.append\` world\`.toTag(\`b\`).toTag(\`i\`).log;</code>`);
   basic.set`Hello`.log.append` world`.toTag(`b`).toTag(`i`).log;
 
   basic.addMethod(`logPlus`, (str, ...args) => { log(str + args.join(``)); return str; })
-  log(`<code class="codeBlock">basic.addMethod( \`logPlus\`, (str, ...args) => { 
-  log(str + args.join(\`\`)); 
-  return str; 
+  log(`<code class="codeBlock">basic.addMethod( \`logPlus\`, (str, ...args) => {
+  log(str + args.join(\`\`));
+  return str;
 } );
 basic.set\`Hello {wrld}\`
   .logPlus\` (unformatted)\`
@@ -123,8 +124,8 @@ basic.set\`Hello {wrld}\`
   .toTag(`b`).toTag(`i`).logPlus(` (`, `formatted with `, `{wrld: "world"})`), `)`;
 
   log(`!!<b id="find">Find</b>`);
-  log(`!!<div><code>[xstring].find</code> receives an object with keys <code>terms</code> 
-  (a string, an Array of strings or a regular expression) and <code>caseSensitive</code> 
+  log(`!!<div><code>[xstring].find</code> receives an object with keys <code>terms</code>
+  (a string, an Array of strings or a regular expression) and <code>caseSensitive</code>
   (a boolean, default false).</div>`);
   log(`<code>$S\`Hello world, bye world, oh world!\`.find({ terms:['world', 'oh'] })</code>${
     toJSON($S`Hello world, bye world, oh world!`.find({terms: ['world', 'oh']}))}`);
@@ -142,7 +143,7 @@ basic.set\`Hello {wrld}\`
     toJSON($S`Hello World, bye world, oh World!`.wordsFirstUC.find({ terms: [{}, `Hello`] }))}`);
 
   log(`!!<b id="regex">RegExp</b>
-    <div>Create a regular expression from a multiline string 
+    <div>Create a regular expression from a multiline string
     (see <a target="_blank" href="https://github.com/KooiInc/RegexHelper/tree/main">Github</a>)</div>`);
   const re = $S``.createRegExp`
     // A 'readable' regular expression
