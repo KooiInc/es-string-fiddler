@@ -2,7 +2,7 @@
 
 `es-string-fiddler` is a utility adding some nifty methods to manipulate strings. Methods returning a string can be chained.
 
-**Examples: @[StackBlitz](https://stackblitz.com/edit/js-viwrvz?file=index.js)**.
+**[DEMO](https://kooiinc.github.io/es-string-fiddler/Demo)**
 
 ## Import & initialize
 
@@ -45,7 +45,7 @@ Using `$S` string, you can use all default [string methods](https://developer.mo
 number of extension methods. Where a method (either default or extension) returns a string, 
 it can be chained.
 
-*Do* see examples **@[StackBlitz](https://stackblitz.com/edit/js-viwrvz?file=index.js)**
+*Do* see examples in the **[demo](https://kooiinc.github.io/es-string-fiddler/Demo).**
 
 The extension methods are (**Note**: '*string*' in this list mostly signifies a wrapped $S-string):
 
