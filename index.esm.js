@@ -152,7 +152,7 @@ function XStringFactory() {
 
   function resolveTemplateString(str, ...args) {
     return new String(args.length
-      ? str.reduce( (acc, v, i) => acc.concat(`${v}${args[i] ?? ``}`), ``)
+      ? str.reduce( (acc, v, i) => acc.concat(`${v}${args[i] ?? ``}`), ``).trim().replace(/^,|,$/, ``)
       : str);
   }
 
