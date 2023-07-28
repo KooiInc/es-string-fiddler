@@ -166,7 +166,7 @@ basic.set\`Hello {wrld}\`
   | (?<=NOTHING)(?<matchNoMatch>\d{2})
   | (?<=YD)(?<matchYear>\d{2})
   \${[\`g\`]}
-  //  ^ flags`.escHTML.comment;
+  //  ^ flags`.escHTML.wrapESComments;
   log(`<code class="codeBlock">basic.createRegExp\`
   ${demoStr}\`</code>`)
   log(`${$S(re.toString()).escHTML}`);
