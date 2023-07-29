@@ -63,10 +63,10 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
   - `dashed`: convert a camel cased string to dashed notation (e.g. `camelCased` => `camel-cased`)
   - `wordsFirstUC`: all words of the string to upper case
   - `firstUC`: first letter of a string to upper case (if it's a - z)
-- `concat`: this native string method is mentioned because the `es-string-fiddler` module allows 
-   calling it as a [tagged template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates). 
-   For example ``[$S-string].concat`something ${toConcat}`; ``
-- `compressHTML`: when a string contains html removes all unnecessary white space from it,
+- `compressHTML`: when a string contains html removes all unnecessary white space from it
+- `concat`: this native string method is mentioned because the `es-string-fiddler` module allows
+    calling it as a [tagged template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
+    For example ``[$S-string].concat`something ${toConcat}`; ``
 - `createRegExp`: create a regular expression from a multiline regular expression string,
 - `escHTML`: escapes html for displaying it as is in a browser (if a string contains html ofcourse),
 - `find({terms: Array | string | RegExp, caseSensitive: boolean (default: false))`: find anything within the string containing
