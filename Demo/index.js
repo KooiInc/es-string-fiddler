@@ -115,8 +115,8 @@ basic.toTag( \`script\`, { src });</code>
     <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).compressHTML.escHTML.quote.double}</pre>`);
 
   log(`!!<b id="chainEtc">Use/chain/combine native/custom methods`, `<code>yada2.isWellFormed()</code> =&gt; ${yada2.isWellFormed()}</b>`);
-  log(`<code>yada2.trim().slice(-4).case.upper.toTag(\`i\`, {style: \`color: orange\`})</code> ${
-    yada2.trim().slice(-4).case.upper.toTag( `i`, { style: `color: orange` }).rQuot }`);
+  log(`<code>yada2.trim().slice(-4).concat\` \${hi}\`.toUpperCase().toTag(\`i\`, {style: \`color: orange\`})</code> ${
+    yada2.trim().slice(-4).concat` ${hi}`.toUpperCase().toTag( `i`, { style: `color: orange` }).rQuot }`);
   log(`<code>yada2.trim().toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
     yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
 
