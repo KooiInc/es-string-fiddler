@@ -189,8 +189,8 @@ basic.set\`Hello {wrld}\`
   \${[\`g\`]}
   //  ^ flags`.escHTML.wrapESComments;
   log(`<code class="codeBlock">basic.createRegExp\`
-  ${demoStr}\`</code>`)
-  log(`${$S(re.toString()).escHTML}`);
+  ${demoStr}\`</code><div>=&gt; ${
+    $S(re.toString()).escHTML}</div>`);
   createContent();
 }
 
