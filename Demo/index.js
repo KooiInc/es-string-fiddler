@@ -4,6 +4,8 @@ window.$S = $S; // try things yourself in the console ...
 demo();
 
 function demo() {
+  // remove stackblitz message
+  console.clear();
   const { log } = logFactory();
   const toJSON = obj => `<pre>${JSON.stringify(obj, null, 2)}</pre>`;
   setStyling();
