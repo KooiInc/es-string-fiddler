@@ -6,8 +6,19 @@ function XStringFactory() {
     "slice", "toLocaleLowerCase", "toLocaleUpperCase", "toLowerCase",
     "toUpperCase", "toWellFormed", "trim", "trimEnd", "trimLeft",
     "trimRight", "trimStart", "substring", ]
-    .reduce( (acc, val) => ({...acc, [val]: str => (...args) =>
-        proxify(str[val](...args))}), {});
+    .reduce( (acc, val) => {
+      return {
+        ...acc,
+        [val]: str => (...args) => {
+          // enable concat usage as tagged template function
+          if (val === `concat` && args.length && args[0].raw) {
+            args = [resolveTemplateString(args[0], ...args.slice(1))];
+          }
+
+          return proxify( str[val](...args) )
+        }
+      };
+    }, {} );
   const interpolator = interpolateFactory();
   const format = str => (...tokens) => proxify`${interpolator(str, ...tokens)}`;
   const ucFirst = ([first, ...theRest]) => `${first.toUpperCase()}${theRest.join(``)}`;
