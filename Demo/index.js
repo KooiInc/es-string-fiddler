@@ -12,6 +12,8 @@ function demo() {
 
   log(`!!<a target="_top" href="https://github.com/KooiInc/es-string-fiddler"><b>Back to repository</b></a>`);
   log(`!!<h2 id="inits">EcmaScript (ES) <code>String</code> manipulation using ES <code>Proxy</code></h2>`);
+
+  $(`<div class="container">`).append($(`#log2screen`));
   const basic = $S``;
   const hi = basic.set(`hello`).ucFirst;
   const hi1 = hi.set`hithere and ${hi.toLowerCase()}`;
@@ -38,7 +40,6 @@ const tokens = [
     can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a>.
   <br><b>Note 3</b>: like regular ES-strings $S-strings are
     <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a>
-  <br><b>Note 4</b>: for this demo-page <code>$S</code> is available in the console
   </div`) );
 
   log(`!!<b>Initial values</b>`);
@@ -141,7 +142,7 @@ basic.set\`Hello {wrld}\`
   .toTag(\`i\`)
   .logPlus(\`( \`, \`formatted with \`, \`{wrld: "world"}\`, \`)\`)</code>`);
   basic.set`Hello {wrld}`.logPlus` (unformatted)`.format({wrld: `world`})
-    .toTag(`b`).toTag(`i`).logPlus(` (`, `formatted with `, `{wrld: "world"})`, `)` );
+    .toTag(`b`).toTag(`i`).logPlus(` (`, `formatted with `, `{wrld: "world"}`, `)` );
 
   log(`!!<b id="find">Find</b>`);
   log(`!!<div><code>[xstring].find</code> receives an object with keys <code>terms</code>
@@ -197,12 +198,12 @@ basic.set\`Hello {wrld}\`
 function createContent() {
   $.delegate(`click`, `b[id]`, () => {
     $.node(`#log2screen`).scrollIntoView();
-    document.documentElement.scrollTop -= 15;
+    $.node(`.container`).scrollTop -= 15;
   });
   $.delegate(`click`, `.content li .linkLike`, evt => {
     const origin = $.node(evt.target.dataset.target);
     origin.scrollIntoView();
-    document.documentElement.scrollTop -= 15;
+    $.node(`.container`).scrollTop -= 15;
   });
 
   const contentDiv = $.virtual(
@@ -217,12 +218,14 @@ function createContent() {
     ul.append(`<li><div ${doQuote} data-target="b#${chapter.prop(`id`)}">${headerText.replace(/\(.+\)/, ``)}</div></li>`);
     chapter.prop(`title`, `Back to top`);
   } );
-  $.editCssRule(`.bottomSpace { height: ${document.body.scrollHeight}px; }`);
+  $.editCssRule(`.bottomSpace { height: ${$.node(`.container`).scrollHeight}px; }`);
   $(`#log2screen`).afterMe(`<div class="bottomSpace">`);
 }
 
 function setStyling() {
   $.editCssRules(
+    `body { margin: 0; }`,
+    `.container { position: absolute; inset: 0; overflow-y: auto; }`,
     `.head div, .head pre, pre {font-weight: normal; color: #777}`,
     `.head b[id] {
       cursor: pointer;
@@ -263,6 +266,7 @@ function setStyling() {
       padding: 2px 6px;
     }`,
     `code.codeBlock .comment { color: rgb(169 156 156); }`,
+    `ul#log2screen {margin: 0 auto;}`,
     `ul#log2screen li {margin-top: 0.8rem;}`,
     `ul#log2screen ul.sub li { margin-top: 0.3rem; }`,
     `#log2screen .content ul {
