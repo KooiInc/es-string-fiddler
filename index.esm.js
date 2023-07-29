@@ -1,6 +1,7 @@
 export default XStringFactory();
 
 function XStringFactory() {
+  const sanitizeTag = sanitizeHTMLFactory();
   const nativeOverrides = [
     "concat", "padEnd", "padStart", "repeat", "replace", "replaceAll",
     "slice", "toLocaleLowerCase", "toLocaleUpperCase", "toLowerCase",
@@ -10,9 +11,9 @@ function XStringFactory() {
       return {
         ...acc,
         [val]: str => (...args) => {
-          // enable concat usage as tagged template function
+          // enable concat tagged template function
           if (val === `concat` && args.length && args[0].raw) {
-            args = [resolveTemplateString(args[0], ...args.slice(1))];
+            args = [resolveTemplateString(args[0], args.slice(1))];
           }
 
           return proxify( str[val](...args) )
@@ -30,18 +31,29 @@ function XStringFactory() {
     .split(/[- ]/)
     .map( (str, i) => i && `${ucFirst(str)}` || str )
     .join(``);
+  const truncate = str => ( {at, html = false, wordBoundary = false} = {} ) => {
+    if (str.length <= at) { return proxify(str); }
+    const subString = str.slice(0, at - 1);
+    const endwith = html ? " &hellip;" : ` ...`;
+    return proxify( ( wordBoundary
+      ? subString.slice(0, subString.lastIndexOf(" "))
+      : subString) + endwith );
+  };
+  const escHTML = str => proxify(str.replace(/</g, `&lt;`));
   const toTag = str => (tag, props) => {
     const propsStr = props && Object.entries(props).reduce( (acc, [k, v]) => {
       return [...acc, `${k}="${v}"`];
     }, []).join(``) || ``;
-    return proxify`<${tag} ${propsStr}>${str}</${tag}>`; };
-  const truncate = str => ( {at, html = false, wordBoundary = false} = {} ) => {
-    if (str.length <= at) { return proxify(str); }
-    const subString = str.slice(0, at - 1);
-    const endwith = html ? "&hellip;" : `...`;
-    return proxify( ( wordBoundary
-      ? subString.slice(0, subString.lastIndexOf(" "))
-      : subString) + endwith );
+    const elemTest = sanitizeTag(
+      Object.assign(document.createElement(`div`),
+        { innerHTML: `<${tag} ${propsStr}>${str}</${tag}>` } )
+    );
+
+    if (elemTest.firstChild) { return proxify(elemTest.firstChild.outerHTML); }
+
+    const invalidTag = truncate(`<${tag} ${propsStr}>${str}</${tag}>`)({at: 40, html: true});
+
+    return proxify`<span style="color:red">${escHTML(invalidTag)} is not valid (see console)</span>`;
   };
   const replaceWords = str => (initial, replacement) => {
     const cando = [initial, replacement].filter( v =>
@@ -75,7 +87,6 @@ function XStringFactory() {
 
     return { searched4: termsIsRE ? terms.toString() : terms.join(`, `), hits, result };
   };
-  const escHTML = str => proxify(str.replace(/</g, `&lt;`));
   const compressHTML = str =>
     proxify(str.replace(/[\n\r]/g, ``)
       .replace(/\s{2,}/g, ` `)
@@ -217,5 +228,98 @@ function XStringFactory() {
       .reduce( (acc, token) => acc.concat(!isObject(token) ? `` : replace(str, token, defaultReplacer )), ``);
 
     return (str, ...tokens) => interpolate(...[str,undefined,...tokens])
+  }
+}
+
+function sanitizeHTMLFactory() {
+  const cleanupTagInfo = HTMLTagsFactory();
+  const ATTRS = getAttrs();
+  const attrRegExpStore = {
+    data: /data-[\-\w.\p{L}]/ui, // data-* minimal 1 character after dash
+    validURL: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+    whiteSpace: /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g,
+    notAllowedValues: /javascript|injected|noreferrer|alert|DataURL/gi
+  };
+
+  return sanitize;
+
+  function sanitize(el2Clean) {
+    const elCreationInfo = {
+      rawHTML: el2Clean.outerHTML,
+      removed: { },
+    };
+
+    if (el2Clean instanceof HTMLElement) {
+      [...el2Clean.childNodes].forEach(child => {
+        if (child?.attributes) {
+          const attrStore = child instanceof SVGElement ? ATTRS.svg : ATTRS.html;
+
+          [...(child ?? {attributes: []}).attributes]
+            .forEach(attr => {
+              const name = attr.name.trim().toLowerCase();
+              const value = attr.value.trim().toLowerCase().replace(attrRegExpStore.whiteSpace, ``);
+              const evilValue = name === "href"
+                ? !attrRegExpStore.validURL.test(value) : attrRegExpStore.notAllowedValues.test(value);
+              const evilAttrib = name.startsWith(`data`) ? !attrRegExpStore.data.test(name) : !!attrStore[name];
+
+              if (evilValue || evilAttrib) {
+                let val = attr.value || `none`;
+                val += val.length === 60 ? `...` : ``;
+                elCreationInfo.removed[`${attr.name}`] = `attribute/property (-value) not allowed, removed. Value: ${
+                  val}`;
+                child.removeAttribute(attr.name);
+              }
+            });
+        }
+        const allowed = cleanupTagInfo.isAllowed(child);
+        if (!allowed) {
+          const tag = (child?.outerHTML || child?.textContent).trim();
+          let tagValue = tag ?? `EMPTY`;
+          tagValue += tagValue.length === 60 ? `...` : ``;
+          elCreationInfo.removed[`<${child.nodeName?.toLowerCase()}>`] = `not allowed, not rendered. Value: ${
+            tagValue}`;
+          child.remove();
+        }
+      });
+    }
+
+    if (Object.keys(elCreationInfo.removed).length) {
+      Object.entries(elCreationInfo.removed).forEach( ([k, v]) => console.error(`${k}: ${v}`));
+    }
+
+    return el2Clean;
+  };
+
+  function HTMLTagsFactory() {
+    let lenient = false;
+    const allTags = getPermissions();
+    const allowUnknownHtmlTags = {
+      on: () => lenient = true,
+      off: () => lenient = false,
+    };
+    return {
+      tagsRaw: allTags,
+      allowUnknownHtmlTags,
+      isAllowed(elem) {
+        if (lenient) { return true; }
+        const nodeName = elem?.nodeName.toLowerCase() || `none`;
+        return nodeName === `#text` || !!allTags[nodeName];
+      },
+      allowTag: tag2Allow => allTags[tag2Allow.toLowerCase()] = true,
+      prohibitTag: tag2Prohibit => allTags[tag2Prohibit.toLowerCase()] = false,
+    };
+  }
+
+  function getAttrs() {
+    return {
+      html: `accept,action,align,alt,autocapitalize,autocomplete,autopictureinpicture,autoplay,background,bgcolor,border,capture,cellpadding,cellspacing,checked,cite,class,clear,contenteditable,color,cols,colspan,controls,controlslist,coords,crossorigin,datetime,decoding,default,dir,disabled,disablepictureinpicture,disableremoteplayback,download,draggable,enctype,enterkeyhint,face,for,headers,height,hidden,high,href,hreflang,id,inputmode,integrity,ismap,kind,label,lang,list,loading,loop,low,max,maxlength,media,method,min,minlength,multiple,muted,name,nonce,noshade,novalidate,nowrap,open,optimum,pattern,placeholder,playsinline,poster,preload,pubdate,radiogroup,readonly,rel,required,rev,reversed,role,rows,rowspan,spellcheck,scope,selected,shape,size,sizes,span,srclang,start,src,srcset,step,style,summary,tabindex,target,title,translate,type,usemap,valign,value,width,xmlns,slot`
+        .split(`,`),
+      svg:`accent-height,accumulate,additive,alignment-baseline,ascent,attributename,attributetype,azimuth,basefrequency,baseline-shift,begin,bias,by,class,clip,clippathunits,clip-path,clip-rule,color,color-interpolation,color-interpolation-filters,color-profile,color-rendering,cx,cy,d,dx,dy,diffuseconstant,direction,display,divisor,dur,edgemode,elevation,end,fill,fill-opacity,fill-rule,filter,filterunits,flood-color,flood-opacity,font-family,font-size,font-size-adjust,font-stretch,font-style,font-variant,font-weight,fx,fy,g1,g2,glyph-name,glyphref,gradientunits,gradienttransform,height,href,id,image-rendering,in,in2,k,k1,k2,k3,k4,kerning,keypoints,keysplines,keytimes,lang,lengthadjust,letter-spacing,kernelmatrix,kernelunitlength,lighting-color,local,marker-end,marker-mid,marker-start,markerheight,markerunits,markerwidth,maskcontentunits,maskunits,max,mask,media,method,mode,min,name,numoctaves,offset,operator,opacity,order,orient,orientation,origin,overflow,paint-order,path,pathlength,patterncontentunits,patterntransform,patternunits,points,preservealpha,preserveaspectratio,primitiveunits,r,rx,ry,radius,refx,refy,repeatcount,repeatdur,restart,result,rotate,scale,seed,shape-rendering,specularconstant,specularexponent,spreadmethod,startoffset,stddeviation,stitchtiles,stop-color,stop-opacity,stroke-dasharray,stroke-dashoffset,stroke-linecap,stroke-linejoin,stroke-miterlimit,stroke-opacity,stroke,stroke-width,style,surfacescale,systemlanguage,tabindex,targetx,targety,transform,text-anchor,text-decoration,text-rendering,textlength,type,u1,u2,unicode,values,viewbox,visibility,version,vert-adv-y,vert-origin-x,vert-origin-y,width,word-spacing,wrap,writing-mode,xchannelselector,ychannelselector,x,x1,x2,xmlns,y,y1,y2,z,zoomandpan`
+        .split(`,`),
+    };
+  }
+
+  function getPermissions() {
+    return {a:true,area:true,audio:false,br:true,base:true,body:true,button:true,canvas:true,dl:true,data:true,datalist:true,div:true,em:true, embed:false,fieldset:true,font:true,footer:true,form:false,hr:true,head:true,header:true,output:true,iframe:false,frameset:false,img:true,input:true,li:true,label:true,legend:true,link:true,map:true,mark:true,menu:true,media:true,meta:true,nav:true,meter:true,ol:true,object:false,optgroup:true,option:true,p:true,param:true,picture:true,pre:true,progress:false,quote:true,script:false,select:true,source:true,span:true,style:true,caption:true,td:true,col:true,table:true,tr:true,template:false,textarea:true,time:true,title:true,track:true,details:true,ul:true,video:true,del:true,ins:true,slot:true,blockquote:true,svg:true,dialog:true,summary:true,main:true,address:true,colgroup:true,tbody:true,tfoot:true,thead:true,th:true,dd:true,dt:true,figcaption:true,figure:true,i:true,b:true,code:true,h1:true,h2:true,h3:true,h4:true,abbr:true,bdo:true,dfn:true,kbd:true,q:true,rb:true,rp:true,rt:true,ruby:true,s:true,strike:true,samp:true,small:true,strong:true,sup:true,sub:true,u:true,var:true,wbr:true,nobr:true,tt:true,noscript:true};
   }
 }
