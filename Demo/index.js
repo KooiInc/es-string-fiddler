@@ -197,6 +197,7 @@ basic.set\`Hello {wrld}\`
 function createContent() {
   $.delegate(`click`, `b[id]`, () => {
     $.node(`#log2screen`).scrollIntoView();
+    document.documentElement.scrollTop -= 15;
   });
   $.delegate(`click`, `.content li .linkLike`, evt => {
     const origin = $.node(evt.target.dataset.target);
