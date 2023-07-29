@@ -12,7 +12,6 @@ function demo() {
 
   log(`!!<a target="_top" href="https://github.com/KooiInc/es-string-fiddler"><b>Back to repository</b></a>`);
   log(`!!<h2 id="inits">EcmaScript (ES) <code>String</code> manipulation using ES <code>Proxy</code></h2>`);
-
   const basic = $S``;
   const hi = basic.set(`hello`).ucFirst;
   const hi1 = hi.set`hithere and ${hi.toLowerCase()}`;
@@ -39,6 +38,7 @@ const tokens = [
     can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a>.
   <br><b>Note 3</b>: like regular ES-strings $S-strings are
     <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a>
+  <br><b>Note 4</b>: for this demo-page <code>$S</code> is available in the console
   </div`) );
 
   log(`!!<b>Initial values</b>`);
