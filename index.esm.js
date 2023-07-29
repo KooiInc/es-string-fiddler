@@ -11,8 +11,8 @@ function XStringFactory() {
       return {
         ...acc,
         [val]: str => (...args) => {
-          // enable concat tagged template function
-          if (val === `concat` && args.length && args[0].raw) {
+          // enable method as tagged template (only applicable for concat, actually)
+          if (args.length && args[0].raw) {
             args = [resolveTemplateString(args[0], args.slice(1))];
           }
 
@@ -53,7 +53,8 @@ function XStringFactory() {
 
     const invalidTag = truncate(`<${tag} ${propsStr}>${str}</${tag}>`)({at: 40, html: true});
 
-    return proxify`<span style="color:red">${escHTML(invalidTag)} is not valid (see console)</span>`;
+    return proxify`<span style="color:red">${escHTML(invalidTag)}</span> <i>is not valid</i> 
+    (see console)`;
   };
   const replaceWords = str => (initial, replacement) => {
     const cando = [initial, replacement].filter( v =>
@@ -288,7 +289,7 @@ function sanitizeHTMLFactory() {
     }
 
     return el2Clean;
-  };
+  }
 
   function HTMLTagsFactory() {
     let lenient = false;
