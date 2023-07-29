@@ -86,7 +86,11 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
 - `toTag(tagName: string, [properties: Object])`: create html from a string, using [tagName] and (optionally) properties (like `class`, `title`, `stype`).  
     
    **Note**: the resulting html is *sanitized*. When a tag is 'dangerous' (e.g. `script`), the result will be
-   be an error message, when 'dangerous' attributes ([properties]) are used (e.g. `onclick`), the attributes are removed from the result. Examples of this can be found in the [demo](https://kooiinc.github.io/es-string-fiddler/Demo)
+   be an error message, when 'dangerous' attributes ([properties]) are used (e.g. `onclick`), the attributes are removed from the result. 
+   
+   When sanitation changes the expected html, information of that change is also displayed as an error in the console. 
+   
+   The [demo](https://kooiinc.github.io/es-string-fiddler/Demo) contains two examples of HTML-sanitation.
 - `truncate`,
 - `ucFirst`: see `case.ucFirst`,
 - `upper`: see `case.upper`,
