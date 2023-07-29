@@ -41,7 +41,7 @@ const $S = ( await
 
 ## Methods
 
-Using `$S` string, you can use all default [string methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#instance_methods), and a
+Using `$S` string, one can use all default [string methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#instance_methods), as well as a
 number of extension methods. Where a method (either default or extension) returns a string, 
 it can be chained.
 
@@ -52,8 +52,8 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
 - `addFN(name: string, fn: function)` OR
   
   `addMethod(name: string, fn: function)`: 
-  add your own method for usage in $S-strings
-- `addProp(name: string, fn: function)`: add your own property for usage in $S-strings
+  add extra method for usage in $S-strings
+- `addProp(name: string, fn: function)`: add extra property for usage in $S-strings
 - `append(what2Append: string | $S-string)`: append [what2append] to the string
 - `case`: `case` is a utility Object, containing 6 properties:
   - `lower`: string to lower case (`String.prototype.toLowerCase` equivalent)
@@ -63,6 +63,9 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
   - `dashed`: convert a camel cased string to dashed notation (e.g. `camelCased` => `camel-cased`)
   - `wordsFirstUC`: all words of the string to upper case
   - `firstUC`: first letter of a string to upper case (if it's a - z)
+- `concat`: this native string method is mentioned because the `es-string-fiddler` module allows 
+   calling it as a [tagged template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates). 
+   For example ``[$S-string].concat`something ${toConcat}`; ``
 - `compressHTML`: when a string contains html removes all unnecessary white space from it,
 - `createRegExp`: create a regular expression from a multiline regular expression string,
 - `escHTML`: escapes html for displaying it as is in a browser (if a string contains html ofcourse),
@@ -81,6 +84,9 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
 - `toCamelCase`: see `case.came`
 - `toDashedNotation`: see `case.dashed`,
 - `toTag(tagName: string, [properties: Object])`: create html from a string, using [tagName] and (optionally) properties (like `class`, `title`, `stype`).  
+    
+   **Note**: the resulting html is *sanitized*. When a tag is 'dangerous' (e.g. `script`), the result will be
+   be an error message, when 'dangerous' attributes ([properties]) are used (e.g. `onclick`), the attributes are removed from the result. Examples of this can be found in the [demo](https://kooiinc.github.io/es-string-fiddler/Demo)
 - `truncate`,
 - `ucFirst`: see `case.ucFirst`,
 - `upper`: see `case.upper`,
