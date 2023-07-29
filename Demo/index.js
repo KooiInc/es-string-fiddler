@@ -17,7 +17,7 @@ function demo() {
   const tokens = [{world: `you`}, {world: `world`}, {world: `galaxy`}, {world: `universe`}];
   basic.addProp(`rQuot`, str => { return `=&gt; ${$S(str).quote.double}`; });
   basic.addProp(`wrapESComments`, str => {
-    str = str.replace(/(?<![https:|http:])\/\/.+/gm, a => `<span class="comment">${a}</span>`);
+    str = str.replace(/(?<!(http)|(https):)\/\/.+/gm, a => `<span class="comment">${a}</span>`);
     return str; });
   log(`!!<b id="initiate">Initiate, assign some variables</b></h3>`);
   log( basic.set`!!<code class="codeBlock">import $S from "./StringFiddlerFactory.js";
@@ -31,8 +31,8 @@ const tokens = [
   {world: \`world\`}, 
   {world: \`galaxy\`}, 
   {world: \`universe\`}, ];</code>`
-.wrapESComments
-.concat(`<div><b>Note</b>: you can call <code>$S</code> either as a tagged template function or as a normal function.
+    .wrapESComments
+    .concat(`<div><b>Note</b>: you can call <code>$S</code> either as a tagged template function or as a normal function.
   <br><b>Note 2</b>: properties/methods (also native (String.prototype)) returning a string
     can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a>.
   <br><b>Note 3</b>: like regular ES-strings $S-strings are
@@ -53,15 +53,15 @@ const tokens = [
   .append( \` and  also: that's folks"\`)
   .insert( $S\` IT \` // <= oops, forgotten 'it'. So let's insert that.
     .toTag( \`b\`, {style:\`color:blue;background:#eee\`,title:\`post hoc insertion\` })
-    .toTag( \`i\`), -7 );</code>`.wrapESComments.concat(`=&gt; ${
-      hi1
-        .insert( $S`there you have it &hellip; `
-          .ucFirst
-          .insert(`"`) )
-        .append(` and also: that's folks"`)
-        .insert($S` IT `
-          .toTag(`b`, { style:`color:blue;background:#eee`, title: `post hoc insertion` })
-          .toTag(`i`), -7)}`) );
+    .toTag( \`i\`), -7 );</code>`.wrapESComments.concat`=&gt; ${
+    hi1
+      .insert( $S`there you have it &hellip; `
+        .ucFirst
+        .insert(`"`) )
+      .append(` and also: that's folks"`)
+      .insert($S` IT `
+        .toTag(`b`, { style:`color:blue;background:#eee`, title: `post hoc insertion` })
+        .toTag(`i`), -7)}` );
   const camelCased = $S`bla-bla and again bla`.toCamelCase;
   log(`<code>const camelCased = $S\`bla-bla and again bla\`.toCamelCase;</code><div>${
     camelCased.rQuot}</div>`);
@@ -76,10 +76,28 @@ const tokens = [
     $S`Hello world, o cruel world`.replaceWords('world', 'universe').rQuot}`);
   const yada2 = $S`yada `.repeat(14).ucFirst;
   log(`<code>const yada2 = $S\`yada \`.repeat(14).ucFirst;</code><div>${yada2.trim().rQuot}</div>`,
-      `<code>yada2.truncate({at: 38}).toTag(\`i\)</code><div>${
-        yada2.truncate({at: 38}).toTag(`i`).rQuot}`);
+    `<code>yada2.truncate({at: 38}).toTag(\`i\)</code><div>${
+      yada2.truncate({at: 38}).toTag(`i`).rQuot}`);
   log(`<code>yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(\`b\)</code><div>${
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
+
+  log(`!!<code>toTag</code>: <b>HTML is sanitized</b>`);
+  const niceStr = $S`nice`.ucFirst.toTag(`b`, {onclick: "alert('hi')", style: `color: red;`}).quote.backtick;
+  log(`<code>$S\`nice\`.ucFirst.toTag(\`b\`, {onclick: "alert('hi')",style: \`color: red;\`}).quote.backtick</code><div>=&gt; ${
+    niceStr} Sanitized: <code>onclick</code> removed =&gt; ${niceStr.escHTML}</div>`);
+
+  const src = URL.createObjectURL(
+    new Blob(
+      [`alert("hithere!")`],
+      { type: `application/javascript` } ) );
+
+  log(`<code class="codeBlock">const src = URL.createObjectURL(
+  new Blob( 
+    [\`alert("hithere!")\`], 
+    { type: \`application/javascript\` } ) );
+basic.toTag( \`script\`, { src });</code>
+  <div>Sanitized with error message:<br>=&gt; ${basic.toTag(`script`, {src})}</div>`);
+
 
   log(`!!<b id="format">Format with tokens</b>
   (see <a target="_blank" href="https://github.com/KooiInc/StringInterpolator">Github</a>)</div>`);
@@ -90,14 +108,14 @@ const tokens = [
   log(`!!<b id="escHtml">Html (escape/compress)</b>`);
   log(`<code>$S(document.querySelector('ul.sub').outerHTML).escHTML.quote.double</code> =&gt;
   <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).escHTML.quote.double}</pre>`,
-  `<code>$S(document.querySelector('ul.sub').outerHTML).compressHTML.escHTML.quote.double</code> =&gt;
+    `<code>$S(document.querySelector('ul.sub').outerHTML).compressHTML.escHTML.quote.double</code> =&gt;
     <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).compressHTML.escHTML.quote.double}</pre>`);
 
   log(`!!<b id="chainEtc">Use/chain/combine native/custom methods`, `<code>yada2.isWellFormed()</code> =&gt; ${yada2.isWellFormed()}</b>`);
   log(`<code>yada2.trim().slice(-4).case.upper.toTag(\`i\`, {style: \`color: orange\`})</code> ${
     yada2.trim().slice(-4).case.upper.toTag( `i`, { style: `color: orange` }).rQuot }`);
   log(`<code>yada2.trim().toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
-      yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
+    yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
 
   log(`!!<b id="addMethOrProp">Create extra methods and properties</b>
   <div><b>Note</b>: make sure the added method or property lambda returns the resulting string</div>`);
@@ -121,7 +139,7 @@ basic.set\`Hello {wrld}\`
   .toTag(\`i\`)
   .logPlus(\`( \`, \`formatted with \`, \`{wrld: "world"}\`, \`)\`)</code>`);
   basic.set`Hello {wrld}`.logPlus` (unformatted)`.format({wrld: `world`})
-  .toTag(`b`).toTag(`i`).logPlus(` (`, `formatted with `, `{wrld: "world"})`), `)`;
+    .toTag(`b`).toTag(`i`).logPlus(` (`, `formatted with `, `{wrld: "world"})`, `)` );
 
   log(`!!<b id="find">Find</b>`);
   log(`!!<div><code>[xstring].find</code> receives an object with keys <code>terms</code>
@@ -132,7 +150,7 @@ basic.set\`Hello {wrld}\`
   log(`<code>$S\`Hello world, bye world, oh world!\`.find({ terms: 'world' })</code>
     ${toJSON($S`Hello world, bye world, oh world!`.find({terms: 'world'}))}` );
   log(`<code>$S\`Hello World, bye world, oh World!\`.find({ terms: 'World,', caseSensitive: true })</code>${
-      toJSON($S`Hello World, bye world, oh World!`.find({terms: 'World,', caseSensitive: true}))}`);
+    toJSON($S`Hello World, bye world, oh World!`.find({terms: 'World,', caseSensitive: true}))}`);
   log(`<code>$S\`Hello World, bye world, oh World!\`.find({ terms: 'helo' })</code>${
     toJSON($S`Hello World, bye world, oh World!`.find({terms: 'helo'}))}`);
   log(`<code>$S\`Hello World, bye world, oh World!\`.find({ terms: /^hello/i })</code>${
@@ -189,12 +207,12 @@ function createContent() {
 
   const ul = contentDiv.find$(`ul`);
   $(`b[id]`).each( chapter => {
-      chapter = $(chapter);
-      const header = chapter.duplicate();
-      const doQuote = header.hasClass(`quoted`) ? ` class="linkLike quoted"` : `class="linkLike"`;
-      const headerText = header.HTML.get();
-      ul.append(`<li><div ${doQuote} data-target="b#${chapter.prop(`id`)}">${headerText.replace(/\(.+\)/, ``)}</div></li>`);
-      chapter.prop(`title`, `Back to top`);
+    chapter = $(chapter);
+    const header = chapter.duplicate();
+    const doQuote = header.hasClass(`quoted`) ? ` class="linkLike quoted"` : `class="linkLike"`;
+    const headerText = header.HTML.get();
+    ul.append(`<li><div ${doQuote} data-target="b#${chapter.prop(`id`)}">${headerText.replace(/\(.+\)/, ``)}</div></li>`);
+    chapter.prop(`title`, `Back to top`);
   } );
   $.editCssRule(`.bottomSpace { height: ${document.body.scrollHeight}px; }`);
   $(`#log2screen`).afterMe(`<div class="bottomSpace">`);
