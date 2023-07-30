@@ -44,7 +44,7 @@ function XStringFactory() {
   const toTag = str => (tag, props) => {
     const propsStr = props && Object.entries(props).reduce( (acc, [k, v]) => {
       return [...acc, `${k}="${v}"`];
-    }, []).join(``) || ``;
+    }, []).join(` `) || ``;
     const elemTest = sanitizeTag(
       Object.assign(document.createElement(`div`),
         { innerHTML: `<${tag} ${propsStr}>${str}</${tag}>` } )
@@ -256,6 +256,10 @@ function sanitizeHTMLFactory() {
 
     if (el2Clean instanceof HTMLElement) {
       [...el2Clean.childNodes].forEach(child => {
+        if (child?.children?.length) {
+          sanitize(child);
+        }
+
         if (child?.attributes) {
           const attrStore = child instanceof SVGElement ? svg : html;
 
@@ -277,6 +281,7 @@ function sanitizeHTMLFactory() {
             });
         }
         const allowed = isAllowed(child);
+
         if (!allowed) {
           const tag = (child?.outerHTML || child?.textContent).trim();
           let tagValue = tag ?? `EMPTY`;
