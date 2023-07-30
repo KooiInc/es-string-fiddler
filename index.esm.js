@@ -274,7 +274,7 @@ function sanitizeHTMLFactory() {
               if (evilValue || evilAttrib) {
                 let val = attr.value || `none`;
                 val += val.length === 60 ? `...` : ``;
-                elCreationInfo.removed[`${attr.name}`] = `attribute/property (-value) not allowed, removed. Value: ${
+                elCreationInfo.removed[`${attr.name}`] = `attribute/property(-value) not allowed, removed. Value: ${
                   val}`;
                 child.removeAttribute(attr.name);
               }
