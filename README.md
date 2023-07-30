@@ -1,6 +1,6 @@
 # (chainable) String extensions using ES Proxy
 
-`es-string-fiddler` is a utility adding some nifty methods to manipulate strings. Methods returning a string can be chained.
+`es-string-fiddler` is a utility adding some nifty methods to manipulate strings. Methods (either native or extensions) returning a string can be chained. The 'constructor' (here `$S`) and instance extension methods (receiving string type parameters) can be called as regular function or as [tagged template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
 
 **[DEMO](https://kooiinc.github.io/es-string-fiddler/Demo)**
 
