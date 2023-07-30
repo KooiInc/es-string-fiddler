@@ -90,7 +90,7 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
    
    When sanitation changes the expected html, information of that change is also displayed as an error in the console. 
    
-   The [demo](https://kooiinc.github.io/es-string-fiddler/Demo) contains two examples of HTML-sanitation.
+   The [demo](https://kooiinc.github.io/es-string-fiddler/Demo) contains three examples of HTML-sanitation.
 - `truncate`,
 - `ucFirst`: see `case.ucFirst`,
 - `upper`: see `case.upper`,
