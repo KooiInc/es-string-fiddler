@@ -1,11 +1,16 @@
-import {$, logFactory} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@main/index.browser.min.js";
-import $S from "../Bundle/index.esm.min.js";
+const now = performance.now();
+import {$, logFactory} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@main/index.browser.bundled.js";
+const importUrl = /^dev\./i.test(location.host) ? `../index.esm.js` : `../Bundle/index.esm.min.js`;
+const $S = (await import(importUrl)).default;
+//import $S from "../Bundle/index.esm.min.js";
 window.$S = $S; // try things yourself in the console ...
 demo();
 
 function demo() {
   // remove stackblitz message
   console.clear();
+  $.log(`demo started`);
+  $.log(`You can use $S in the console to test things`);
   const { log } = logFactory();
   const toJSON = obj => `<pre>${JSON.stringify(obj, null, 2)}</pre>`;
   setStyling();
@@ -192,13 +197,15 @@ basic.set\`Hello {wrld}\`
   log(`<code class="codeBlock">basic.createRegExp\`
   ${demoStr}\`</code><div>=&gt; ${
     $S(re.toString()).escHTML}</div>`);
+  log(`!!<b id="Performance">Performance</b>`);
   createContent();
+  log(`Demo (including imports/content generation) done in ${((performance.now() - now)/1000).toFixed(3)} seconds`);
 }
 
 function createContent() {
   $.delegate(`click`, `b[id]`, () => {
     $.node(`#log2screen`).scrollIntoView();
-    $.node(`.container`).scrollTop -= 15;
+    $.node(`.container`).scrollTo(0, 0);
   });
   $.delegate(`click`, `.content li .linkLike`, evt => {
     const origin = $.node(evt.target.dataset.target);
@@ -218,7 +225,7 @@ function createContent() {
     ul.append(`<li><div ${doQuote} data-target="b#${chapter.prop(`id`)}">${headerText.replace(/\(.+\)/, ``)}</div></li>`);
     chapter.prop(`title`, `Back to top`);
   } );
-  $.editCssRule(`.bottomSpace { height: ${$.node(`.container`).scrollHeight}px; }`);
+  $.editCssRule(`.bottomSpace { height: ${$.node(`.container`).clientHeight}px; }`);
   $(`#log2screen`).afterMe(`<div class="bottomSpace">`);
 }
 
@@ -298,7 +305,8 @@ function setStyling() {
       cursor: pointer;
     }`,
     `b[id]:before {
-      content: "↺";
+      content: "🔝";
+      font-size: 1.2rem;
       color: blue;
       padding-right: 3px;
     }`,
