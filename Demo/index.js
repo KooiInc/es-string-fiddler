@@ -89,7 +89,8 @@ const tokens = [
   log(`<code>yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(\`b\)</code><div>${
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
 
-  log(`!!<code>toTag</code>: <b>HTML is sanitized</b>`);
+  log(`!!<code>toTag</code>: <b>HTML is sanitized</b>.
+      <div><b>Note</b>: sanitation problems are logged to console</div>`);
   const niceStr = $S`nice`.ucFirst.toTag(`b`, {onclick: "alert('hi')", style: `color: red;`}).quote.backtick;
   log(`<code>$S\`nice\`.ucFirst.toTag(\`b\`, {onclick: "alert('hi')",style: \`color: red;\`}).quote.backtick</code><div>=&gt; ${
     niceStr} Sanitized: <code>onclick</code> removed =&gt; ${niceStr.escHTML}</div>`);
@@ -106,6 +107,9 @@ const tokens = [
 basic.toTag( \`script\`, { src });</code>
   <div>Sanitized with error message:<br>=&gt; ${basic.toTag(`script`, {src})}</div>`);
 
+  const blockToLog = basic.set`<script>function runMe() { alert("hi!") };</script><b onclick="javascript:runMe()">Hello!</b>`.toTag(`span`);
+  log(`<code>basic.set\`&lt;script>function runMe() {alert("hi!")};&lt;/script>&lt;b onclick="javascript:runMe()">Hello!&lt;/b>\`.toTag( \`span\`);</code>
+    <div>Sanitized (script tag/onclick removed): ${blockToLog} =&gt; ${blockToLog.escHTML}</div>`);
 
   log(`!!<b id="format">Format with tokens</b>
   (see <a target="_blank" href="https://github.com/KooiInc/StringInterpolator">Github</a>)</div>`);
