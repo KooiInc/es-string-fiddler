@@ -264,7 +264,8 @@ basic.set\`Hello {wrld}\`
   //  ^ flags`.escHTML.wrapESComments;
   log(`<code class="codeBlock">$S\`\`.createRegExp\`${demoStr}\`</code><div>=&gt; ${
     $S(`!!!${re.toString()}`).escHTML}</div>`);
-  log(`<code>basic.createRegExp\`[a-zA-Z](error \${\`o no!\`}\`</code><pre>${$S(basic.createRegExp`[a-zA-Z](error ${`o no!`}`)}</pre>`);
+  log(`<code>basic.createRegExp\`[a-zA-Z](error \${[\`o no!\`]}\`</code><pre>${$S(basic.createRegExp`[a-zA-Z](error ${
+    [`o no!`]}`)}</pre>`);
   /* endregion regex */
 
   /* region theEndMyFriend */
