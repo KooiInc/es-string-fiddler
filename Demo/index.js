@@ -2,7 +2,6 @@ const now = performance.now();
 import {$, logFactory} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@main/index.browser.bundled.js";
 const importUrl = /^dev\./i.test(location.host) ? `../index.esm.js` : `../Bundle/index.esm.min.js`;
 const $S = (await import(importUrl)).default;
-//import $S from "../Bundle/index.esm.min.js";
 window.$S = $S; // try things yourself in the console ...
 demo();
 
@@ -70,27 +69,30 @@ const tokens = [
       .insert($S` IT `
         .toTag(`b`, { style:`color:blue;background:#eee`, title: `post hoc insertion` })
         .toTag(`i`), -7)}` );
-  const camelCased = $S`bla-bla and again bla`.toCamelCase;
-  log(`<code>const camelCased = $S\`bla-bla and again bla\`.toCamelCase;</code><div>${
+  const camelCased = $S`bla-bla and AGAIN bla`.toCamelCase;
+  log(`<code>const camelCased = $S\`bla-bla and AGAIN bla\`.toCamelCase;</code><div>${
     camelCased.rQuot}</div>`);
   log(`<code>camelCased.toDashedNotation</code><div>${camelCased.toDashedNotation.rQuot}</div>`);
-  log(`<code>$S(\`regular function call can do? - {yes}\`).format({yes: \`That's right\`}).ucFirst</code>
-    <div>${$S(`regular function call can do? - {yes}`).format({yes: `That's right`}).ucFirst.rQuot}`);
+  log(`<code>$S(\`$S called as {rf}\`).format({rf: \`regular function (&lt;code>$S([string])&lt;/code>)\`})</code>
+    <div>${$S(`$S called as {rf}`).format({rf: `regular function (<code>$S([string])</code>)`}).rQuot}`);
 
   log(`<code>$S\`nice\`.ucFirst.toTag(\`b\`, {style: \`color: red;\`}).quote.backtick</code><div>=&gt; ${
     $S`nice`.ucFirst.toTag(`b`, {style: `color: red;`}).quote.backtick}</div>`);
 
   log(`<code>$S\`Hello world, o cruel world\`.replaceWords('world', 'universe')</code><div>${
     $S`Hello world, o cruel world`.replaceWords('world', 'universe').rQuot}`);
-  const yada2 = $S`yada `.repeat(14).ucFirst;
+  const yada2 = $S`yada `.repeat(14).ucFirst.trimEnd();
   log(`<code>const yada2 = $S\`yada \`.repeat(14).ucFirst;</code><div>${yada2.trim().rQuot}</div>`,
     `<code>yada2.truncate({at: 38}).toTag(\`i\)</code><div>${
       yada2.truncate({at: 38}).toTag(`i`).rQuot}`);
   log(`<code>yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(\`b\)</code><div>${
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
 
-  log(`!!<code>toTag</code>: <b>HTML is sanitized</b>.
-      <div><b>Note</b>: sanitation problems are logged to console</div>`);
+  log(`!!<b id="sanitation">HTML sanitation</b> (<code>toTag</code>).
+      <div>When using <code>toTag</code>, the html created will be sanitized. Tags/attributes/attribute values
+      deemed insecure will be removed from the html. Sanitation problems are logged to the console. 
+      When trying to add a string to an insecure tag (e.g. <code>script</code>), the result will be 
+      an error message.</div>`);
   const niceStr = $S`nice`.ucFirst.toTag(`b`, {onclick: "alert('hi')", style: `color: red;`}).quote.backtick;
   log(`<code>$S\`nice\`.ucFirst.toTag(\`b\`, {onclick: "alert('hi')",style: \`color: red;\`}).quote.backtick</code><div>=&gt; ${
     niceStr} Sanitized: <code>onclick</code> removed =&gt; ${niceStr.escHTML}</div>`);
@@ -123,9 +125,13 @@ basic.toTag( \`script\`, { src });</code>
     `<code>$S(document.querySelector('ul.sub').outerHTML).compressHTML.escHTML.quote.double</code> =&gt;
     <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).compressHTML.escHTML.quote.double}</pre>`);
 
-  log(`!!<b id="chainEtc">Use/chain/combine native/custom methods`, `<code>yada2.isWellFormed()</code> =&gt; ${yada2.isWellFormed()}</b>`);
-  log(`<code>yada2.trim().slice(-4).concat\` \${hi}\`.toUpperCase().toTag(\`i\`, {style: \`color: orange\`})</code> ${
-    yada2.trim().slice(-4).concat` ${hi}`.toUpperCase().toTag( `i`, { style: `color: orange` }).rQuot }`);
+
+  log(`!!<b id="chainEtc">Use/chain/combine native/custom methods</b>`,
+    `<code>const yada2 = $S\`yada \`.repeat(14).ucFirst.trimEnd();</code><div>${yada2.rQuot}</div>`,
+    `<code>yada2.isWellFormed()</code> =&gt; ${
+    yada2.isWellFormed()}`);
+  log(`<code>yada2.trim().slice(-4).concat\` \${hi}\`.toUpperCase().toTag(\`i\`, {style: \`color: orange\`})</code> 
+    <div>${yada2.slice(-4).concat` ${hi}`.toUpperCase().toTag( `i`, { style: `color: orange` }).rQuot }</div>`);
   log(`<code>yada2.trim().toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
     yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
 
