@@ -28,7 +28,9 @@ const $S = ( await
 ```
 
 ### Browser script
-The $S is made available as `window.$S`. It's advised to localize `$S` before usage (see subsequent code).
+After linking the script, the `$S` constructor is available as `window.$S`.
+
+It is advised to localize `$S` before usage to not 'pollute' the global namespace (see subsequent code).
 ``` html
 <script 
   src="https://kooiinc.github.io/es-string-fiddler/Bundle/index.browser.min.js">
@@ -37,6 +39,7 @@ The $S is made available as `window.$S`. It's advised to localize `$S` before us
   // localize $S
   const $S = window.$S;
   delete window.$S;
+  /** ... code */
 </script>
 ```
 
