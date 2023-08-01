@@ -51,7 +51,11 @@ it can be chained.
 
 *Do* see examples in the **[demo](https://kooiinc.github.io/es-string-fiddler/Demo).**
 
+
+
 The extension methods are (**Note**: '*string*' in this list mostly signifies a wrapped $S-string):
+
+**Note**: *all `$S` instances* are checked for html and if html exists sanitized.
 
 - `addFN(name: string, fn: function)` OR
   
