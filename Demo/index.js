@@ -147,8 +147,8 @@ const tokens = [
 basic.toTag( \`script\`, { src });</code>
   <div>Sanitized with error message:<br>=&gt; ${basic.toTag(`script`, {src})}</div>`);
 
-  const blockToLog = basic.set`<script>function runMe() { alert("hi!") }</script><b onclick="javascript:runMe()">Hello!</b>`.toTag(`span`);
-  log(`<code>basic.set\`&lt;script>function runMe() {alert("hi!")};&lt;/script>&lt;b onclick="javascript:runMe()">Hello!&lt;/b>\`.toTag( \`span\`);</code>
+  const blockToLog = basic.set`<script>function runMe() { alert("hi!"); }</script><b onclick="javascript:runMe()">Hello!</b>`.toTag(`span`);
+  log(`<code>basic.set\`&lt;script>function runMe() { alert("hi!"); }&lt;/script>&lt;b onclick="javascript:runMe()">Hello!&lt;/b>\`.toTag( \`span\`);</code>
     <div>Sanitized (script tag/onclick removed): ${blockToLog} =&gt; ${blockToLog.escHTML}</div>`);
 
   log(`!!<b class="header">Default sanitation of <code>$S</code>-instances</b>`);
