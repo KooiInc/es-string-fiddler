@@ -26,6 +26,8 @@ function demo() {
   basic.addProp(`wrapESComments`, str => {
     str = str.replace(/(?<!(http)|(https):)\/\/.+/gm, a => `<span class="comment">${a}</span>`);
     return str; });
+
+  /* region initiate */
   log(`!!<b id="initiate">Initiate, assign some variables</b></h3>`);
   log( basic.set`!!<code class="codeBlock">import $S from "./StringFiddlerFactory.js";
 // a basic empty string can be used as template
@@ -51,7 +53,9 @@ const tokens = [
       <code>hi</code> ${hi.rQuot}<br>
       <code>hi1</code> ${hi1.rQuot}<br>
       <code>basic.isProxied</code> ${basic.isProxied}`);
+  /* endregion initiate */
 
+  /* region manipulate */
   log(`!!<b id="manipulate">Manipulate strings</b></h3>`);
   log( $S`<code class="codeBlock">hi1
   .insert( $S\`there you have it &amp;hellip; \` // <= nested $S-string
@@ -87,12 +91,46 @@ const tokens = [
       yada2.truncate({at: 38}).toTag(`i`).rQuot}`);
   log(`<code>yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(\`b\)</code><div>${
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
+  /* endregion manipulate */
 
-  log(`!!<b id="sanitation">HTML sanitation</b> (<code>toTag</code>).
-      <div>When using <code>toTag</code>, the html created will be sanitized. Tags/attributes/attribute values
-      deemed insecure will be removed from the html. Sanitation problems are logged to the console. 
-      When trying to add a string to an insecure tag (e.g. <code>script</code>), the result will be 
-      an error message.</div>`);
+  /* region useCombine */
+  log(`!!<b id="chainEtc">Use/chain/combine native/custom methods</b>`,
+    `<code>const yada2 = $S\`yada \`.repeat(14).ucFirst.trimEnd();</code><div>${yada2.rQuot}</div>`,
+    `<code>yada2.isWellFormed()</code> =&gt; ${
+      yada2.isWellFormed()}`);
+  log(`<code>yada2.trim().slice(-4).concat\` \${hi}\`.toUpperCase().toTag(\`i\`, {style: \`color: orange\`})</code> 
+    <div>${yada2.slice(-4).concat` ${hi}`.toUpperCase().toTag( `i`, { style: `color: orange` }).rQuot }</div>`);
+  log(`<code>yada2.trim().toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
+    yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
+  /* endregion useCombine */
+
+  /* region format */
+  log(`!!<b id="format">Format with tokens</b>
+  (see <a target="_blank" href="https://github.com/KooiInc/StringInterpolator">Github</a>)</div>`);
+  const escaped4Log = $S`$S\`<li>\${hi\} {world}</li>\\n\``.escHTML;
+  log(`<div><code>${escaped4Log}.format(...tokens).toTag(\`ul\`, {class: \`sub\`})</code></div>
+    ${$S`<li> ${hi} {world} </li>\n`.format(...tokens).toTag(`ul`, {class: `sub`})}`);
+  /* endregion format */
+
+  /* region htmlEscCompress */
+  log(`!!<b id="escHtml">HTML (escape/compress)</b>`);
+  log(`<code>$S(document.querySelector('ul.sub').outerHTML).escHTML.quote.double</code> =&gt;
+  <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).escHTML.quote.double}</pre>`,
+    `<code>$S(document.querySelector('ul.sub').outerHTML).compressHTML.escHTML.quote.double</code> =&gt;
+    <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).compressHTML.escHTML.quote.double}</pre>`);
+  /* endregion htmlEscCompress */
+
+  /* region HTMLSanitize */
+  log(`!!<b id="sanitation">HTML (sanitation)</b> (<code>toTag</code> or directly).
+      <p><i style="color:red">All <code>$S</code> instances</i> are checked for HTML inside it, and if so sanitized.
+      Tags/attributes/attribute values deemed insecure will be removed from the html. 
+      Sanitation problems are logged to the console.</p>
+      <p>It goes without saying that using <code>toTag</code>, 
+      the html created will be sanitized. When trying to wrap a string into an insecure tag (e.g. <code>script</code>), 
+      the resulting <code>$S</code>-instance will be an error message.</p>
+      <p>To <i>prevent automatic sanitation</i>, put <code>!!!</code> before the string to instantiate.</p>`);
+
+  log(`!!<b class="header">Sanitition when using the <code>toTag</code> method</b>`);
   const niceStr = $S`nice`.ucFirst.toTag(`b`, {onclick: "alert('hi')", style: `color: red;`}).quote.backtick;
   log(`<code>$S\`nice\`.ucFirst.toTag(\`b\`, {onclick: "alert('hi')",style: \`color: red;\`}).quote.backtick</code><div>=&gt; ${
     niceStr} Sanitized: <code>onclick</code> removed =&gt; ${niceStr.escHTML}</div>`);
@@ -109,32 +147,47 @@ const tokens = [
 basic.toTag( \`script\`, { src });</code>
   <div>Sanitized with error message:<br>=&gt; ${basic.toTag(`script`, {src})}</div>`);
 
-  const blockToLog = basic.set`<script>function runMe() { alert("hi!") };</script><b onclick="javascript:runMe()">Hello!</b>`.toTag(`span`);
+  const blockToLog = basic.set`<script>function runMe() { alert("hi!") }</script><b onclick="javascript:runMe()">Hello!</b>`.toTag(`span`);
   log(`<code>basic.set\`&lt;script>function runMe() {alert("hi!")};&lt;/script>&lt;b onclick="javascript:runMe()">Hello!&lt;/b>\`.toTag( \`span\`);</code>
     <div>Sanitized (script tag/onclick removed): ${blockToLog} =&gt; ${blockToLog.escHTML}</div>`);
 
-  log(`!!<b id="format">Format with tokens</b>
-  (see <a target="_blank" href="https://github.com/KooiInc/StringInterpolator">Github</a>)</div>`);
-  const escaped4Log = $S`$S\`<li>\${hi\} {world}</li>\\n\``.escHTML;
-  log(`<div><code>${escaped4Log}.format(...tokens).toTag(\`ul\`, {class: \`sub\`})</code></div>
-    ${$S`<li> ${hi} {world} </li>\n`.format(...tokens).toTag(`ul`, {class: `sub`})}`);
+  log(`!!<b class="header">Default sanitation of <code>$S</code>-instances</b>`);
+  const sane = $S`<span mytag="removed" onclick="alert('removed')" class="xyz"><b style="color: red">Hello!</b></span>`;
+  log(`<code class="codeBlock">\$S\`
+&lt;span mytag="removed" onclick="alert('removed')" class="xyz">
+  &lt;b style="color: red">Hello!&lt;/b>
+&lt;/span>\`</code>
+    ${sane} Sanitized ${sane.escHTML.rQuot}`);
 
-  log(`!!<b id="escHtml">Html (escape/compress)</b>`);
-  log(`<code>$S(document.querySelector('ul.sub').outerHTML).escHTML.quote.double</code> =&gt;
-  <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).escHTML.quote.double}</pre>`,
-    `<code>$S(document.querySelector('ul.sub').outerHTML).compressHTML.escHTML.quote.double</code> =&gt;
-    <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).compressHTML.escHTML.quote.double}</pre>`);
+  const xcript = $S`<span style="color:steelblue"><script></script>Hithere!</span>`;
+  log(`<code>$S\`&lt;span style="color:steelblue">&lt;script>&lt;/script>Hithere&lt;/span>\`</code>
+    <div>${xcript} Sanitized ${xcript.escHTML.rQuot}</div>`);
 
+  const tagsWithin = $S`A string <i>containing <b>tags</b></i> 
+    <span onclick="javascript:sayHi()"> will be sanitized</span>`;
+  log(`!!<b>* Sanitizing a string with some html within</b>`);
+  log(`<code>$S${tagsWithin.escHTML.quote.backtick}</code>
+    <div>${tagsWithin}<br>Sanitized: ${tagsWithin.escHTML.rQuot}</div>`);
 
-  log(`!!<b id="chainEtc">Use/chain/combine native/custom methods</b>`,
-    `<code>const yada2 = $S\`yada \`.repeat(14).ucFirst.trimEnd();</code><div>${yada2.rQuot}</div>`,
-    `<code>yada2.isWellFormed()</code> =&gt; ${
-    yada2.isWellFormed()}`);
-  log(`<code>yada2.trim().slice(-4).concat\` \${hi}\`.toUpperCase().toTag(\`i\`, {style: \`color: orange\`})</code> 
-    <div>${yada2.slice(-4).concat` ${hi}`.toUpperCase().toTag( `i`, { style: `color: orange` }).rQuot }</div>`);
-  log(`<code>yada2.trim().toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
-    yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
+  log(`!!<b>* Error message when creating an single invalid (root level) tag</b>`);
+  const scriptTag = $S`<script src=${src}</script>`;
+  log(`<code>$S\`&lt;script src=\${src}&lt;/script>\`</code><div>${$S(scriptTag).rQuot}</div>`);
 
+  log(`!!<b>* With mix of invalid and valid tags, the valid tags are preserved</b>`);
+  const scriptTag2 = $S`<script src="${src}"></script><span>But this will show up</span>`;
+  log(`<code>$S\`&lt;script src="\${src}">&lt;/script>&lt;span>But this will show up&lt/span>\`</code><div>${scriptTag2.rQuot}</div>`);
+
+  log(`!!<b>* <i>Prevent</i> automatic sanitation</b>`);
+  const rawScriptTag = $S`!!!<script src=${src}</script>`;
+  log(`<code>$S\`!!!&lt;script src=\${src}&lt;/script>\`</code><div>${$S(rawScriptTag.escHTML).rQuot}</div>`);
+
+  log(`!!<b>* A <code>$S</code>-string returns, well ... the string (a <code>$S</code> instance that is)</b>`);
+  const noSanity = $S`This is just a plain old fashioned string`;
+  log(`<code>$S${noSanity.escHTML.quote.backtick}</code>
+    <div>${noSanity.rQuot}</div>`);
+  /* endregion HTMLSanitize */
+
+  /* region xtraMethods */
   log(`!!<b id="addMethOrProp">Create extra methods and properties</b>
   <div><b>Note</b>: make sure the added method or property lambda returns the resulting string</div>`);
   basic.addProp(`log`, str => { log(str); return str; })
@@ -158,7 +211,9 @@ basic.set\`Hello {wrld}\`
   .logPlus(\`( \`, \`formatted with \`, \`{wrld: "world"}\`, \`)\`)</code>`);
   basic.set`Hello {wrld}`.logPlus` (unformatted)`.format({wrld: `world`})
     .toTag(`b`).toTag(`i`).logPlus(` (`, `formatted with `, `{wrld: "world"}`, `)` );
+  /* endregion xtraMethods */
 
+  /* region find */
   log(`!!<b id="find">Find</b>`);
   log(`!!<div><code>[xstring].find</code> receives an object with keys <code>terms</code>
   (a string, an Array of strings or a regular expression) and <code>caseSensitive</code>
@@ -177,7 +232,9 @@ basic.set\`Hello {wrld}\`
     toJSON($S`Hello World, bye world, oh World!`.find({ terms: /^hello/ }))}`);
   log(`<code>${$S`Hello World, bye world, oh World!`.wordsFirstUC}.find({ terms: [{}, \`hello\`] })</code>${
     toJSON($S`Hello World, bye world, oh World!`.wordsFirstUC.find({ terms: [{}, `Hello`] }))}`);
+  /* endregion find */
 
+  /* region regex */
   log(`!!<b id="regex">RegExp</b>
     <div>Create a regular expression from a multiline string
     (see <a target="_blank" href="https://github.com/KooiInc/RegexHelper/tree/main">Github</a>)</div>`);
@@ -193,7 +250,8 @@ basic.set\`Hello {wrld}\`
     | (?<=YD)(?<matchYear>\d{2})
     ${[`g`]}
     //  ^ flags`;
-  const demoStr = $S`// A 'readable' regular expression
+  const demoStr = $S`!!!
+  // A 'readable' regular expression
     (?<=N)(?<matchNumber>\d{3})
   | (?<=DSC)(?<matchSeconds>\d{2})
   | (?<=MC)(?<matchMinutes>\d{2})
@@ -204,14 +262,20 @@ basic.set\`Hello {wrld}\`
   | (?<=YD)(?<matchYear>\d{2})
   \${[\`g\`]}
   //  ^ flags`.escHTML.wrapESComments;
-  log(`<code class="codeBlock">basic.createRegExp\`
-  ${demoStr}\`</code><div>=&gt; ${
-    $S(re.toString()).escHTML}</div>`);
+  log(`<code class="codeBlock">$S\`\`.createRegExp\`${demoStr}\`</code><div>=&gt; ${
+    $S(`!!!${re.toString()}`).escHTML}</div>`);
+  log(`<code>basic.createRegExp\`[a-zA-Z](error \${\`o no!\`}\`</code><pre>${$S(basic.createRegExp`[a-zA-Z](error ${`o no!`}`)}</pre>`);
+  /* endregion regex */
+
+  /* region theEndMyFriend */
   log(`!!<b id="Performance">Performance</b>`);
+
   createContent();
   log(`Demo (including imports/content generation) done in ${((performance.now() - now)/1000).toFixed(3)} seconds`);
+  /* endregion theEndMyFriend */
 }
 
+/* region indexCreatr */
 function createContent() {
   $.delegate(`click`, `b[id]`, () => {
     $.node(`#log2screen`).scrollIntoView();
@@ -232,19 +296,21 @@ function createContent() {
     const header = chapter.duplicate();
     const doQuote = header.hasClass(`quoted`) ? ` class="linkLike quoted"` : `class="linkLike"`;
     const headerText = header.HTML.get();
-    ul.append(`<li><div ${doQuote} data-target="b#${chapter.prop(`id`)}">${headerText.replace(/\(.+\)/, ``)}</div></li>`);
+    ul.append(`<li><div ${doQuote} data-target="b#${chapter.prop(`id`)}">${headerText}</div></li>`);
     chapter.prop(`title`, `Back to top`);
   } );
   $.editCssRule(`.bottomSpace { height: ${$.node(`.container`).clientHeight}px; }`);
   $(`#log2screen`).afterMe(`<div class="bottomSpace">`);
 }
+/* endregion indexCreatr */
 
+/* region styling */
 function setStyling() {
   $.editCssRules(
     `body { margin: 0; }`,
     `.container { position: absolute; inset: 0; overflow-y: auto; }`,
     `.head div, .head pre, pre {font-weight: normal; color: #777}`,
-    `.head b[id] {
+    `.head b[id], .head b.header {
       cursor: pointer;
       font-size: 1.2em; 
       line-height: 1.5rem;
@@ -322,3 +388,4 @@ function setStyling() {
     }`,
   );
 }
+/* endregion styling */
