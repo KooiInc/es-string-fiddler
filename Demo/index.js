@@ -29,7 +29,7 @@ function demo() {
 
   /* region initiate */
   log(`!!<b id="initiate">Initiate, assign some variables</b></h3>`);
-  log( basic.set`!!<code class="codeBlock">import $S from "./StringFiddlerFactory.js";
+  log( basic.set`!!<code class="codeBlock">import $S from "${importUrl}";
 // a basic empty string can be used as template
 const basic = $S\`\`;
 const hi = basic.set\`hello\`.ucFirst;
