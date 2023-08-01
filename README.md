@@ -28,13 +28,14 @@ const $S = ( await
 ```
 
 ### Browser script
+The $S is made available as `window.$S`. It's advised to localize `$S` before usage (see subsequent code).
 ``` html
 <script 
   src="https://kooiinc.github.io/es-string-fiddler/Bundle/index.browser.min.js">
 </script>
 <script>
+  // localize $S
   const $S = window.$S;
-  // optionally delete from global namespace
   delete window.$S;
 </script>
 ```
