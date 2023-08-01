@@ -1,6 +1,6 @@
 const sanitizer = (await import("./Resource/SanitizerFactory.js")).default;
 export default XStringFactory();
-
+// region factory
 function XStringFactory() {
   const nativeOverrides = [
     "concat", "padEnd", "padStart", "repeat", "replace", "replaceAll",
@@ -40,7 +40,22 @@ function XStringFactory() {
       : subString) + endwith );
   };
   const escHTML = str => proxify(str.replace(/</g, `&lt;`));
+  const sanitizeHTML = (str, omitProxy = false) => {
+    const sane = sanitizer(
+      Object.assign(document.createElement(`div`), { innerHTML: str } )
+    );
+
+    if (sane.innerHTML.trim().length) {
+      return omitProxy ? sane.innerHTML : proxify(sane.innerHTML);
+    }
+
+    return omitProxy ? `Sanitatition failed (likely unsafe html) for '${truncate(escHTML(str))({at: 40})}'` : proxify(str);
+  };
+
   const toTag = str => (tag, props) => {
+    if (!tag) {
+      return proxify(string);
+    }
     const propsStr = props && Object.entries(props).reduce( (acc, [k, v]) => {
       return [...acc, `${k}="${v}"`];
     }, []).join(` `) || ``;
@@ -49,7 +64,9 @@ function XStringFactory() {
         { innerHTML: `<${tag} ${propsStr}>${str}</${tag}>` } )
     );
 
-    if (elemTest.firstChild) { return proxify(elemTest.firstChild.outerHTML); }
+    if (elemTest.innerHTML.trim().length) {
+      return proxify(elemTest.innerHTML);
+    }
 
     const invalidTag = truncate(`<${tag} ${propsStr}>${str}</${tag}>`)({at: 40, html: true});
 
@@ -117,7 +134,8 @@ function XStringFactory() {
     try {
       return regExp(str, ...args);
     } catch (err) {
-      return `Can't do this: ${err.message}`;
+      return `Error creating Regular Expression from "${str}" (modifiers: ${
+        args.join(``).trim() || `none`})\n${err.message}`;
     }
   }
 
@@ -131,9 +149,9 @@ function XStringFactory() {
       append: str => str2Append => proxify(`${str}${str2Append}`),
       lower: str => casingFactory(str).lower,
       upper: str => casingFactory(str).upper,
-      createRegExp,
       case: casingFactory,
       quote: quoteFactory,
+      createRegExp,
       value,
       insert,
       format,
@@ -183,8 +201,13 @@ function XStringFactory() {
   // So, best of both worlds ...
   function proxify(someStr, ...args) {
     let str = resolveTemplateString(someStr, ...args);
+    const dontSanitize = str?.startsWith(`!!!`);
+    str = dontSanitize ? str.replace(/^!!!/, ``) : str;
+    str = /<.+?>/gi.test(str) && !dontSanitize
+      ? sanitizeHTML(str, true)
+      : str;
 
-    return new Proxy(str, proxy);
+    return new Proxy(new String(str), proxy);
   }
 
   return proxify;
@@ -231,3 +254,4 @@ function XStringFactory() {
     return (str, ...tokens) => interpolate(...[str,undefined,...tokens])
   }
 }
+// endregion factory
