@@ -3,6 +3,7 @@ export default sanitizeHTMLFactory();
 
 function sanitizeHTMLFactory() {
   const {html, svg, tags} = tagsInfo;
+  const findAttr = (store, name) => store.find(a => a === name)
   const attrRegExpStore = {
     data: /data-[\-\w.\p{L}]/ui, // data-* minimal 1 character after dash
     validURL: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
@@ -37,7 +38,7 @@ function sanitizeHTMLFactory() {
               const value = attr.value.trim().toLowerCase().replace(attrRegExpStore.whiteSpace, ``);
               const evilValue = name === "href"
                 ? !attrRegExpStore.validURL.test(value) : attrRegExpStore.notAllowedValues.test(value);
-              const evilAttrib = name.startsWith(`data`) ? !attrRegExpStore.data.test(name) : !!attrStore[name];
+              const evilAttrib = name.startsWith(`data`) ? !attrRegExpStore.data.test(name) : !findAttr(attrStore, name);
 
               if (evilValue || evilAttrib) {
                 let val = attr.value || `none`;
