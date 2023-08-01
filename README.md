@@ -91,9 +91,10 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
 - `set`: set the (intermediate) value of a string,
 - `toCamelCase`: see `case.came`
 - `toDashedNotation`: see `case.dashed`,
-- `toTag(tagName: string, [properties: Object])`: create html from a string, using [tagName] and (optionally) properties (like `class`, `title`, `stype`).  
+- `toTag(tagName: string, [properties: Object])`: wraps the string into a html element, using [tagName]
+   and (optionally) create [properties] (like `class`, `title`, `stype`) for that html element.
     
-   **Note**: the resulting html is *sanitized*. When a tag is 'dangerous' (e.g. `script`), the result will be
+   **Note**: as with all instances, the resulting html string is *sanitized*. When a tag is 'dangerous' (e.g. `script`), the result will be
    be an error message, when 'dangerous' attributes ([properties]) are used (e.g. `onclick`), the attributes are removed from the result. 
    
    When sanitation changes the expected html, information of that change is also displayed as an error in the console. 
