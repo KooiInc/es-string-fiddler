@@ -13,6 +13,7 @@ For each flavor, the script is (bundled and) minified. The location of the minif
 The cjs or browser library are exported as `$S`.  
 
 ### NodeJS require
+**Note**: to make this work, you probably should wrap it into some nodejs DOM-wrapper, like [jsdom](https://github.com/jsdom/jsdom).
 
 ``` javascript
 // after download of the bundle from 
@@ -99,7 +100,7 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
    
    When sanitation changes the expected html, information of that change is also displayed as an error in the console. 
    
-   The [demo](https://kooiinc.github.io/es-string-fiddler/Demo) contains three examples of HTML-sanitation.
+   The [demo](https://kooiinc.github.io/es-string-fiddler/Demo) contains examples of HTML-sanitation.
 - `truncate`,
 - `ucFirst`: see `case.ucFirst`,
 - `upper`: see `case.upper`,
