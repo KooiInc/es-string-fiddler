@@ -165,10 +165,9 @@ basic.toTag( \`script\`, { src });</code>
   log(`<code>$S\`&lt;span style="color:steelblue">&lt;script>&lt;/script>Hithere&lt;/span>\`</code>
     <div>${xcript} Sanitized ${xcript.escHTML.rQuot}</div>`);
 
-  const tagsWithin = $S`A string <i>containing <b>tags</b></i> 
-    <span onclick="javascript:sayHi()"> will be sanitized</span>`;
+  const tagsWithin = $S`A string <i>containing <b>tags</b></i> <span onclick="javascript:sayHi()">will be sanitized</span>`;
   log(`!!<b>* Sanitizing a string with some html within</b>`);
-  log(`<code>$S${tagsWithin.escHTML.quote.backtick}</code>
+  log(`<code>$S\`A string &lt;i>containing &lt;b>tags&lt;/b>&lt;/i> &lt;span onclick="javascript:sayHi()">will be sanitized&lt;/span>\`</code>
     <div>${tagsWithin}<br>Sanitized: ${tagsWithin.escHTML.rQuot}</div>`);
 
   log(`!!<b>* Error message when creating an single invalid (root level) tag</b>`);
