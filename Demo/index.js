@@ -6,7 +6,8 @@ window.$S = $S; // try things yourself in the console ...
 demo();
 
 function demo() {
-  // remove stackblitz message
+  /* region initialize */
+  //  remove stackblitz message
   console.clear();
   $.log(`demo started`);
   $.log(`You can use $S in the console to test things`);
@@ -26,6 +27,7 @@ function demo() {
   basic.addProp(`wrapESComments`, str => {
     str = str.replace(/(?<!(http)|(https):)\/\/.+/gm, a => `<span class="comment">${a}</span>`);
     return str; });
+  /* endregion initialize */
 
   /* region initiate */
   log(`!!<b id="initiate">Initiate, assign some variables</b></h3>`);
@@ -125,8 +127,8 @@ const tokens = [
       <p><i style="color:red">All <code>$S</code> instances</i> are checked for HTML inside it, and if so sanitized.
       Tags/attributes/attribute values deemed insecure will be removed from the html. 
       Sanitation problems are logged to the console.</p>
-      <p>It goes without saying that using <code>toTag</code>, 
-      the html created will be sanitized. When trying to wrap a string into an insecure tag (e.g. <code>script</code>), 
+      <p>It goes without saying that <code>toTag</code> will deliver a sanitized html string. 
+      When trying to wrap a string into an insecure tag (e.g. <code>script</code>), 
       the resulting <code>$S</code>-instance will be an error message.</p>
       <p>To <i>prevent automatic sanitation</i>, put <code>!!!</code> before the string to instantiate.</p>`);
 
@@ -177,7 +179,8 @@ basic.toTag( \`script\`, { src });</code>
   const scriptTag2 = $S`<script src="${src}"></script><span>But this will show up</span>`;
   log(`<code>$S\`&lt;script src="\${src}">&lt;/script>&lt;span>But this will show up&lt/span>\`</code><div>${scriptTag2.rQuot}</div>`);
 
-  log(`!!<b>* <i>Prevent</i> automatic sanitation</b>`);
+  log(`!!<b>* <i>Prevent</i> automatic sanitation</b><div><b>Note</b>: adding unsanitized html strings 
+    to the DOM may end up in security breaches.</div>`);
   const rawScriptTag = $S`!!!<script src=${src}</script>`;
   log(`<code>$S\`!!!&lt;script src=\${src}&lt;/script>\`</code><div>${$S(rawScriptTag.escHTML).rQuot}</div>`);
 
@@ -195,8 +198,8 @@ basic.toTag( \`script\`, { src });</code>
   log(str);
   return str;
 } );
-basic.set(\`Hello\`).log.append\` world\`.toTag(\`b\`).toTag(\`i\`).log;</code>`);
-  basic.set`Hello`.log.append` world`.toTag(`b`).toTag(`i`).log;
+basic.set\`\${hi}\`.log.append\` world\`.toTag(\`b\`).toTag(\`i\`).log;</code>`);
+  basic.set`${hi}`.log.append` world`.toTag(`b`).toTag(`i`).log;
 
   basic.addMethod(`logPlus`, (str, ...args) => { log(str + args.join(``)); return str; })
   log(`<code class="codeBlock">basic.addMethod( \`logPlus\`, (str, ...args) => {
@@ -270,11 +273,34 @@ basic.set\`Hello {wrld}\`
 
   /* region theEndMyFriend */
   log(`!!<b id="Performance">Performance</b>`);
-
   createContent();
-  log(`Demo (including imports/content generation) done in ${((performance.now() - now)/1000).toFixed(3)} seconds`);
+  log(`Demo creation (including imports/content generation) done in ${
+    ((performance.now() - now)/1000).toFixed(3)} seconds`);
+  testPerf(log);
   /* endregion theEndMyFriend */
 }
+
+/* region testPerformance */
+function testPerf(log) {
+  let tmpArr = [];
+  const nTests = 20_000;
+  const strings = [
+    `Hello world`,
+    `<div>Hello world</div>`,
+    `Hello <b>world</b>`,
+    `<div>Hello <div><b><i><!--3 levels nesting-->world</i></b></div>`,];
+  const len = strings.length;
+  const now = performance.now();
+  for (let i = 0; i < nTests; i += 1) {
+    tmpArr.push($S`${strings[Math.floor(Math.random()*len)]}`);
+  }
+  const lasted = (performance.now() - now)/1000;
+  log(`Created ${(nTests).toLocaleString(`nl`)} <code>$S</code> instances using 4 random string values 
+    and pushed to a temporary Array.<br>Including overhead for pushing and random string selection that took ${
+      lasted.toFixed(3)} seconds (${(lasted/nTests).toFixed(7)} seconds/instance).`);
+  log(`!!<b>* Random string values used</b><pre>${strings.map(v => $S(v).escHTML).join(`\n`)}</pre>`);
+}
+/* endregion testPerformance */
 
 /* region indexCreatr */
 function createContent() {
