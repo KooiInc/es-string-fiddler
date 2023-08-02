@@ -1,6 +1,6 @@
 const sanitizer = (await import("./Resource/SanitizerFactory.js")).default;
 export default XStringFactory();
-// region factory
+
 function XStringFactory() {
   const nativeOverrides = [
     "concat", "padEnd", "padStart", "repeat", "replace", "replaceAll",
@@ -51,7 +51,6 @@ function XStringFactory() {
 
     return omitProxy ? `Sanitatition failed (likely unsafe html) for '${truncate(escHTML(str))({at: 40})}'` : proxify(str);
   };
-
   const toTag = str => (tag, props) => {
     if (!tag) {
       return proxify(string);
@@ -132,6 +131,7 @@ function XStringFactory() {
   const value = str => str.valueOf();
   const createRegExp = str => (str, ...args) => {
     try {
+      console.log(str);
       return regExp(str, ...args);
     } catch (err) {
       return `Error creating Regular Expression from "${str}" (modifiers: ${
@@ -200,12 +200,13 @@ function XStringFactory() {
   // Can be used either as tagged template function or a regular function receiving a string
   // So, best of both worlds ...
   function proxify(someStr, ...args) {
+    if (someStr instanceof Array && someStr[0].trim().startsWith(`//[RE]`)) {
+       return createRegExp(``)(someStr, ...args);
+    }
+
     let str = resolveTemplateString(someStr, ...args);
-    const dontSanitize = str?.startsWith(`!!!`);
-    str = dontSanitize ? str.replace(/^!!!/, ``) : str;
-    str = /<.+?>/gi.test(str) && !dontSanitize
-      ? sanitizeHTML(str, true)
-      : str;
+    const shouldSanitize = /<.+?>/gi.test(str) && !str?.trim()?.startsWith(`!!!`);
+    str = shouldSanitize ? sanitizeHTML(str, true) : str.replace(/!!!/, ``);
 
     return new Proxy(new String(str), proxy);
   }
@@ -254,4 +255,3 @@ function XStringFactory() {
     return (str, ...tokens) => interpolate(...[str,undefined,...tokens])
   }
 }
-// endregion factory
