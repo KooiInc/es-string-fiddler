@@ -1,8 +1,12 @@
 # (chainable) String extensions using ES Proxy
 
-`es-string-fiddler` is a utility adding some nifty properties/methods to regular ECMAScript strings. Methods (either native or extensions) returning a string can be [chained](https://www.geeksforgeeks.org/method-chaining-in-javascript/). 
+`es-string-fiddler` is a utility adding some nifty properties/methods to regular ECMAScript strings. 
+
+Properties and/or methods (either native or extensions) returning a string can be [chained](https://www.geeksforgeeks.org/method-chaining-in-javascript/). 
+
 The 'constructor' (here `$S`) and instance extension methods (receiving string type parameters) can be called as regular function or as [tagged template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates). 
-Strings containing HTML elements are sanitized by default: tags/attributes/attribute values within the string that are deemed insecure are be removed from the string. Sanitation problems are logged to the console.
+
+Strings containing HTML elements are sanitized by default: tags/attributes/attribute values within the string that are deemed insecure are removed from the string. Removals are logged to the console.
 
 **[DEMO](https://kooiinc.github.io/es-string-fiddler/Demo)**
 
@@ -15,7 +19,7 @@ For each flavor, the script is (bundled and) minified. The location of the minif
 The cjs or browser library are exported as `$S`.  
 
 ### NodeJS require
-**Note**: to make this work, you probably should wrap it into some nodejs DOM-wrapper, like [jsdom](https://github.com/jsdom/jsdom).
+**Note**: to make this work, you probably should wrap it into some nodejs DOM-wrapper, like [jsdom](https://github.com/jsdom/jsdom) (you'll need `document` for HTML sanitation).
 
 ``` javascript
 // after download of the bundle from 
