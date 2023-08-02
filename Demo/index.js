@@ -102,7 +102,7 @@ const tokens = [
       yada2.isWellFormed()}`);
   log(`<code>yada2.trim().slice(-4).concat\` \${hi}\`.toUpperCase().toTag(\`i\`, {style: \`color: orange\`})</code> 
     <div>${yada2.slice(-4).concat` ${hi}`.toUpperCase().toTag( `i`, { style: `color: orange` }).rQuot }</div>`);
-  log(`<code>yada2.trim().toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
+  log(`<code>yada2.trim.toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
     yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
   /* endregion useCombine */
 
@@ -240,8 +240,11 @@ basic.set\`Hello {wrld}\`
   /* region regex */
   log(`!!<b id="regex">RegExp</b>
     <div>Create a regular expression from a multiline string
-    (see <a target="_blank" href="https://github.com/KooiInc/RegexHelper/tree/main">Github</a>)</div>`);
-  const re = $S``.createRegExp`
+    (see <a target="_blank" href="https://github.com/KooiInc/RegexHelper/tree/main">Github</a>)</div>
+    <div><b>Note</b>: regular expressions can only be created using a tagged template (so, don't call as a function)</div>`);
+
+  log(`!!<b>* Create regular expression using <code>[$S instance].createRegExp\`[regular expression]\`</code>)</b>`);
+  const re = basic.createRegExp`
     // A 'readable' regular expression
     (?<=N)(?<matchNumber>\d{3})
     | (?<=DSC)(?<matchSeconds>\d{2})
@@ -264,11 +267,43 @@ basic.set\`Hello {wrld}\`
   | (?<=NOTHING)(?<matchNoMatch>\d{2})
   | (?<=YD)(?<matchYear>\d{2})
   \${[\`g\`]}
-  //  ^ flags`.escHTML.wrapESComments;
-  log(`<code class="codeBlock">$S\`\`.createRegExp\`${demoStr}\`</code><div>=&gt; ${
+  //  ^ flags`;
+
+  log(`<code class="codeBlock">basic.createRegExp\`${demoStr.escHTML.wrapESComments}\`</code><div>=&gt; ${
     $S(`!!!${re.toString()}`).escHTML}</div>`);
-  log(`<code>basic.createRegExp\`[a-zA-Z](error \${[\`o no!\`]}\`</code><pre>${$S(basic.createRegExp`[a-zA-Z](error ${
-    [`o no!`]}`)}</pre>`);
+
+  log(`!!<b>* Create regular expression directly by prepending <code>//[RE]</code>)</b> to the string`);
+  const nwRE4Log = `$S\`
+  //[RE]
+  // A 'readable' regular expression
+    (?<=N)(?<matchNumber>\d{3})
+  | (?<=DSC)(?<matchSeconds>\d{2})
+  | (?<=MC)(?<matchMinutes>\d{2})
+  | (?<=HC)(?<matchHours>\d{2})
+  | (?<=DD)(?<matchDay>\d{2})
+  | (?<=MD)(?<matchMonth>\d{2})
+  | (?<=NOTHING)(?<matchNoMatch>\d{2})
+  | (?<=YD)(?<matchYear>\d{2})
+  \${[\`g\`]}
+  //  ^ flags`;
+  const nwRE = $S`//[RE]
+    // A 'readable' regular expression
+      (?<=N)(?<matchNumber>\d{3})
+    | (?<=DSC)(?<matchSeconds>\d{2})
+    | (?<=MC)(?<matchMinutes>\d{2})
+    | (?<=HC)(?<matchHours>\d{2})
+    | (?<=DD)(?<matchDay>\d{2})
+    | (?<=MD)(?<matchMonth>\d{2})
+    | (?<=NOTHING)(?<matchNoMatch>\d{2})
+    | (?<=YD)(?<matchYear>\d{2})
+    ${[`g`]}
+    //  ^ flags`.toString();
+
+  log(`<code class="codeBlock">${$S`!!!${nwRE4Log}`.escHTML.wrapESComments}</code>
+    <div>=&gt; ${$S`!!!${nwRE}`.escHTML}</div>`);
+
+  log(`<code>basic.createRegExp\`[a-zA-Z](error \${[\`a\`, \`g\`]}\`</code><pre>=&gt; ${
+    basic.createRegExp`[a-zA-Z](error ${[`a`, `g`]}`}</pre>`);
   /* endregion regex */
 
   /* region theEndMyFriend */
