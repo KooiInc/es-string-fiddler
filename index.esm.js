@@ -131,7 +131,6 @@ function XStringFactory() {
   const value = str => str.valueOf();
   const createRegExp = str => (str, ...args) => {
     try {
-      console.log(str);
       return regExp(str, ...args);
     } catch (err) {
       return `Error creating Regular Expression from "${str}" (modifiers: ${
