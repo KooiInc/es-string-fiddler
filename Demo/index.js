@@ -102,7 +102,7 @@ const tokens = [
       yada2.isWellFormed()}`);
   log(`<code>yada2.trim().slice(-4).concat\` \${hi}\`.toUpperCase().toTag(\`i\`, {style: \`color: orange\`})</code> 
     <div>${yada2.slice(-4).concat` ${hi}`.toUpperCase().toTag( `i`, { style: `color: orange` }).rQuot }</div>`);
-  log(`<code>yada2.trim.toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
+  log(`<code>yada2.trim().toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
     yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
   /* endregion useCombine */
 
