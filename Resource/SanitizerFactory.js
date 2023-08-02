@@ -12,7 +12,7 @@ function sanitizeHTMLFactory() {
   };
   const isAllowed = elem => {
     const nodeName = elem?.nodeName.toLowerCase() || `none`;
-    return nodeName === `#text` || !!tags[nodeName];
+    return nodeName.startsWith(`#`) || !!tags[nodeName];
   };
 
   return sanitize;
@@ -54,7 +54,6 @@ function sanitizeHTMLFactory() {
         if (!allowed) {
           const tag = (child?.outerHTML || child?.textContent).trim();
           let tagValue = tag ?? `EMPTY`;
-          tagValue += tagValue.length === 60 ? `...` : ``;
           elCreationInfo.removed[`<${child.nodeName?.toLowerCase()}>`] = `not allowed, not rendered. Value: ${
             tagValue}`;
           child.remove();
@@ -63,7 +62,7 @@ function sanitizeHTMLFactory() {
     }
 
     if (Object.keys(elCreationInfo.removed).length) {
-      Object.entries(elCreationInfo.removed).forEach(([k, v]) => console.error(`${k}: ${v}`));
+      Object.entries(elCreationInfo.removed).forEach(([k, v]) => console.info(`✘ ${k}: ${v}`));
     }
 
     return el2Clean;
