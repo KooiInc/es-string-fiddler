@@ -173,7 +173,7 @@ basic.toTag( \`script\`, { src });</code>
 
   log(`!!<b>* Error message when creating an single invalid (root level) tag</b>`);
   const scriptTag = $S`<script src="${src}"></script>`;
-  log(`<code>$S\`&lt;script src=\${src}&lt;/script>\`</code><div>${$S(scriptTag).rQuot}</div>`);
+  log(`<code>$S\`&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(scriptTag).rQuot}</div>`);
 
   log(`!!<b>* With mix of invalid and valid tags, the valid tags are preserved</b>`);
   const scriptTag2 = $S`<script src="${src}"></script><span>But this will show up</span>`;
@@ -182,7 +182,7 @@ basic.toTag( \`script\`, { src });</code>
   log(`!!<b>* <i>Prevent</i> automatic sanitation</b><div><b>Note</b>: adding unsanitized html strings 
     to the DOM may end up in security breaches.</div>`);
   const rawScriptTag = $S`!!!<script src="${src}"></script>`;
-  log(`<code>$S\`!!!&lt;script src=\${src}&lt;/script>\`</code><div>${$S(rawScriptTag.escHTML).rQuot}</div>`);
+  log(`<code>$S\`!!!&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag.escHTML).rQuot}</div>`);
 
   log(`!!<b>* A <code>$S</code>-string returns, well ... the string (a <code>$S</code> instance that is)</b>`);
   const noSanity = $S`This is just a plain old fashioned string`;
