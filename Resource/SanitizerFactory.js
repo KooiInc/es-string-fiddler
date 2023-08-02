@@ -42,7 +42,6 @@ function sanitizeHTMLFactory() {
 
               if (evilValue || evilAttrib) {
                 let val = attr.value || `none`;
-                val += val.length === 60 ? `...` : ``;
                 elCreationInfo.removed[`${attr.name}`] = `attribute/property(-value) not allowed, removed. Value: ${
                   val}`;
                 child.removeAttribute(attr.name);
@@ -52,8 +51,7 @@ function sanitizeHTMLFactory() {
         const allowed = isAllowed(child);
 
         if (!allowed) {
-          const tag = (child?.outerHTML || child?.textContent).trim();
-          let tagValue = tag ?? `EMPTY`;
+          let tagValue = (child?.outerHTML || child?.textContent).trim() || `EMPTY`;
           elCreationInfo.removed[`<${child.nodeName?.toLowerCase()}>`] = `not allowed, not rendered. Value: ${
             tagValue}`;
           child.remove();
