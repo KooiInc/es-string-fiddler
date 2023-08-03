@@ -338,14 +338,13 @@ function testPerf(log) {
 
 /* region indexCreatr */
 function createContent() {
+  const container = $.node(`.container`)
   $.delegate(`click`, `b[id]`, () => {
-    $.node(`#log2screen`).scrollIntoView();
-    $.node(`.container`).scrollTo(0, 0);
+    container.scrollTo(0,0);
   });
   $.delegate(`click`, `.content li .linkLike`, evt => {
-    const origin = $.node(evt.target.dataset.target);
-    origin.scrollIntoView();
-    $.node(`.container`).scrollTop -= 15;
+    const origin = $(evt.target.dataset.target);
+    container.scrollTo(0, +origin.dimensions.top - 10);
   });
 
   const contentDiv = $.virtual(
