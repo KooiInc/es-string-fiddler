@@ -6,7 +6,7 @@ window.$S = $S; // try things yourself in the console ...
 demo();
 
 function demo() {
-  /* region initialize */
+  /* region initialize constructor*/
   //  remove stackblitz message
   console.clear();
   $.log(`demo started`);
@@ -31,7 +31,7 @@ function demo() {
     return str; });
   /* endregion initialize */
 
-  /* region initiate */
+  /* region initiate variables*/
   log(`!!<b id="initiate">Initiate, assign some variables</b></h3>`);
   log( basic.set`!!<code class="codeBlock">import $S from "${importUrl}";
 // a basic empty string can be used as template
@@ -51,7 +51,7 @@ const tokens = [
   <br><b>Note 3</b>: like regular ES-strings $S-strings are
     <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a>
   <br><b>Note 4</b>: for this example <code>$S</code> is also available in the developer console 
-    (when loaded in stackblitz, first click 'Open in New Tab' above the result frame).
+    (when loaded in stackblitz, first click 'Open in New Tab' above the preview frame).
   </div`) );
 
   log(`!!<b>Initial values</b>`);
@@ -61,7 +61,7 @@ const tokens = [
       <code>basic.isProxied</code> ${basic.isProxied}`);
   /* endregion initiate */
 
-  /* region manipulate */
+  /* region manipulate instances */
   log(`!!<b id="manipulate">Manipulate strings</b></h3>`);
   log( $S`<code class="codeBlock">hi1
   .insert( $S\`there you have it &amp;hellip; \` // <= nested $S-string
@@ -99,7 +99,7 @@ const tokens = [
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
   /* endregion manipulate */
 
-  /* region useCombine */
+  /* region combine native methods with extensions */
   log(`!!<b id="chainEtc">Use/chain/combine native/custom methods</b>`,
     `<code>const yada2 = $S\`yada \`.repeat(14).ucFirst.trimEnd();</code><div>${yada2.rQuot}</div>`,
     `<code>yada2.isWellFormed()</code> =&gt; ${
@@ -110,7 +110,7 @@ const tokens = [
     yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
   /* endregion useCombine */
 
-  /* region format */
+  /* region format (aka interpolate)*/
   log(`!!<b id="format">Format with tokens</b>
   (see <a target="_blank" href="https://github.com/KooiInc/StringInterpolator">Github</a>)</div>`);
   const escaped4Log = $S`$S\`<li>\${hi\} {world}</li>\\n\``.escHTML;
@@ -118,7 +118,7 @@ const tokens = [
     ${$S`<li> ${hi} {world} </li>\n`.format(...tokens).toTag(`ul`, {class: `sub`})}`);
   /* endregion format */
 
-  /* region htmlEscCompress */
+  /* region html Escape/Compress */
   log(`!!<b id="escHtml">HTML (escape/compress)</b>`);
   log(`<code>$S(document.querySelector('ul.sub').outerHTML).escHTML.quote.double</code> =&gt;
   <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).escHTML.quote.double}</pre>`,
@@ -126,7 +126,7 @@ const tokens = [
     <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).compressHTML.escHTML.quote.double}</pre>`);
   /* endregion htmlEscCompress */
 
-  /* region HTMLSanitize */
+  /* region HTML Sanitizer */
   log(`!!<b id="sanitation">HTML (sanitation)</b> (<code>toTag</code> or directly).
       <p><i style="color:red">All <code>$S</code> instances</i> are checked for HTML inside it, and if so sanitized.
       Tags/attributes/attribute values deemed insecure will be removed from the html. 
@@ -193,7 +193,7 @@ basic.toTag( \`script\`, { src });</code>
     <div>${noSanity.rQuot}</div>`);
   /* endregion HTMLSanitize */
 
-  /* region xtraMethods */
+  /* region extra methods/props creation */
   log(`!!<b id="addMethOrProp">Create extra methods and properties</b>
   <div><b>Note</b>: make sure the added method or property lambda returns the resulting string</div>`);
   basic.addProp(`log`, str => { log(str); return str; })
