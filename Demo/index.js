@@ -310,7 +310,8 @@ basic.set\`Hello {wrld}\`
   /* endregion regex */
 
   /* region theEndMyFriend */
-  log(`!!<b id="Performance">Performance</b>`);
+  log(`!!<b id="Performance">Performance</b>
+    <div><b>Note</b>: also dependent on your hardware</div>`);
   createContent();
   log(`Demo creation (including imports/content generation) done in ${
     ((performance.now() - now)/1000).toFixed(3)} seconds`);
