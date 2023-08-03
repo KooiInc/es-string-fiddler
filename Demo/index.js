@@ -16,6 +16,8 @@ function demo() {
   setStyling();
 
   log(`!!<a target="_top" href="https://github.com/KooiInc/es-string-fiddler"><b>Back to repository</b></a>`);
+  log(`!!<h3>Play with the demo code <a target="_blank" href="https://stackblitz.com/edit/web-platform-gxttr1?file=index.js"
+    >@StackBlitz</a></h3>`);
   log(`!!<h2 id="inits">EcmaScript (ES) <code>String</code> manipulation using ES <code>Proxy</code></h2>`);
 
   $(`<div class="container">`).append($(`#log2screen`));
@@ -48,6 +50,8 @@ const tokens = [
     can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a>.
   <br><b>Note 3</b>: like regular ES-strings $S-strings are
     <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a>
+  <br><b>Note 4</b>: for this example <code>$S</code> is also available in the developer console 
+    (when loaded in stackblitz, first click 'Open in New Tab' above the result frame).
   </div`) );
 
   log(`!!<b>Initial values</b>`);
@@ -344,7 +348,7 @@ function createContent() {
   });
   $.delegate(`click`, `.content li .linkLike`, evt => {
     const origin = $(evt.target.dataset.target);
-    container.scrollTo(0, +origin.dimensions.top - 10);
+    container.scrollTo(0, origin.dimensions.top - 12);
   });
 
   const contentDiv = $.virtual(
