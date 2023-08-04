@@ -1,7 +1,11 @@
-import sanitizer from "./Resource/SanitizerFactory.js";
-export default XStringFactory();
+import sanitizerDefault from "./Resource/SanitizerFactory.js";
+const defaultHTMLSanitizer = sanitizerDefault;
+const $SFactory = XStringFactory;
+const $SNoHTML = $SFactory({sanitize: false, sanitizer: null});
+const $S = XStringFactory();
+export {$S as default, $SFactory, $SNoHTML};
 
-function XStringFactory() {
+function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaultHTMLSanitizer} = {}) {
   const nativeOverrides = [
     "concat", "padEnd", "padStart", "repeat", "replace", "replaceAll",
     "slice", "toLocaleLowerCase", "toLocaleUpperCase", "toLowerCase",
@@ -52,15 +56,22 @@ function XStringFactory() {
     return omitProxy ? `Sanitatition failed (likely unsafe html) for '${truncate(escHTML(str))({at: 40})}'` : proxify(str);
   };
   const toTag = str => (tag, props) => {
-    if (!tag) {
-      return proxify(string);
-    }
+    if (!tag) { return proxify(string); }
+    const doSanitize = props?.dontSanitize ?? true;
+    delete props?.dontSanitize;
+
     const propsStr = props && Object.entries(props).reduce( (acc, [k, v]) => {
       return [...acc, `${k}="${v}"`];
     }, []).join(` `) || ``;
+    const tagStr = `<${tag} ${propsStr}>${str}</${tag}>`;
+
+    if (!sanitize || !doSanitize) {
+      return proxify(tagStr);
+    }
+
     const elemTest = sanitizer(
       Object.assign(document.createElement(`div`),
-        { innerHTML: `<${tag} ${propsStr}>${str}</${tag}>` } )
+        { innerHTML: tagStr } )
     );
 
     if (elemTest.innerHTML.trim().length) {
@@ -69,8 +80,9 @@ function XStringFactory() {
 
     const invalidTag = truncate(`<${tag} ${propsStr}>${str}</${tag}>`)({at: 40, html: true});
 
-    return proxify`<span style="color:red">${escHTML(invalidTag)}</span> <i>is not valid</i> 
-    (see console)`;
+    return silentFail ?
+      proxify(escHTML(str)) :
+      proxify`${escHTML(invalidTag)} is not valid (see console)`;
   };
   const replaceWords = str => (initial, replacement) => {
     const cando = [initial, replacement].filter( v =>
