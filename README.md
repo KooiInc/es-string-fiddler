@@ -117,7 +117,7 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
 - `toCamelCase`: see `case.came`
 - `toDashedNotation`: see `case.dashed`,
 - `toTag(tagName: string, [properties: Object])`: wraps the string into a html element, using [tagName]
-   and (optionally) create [properties] (like `class`, `title`, `stype`) for that html element.
+   and (optionally) create [properties] (like `class`, `title`, `style`) for that html element.
     
    **Note**: as with all instances, the resulting html string is *sanitized*. When a tag is 'dangerous' (e.g. `script`), the result will be
    be an error message, when 'dangerous' attributes ([properties]) are used (e.g. `onclick`), the attributes are removed from the result. 
