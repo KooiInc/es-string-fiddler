@@ -14,7 +14,7 @@ function demo() {
   const { log } = logFactory();
   const toJSON = obj => `<pre>${JSON.stringify(obj, null, 2)}</pre>`;
   setStyling();
-
+  
   log(`!!<a target="_top" href="https://github.com/KooiInc/es-string-fiddler"><b>Back to repository</b></a>`);
   log(`!!<h3>Play with the demo code <a target="_blank" href="https://stackblitz.com/edit/web-platform-gxttr1?file=index.js"
     >@StackBlitz</a></h3>`);
