@@ -1,4 +1,4 @@
-const tagsInfo = (await import("./htmlInfo.js")).default;
+import tagsInfo from "./htmlInfo.js";
 export default sanitizeHTMLFactory();
 
 function sanitizeHTMLFactory() {

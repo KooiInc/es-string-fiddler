@@ -44,9 +44,8 @@ It is advised to localize `$S` before usage to not 'pollute' the global namespac
 </script>
 <script>
   // localize $S
-  const $S = window.$S;
-  delete window.$S;
-  /** ... code */
+  const $S = window.$S.default;
+  /** ... code using $S */
 </script>
 ```
 

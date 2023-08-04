@@ -1,4 +1,4 @@
-const sanitizer = (await import("./Resource/SanitizerFactory.js")).default;
+import sanitizer from "./Resource/SanitizerFactory.js";
 export default XStringFactory();
 
 function XStringFactory() {
