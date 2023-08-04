@@ -10,7 +10,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     "concat", "padEnd", "padStart", "repeat", "replace", "replaceAll",
     "slice", "toLocaleLowerCase", "toLocaleUpperCase", "toLowerCase",
     "toUpperCase", "toWellFormed", "trim", "trimEnd", "trimLeft",
-    "trimRight", "trimStart", "substring", ]
+    "trimRight", "trimStart", "substring"]
     .reduce( (acc, val) => {
       return {
         ...acc,
@@ -140,7 +140,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     get double() { return proxify(`"${str}"`)},
     get backtick() { return proxify(`\`${str}\``)},
   });
-  const value = str => str.valueOf();
+  const value = str => $`${str}`;
   const createRegExp = str => (str, ...args) => {
     try {
       return regExp(str, ...args);
@@ -190,7 +190,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     get: ( target, key ) => {
       // native String methods overrides and extension methods
       // Note: 'object' test is when a key is a symbol (not likely, but possible)
-      if (proxiedGetters[key] && !/valueof|tostring|object/i.test(key)) {
+      if (proxiedGetters[key] && !/object|tostring|valueof/i.test(key)) {
         return proxiedGetters[key] instanceof Function ? proxiedGetters[key](target) : proxiedGetters[key];
       }
 
@@ -203,8 +203,8 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
   };
 
   function resolveTemplateString(str, ...args) {
-    return new String(args.length
-      ? str.reduce( (acc, v, i) => acc.concat(`${v}${args[i] ?? ``}`), ``)
+    return new String(Array.isArray(str) && args.length
+      ? str.reduce( (acc, v, i) => acc?.concat(`${v}${args[i] ?? ``}`) || acc, ``)
       : str);
   }
 
@@ -216,7 +216,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     }
 
     let str = resolveTemplateString(someStr, ...args);
-    const shouldSanitize = /<.+?>/gi.test(str) && !str?.trim()?.startsWith(`!!!`);
+    const shouldSanitize = sanitize && sanitizer && /<.+?>/gi.test(str) && !str?.trim()?.startsWith(`!!!`);
     str = shouldSanitize ? sanitizeHTML(str, true) : str.replace(/!!!/, ``);
 
     return new Proxy(new String(str), proxy);
