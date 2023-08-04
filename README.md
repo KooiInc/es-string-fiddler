@@ -4,27 +4,39 @@
 
 Properties and/or methods (either native or extensions) returning a string can be [chained](https://www.geeksforgeeks.org/method-chaining-in-javascript/). 
 
-The 'constructor' (here `$S`) and instance extension methods (receiving string type parameters) can be called as regular function or as [tagged template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates). 
+The default 'constructor' (here `$S`) and instance extension methods (receiving string type parameters) can be called as regular function or as [tagged template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates). 
 
 Strings containing HTML elements are sanitized by default: tags/attributes/attribute values within the string that are deemed insecure are removed from the string. Removals are logged to the console.
 
 **[DEMO](https://kooiinc.github.io/es-string-fiddler/Demo)**
 
+## Exports
+The module exports three properties:
+- The default export instantiates the constructor, ready for use.
+- `$SFactory` is the factory to create the constructor. The factory It takes 3 parameters (as `Object`):
+  
+  `const $S = $SFactory({sanitize: boolean, sanitizer: Function | null, silentFail: boolean})`.
+
+  - `sanitize: true/false` => false: HTML in instances will not be sanitized. Default: true
+  - `sanitizer: Function | null`: The function to sanitize HTML in instances. Default: internal sanitizer function.
+  - `silentFail: true/false` =>  false: sanitation error message strings may be returned. Default: false
+- `$SNoHTML`: instantiates the constructor *without default HTML sanitation*, ready for use
+
 ## Import & initialize
 
-There are *three flavors* of this library. One for scripts with type `module` or projects with `"type": "module"` in package.json (ecmascript module, esm). One for the browser and one to use with `require` in NodeJS (commonjs, cjs).
+There are *three flavors* of this library. One for scripts with type `module` or projects with `"type": "module"` in package.json (ecmascript module, esm). One non module variant for the browser and one to use with `require` in NodeJS (commonjs, cjs).
 
 For each flavor, the script is (bundled and) minified. The location of the minified scripts is `https://kooiinc.github.io/es-string-fiddler/Bundle`.
 
-The cjs or browser library are exported as `$S`.  
-
 ### NodeJS require
-**Note**: to make this work, you probably should wrap it into some nodejs DOM-wrapper, like [jsdom](https://github.com/jsdom/jsdom) (you'll need `document` for HTML sanitation).
+**Note**: to make this work, you probably should wrap it into some nodejs DOM-wrapper, like [jsdom](https://github.com/jsdom/jsdom) (you'll need `document` for HTML sanitation), use the the `$NoHTML`-constructur, or use `$SFactory` with your own HTML sanitizer function.
 
 ``` javascript
-// after download of the bundle from 
+// after download of the bundle from
 // https://kooiinc.github.io/es-string-fiddler/Bundle/index.cjs.min.js
 const $S = require("[local location of the bundle]/index.cjs.min.js").$S;
+// require all
+const { $S, $SFactory, $SNoHTML } = require("[local location of the bundle]/index.cjs.min.js");
 ```
 
 ### ESM import
@@ -32,26 +44,33 @@ const $S = require("[local location of the bundle]/index.cjs.min.js").$S;
 const $S = ( await 
   import("https://kooiinc.github.io/es-string-fiddler/Bundle/index.esm.min.js") 
 ).default;
+// import all
+import { $S, $SFactory, $SNoHTML } from "https://kooiinc.github.io/es-string-fiddler/Bundle/index.esm.min.js";
 ```
 
 ### Browser script
-After linking the script, the `$S` constructor is available as `window.$S`.
+After linking the script, module is available as `window.$S`.
 
-It is advised to localize `$S` before usage to not 'pollute' the global namespace (see subsequent code).
 ``` html
 <script 
   src="https://kooiinc.github.io/es-string-fiddler/Bundle/index.browser.min.js">
 </script>
 <script>
-  // localize $S
+  // use the default
   const $S = window.$S.default;
+  // use the factory
+  const xStringFactory = window.$S.$SFactory;
+  // use the module without HTML sanitation
+  const $S = window.$S.$SNoHTML;
   /** ... code using $S */
 </script>
 ```
 
 ## Methods
 
-Using `$S` string, one can use all default [string methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#instance_methods), as well as a
+The following description is for the default export (here called `$S`). 
+
+Using `$S("[string]")` or ``$S`[string]` ``, one can use all default [String methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#instance_methods), as well as a
 number of extension methods. Where a method (either default or extension) returns a string, 
 it can be chained.
 
@@ -59,7 +78,7 @@ it can be chained.
 
 
 
-The extension methods are (**Note**: '*string*' in this list mostly signifies a wrapped $S-string):
+The extension methods are (**Note**: '*string*' in this list mostly signifies a `$S` instance):
 
 **Note**: *all `$S` instances* are checked for html and if html exists sanitized.
 
