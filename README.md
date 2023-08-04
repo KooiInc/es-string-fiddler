@@ -125,8 +125,8 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
    When sanitation changes the expected html, information of that change is also displayed as an error in the console. 
    
    The [demo](https://kooiinc.github.io/es-string-fiddler/Demo) contains examples of HTML-sanitation.
-- `truncate`,
-- `ucFirst`: see `case.ucFirst`,
-- `upper`: see `case.upper`,
-- `value`: the plain string value of the $S-string ,
+- `truncate({at: Number, html: boolean, wordBoundary: boolean})`: truncates the string on the [at] position (when the string is longer than [at]) and adds either `&hellip;` (html: true) or `...` to it. If [wordBoundary] is true, the string is truncated at the end of the last whole word before [at]. [html] and [wordBoundary] are default: false.
+- `ucFirst`: see `case.ucFirst`
+- `upper`: see `case.upper`
+- `value`: the plain string value of the $S-string
 - `wordsFirstUC`: see `case.wordFirstUC`
