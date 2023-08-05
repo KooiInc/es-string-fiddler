@@ -175,17 +175,6 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     ...nativeOverrides
   };
 
-  proxiedGetters.addFN = () => (name, fn) =>
-    proxiedGetters[name] = str => (...args) => proxify(fn(str, ...args));
-
-  proxiedGetters.addMethod = proxiedGetters.addFN;
-
-  proxiedGetters.addProp = () => (name, fn) =>
-    proxiedGetters[name] = str => proxify(fn(str));
-
-
-  proxiedGetters.methods = Object.getOwnPropertyNames(proxiedGetters);
-
   const proxy = {
     get: ( target, key ) => {
       // native String methods overrides and extension methods
@@ -216,7 +205,8 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
 
   const proxifyStatics = {
     extendWith,
-    regExp: createRegExp
+    regExp: createRegExp,
+    currentMethods: () => Object.getOwnPropertyNames(proxiedGetters)
   };
 
   Object.entries(proxifyStatics).forEach(([name, fn]) => proxify[name] = fn);
