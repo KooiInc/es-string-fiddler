@@ -141,14 +141,14 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     get backtick() { return proxify(`\`${str}\``)},
   });
   const value = str => $`${str}`;
-  const createRegExp = str => (str, ...args) => {
+  const createRegExp = (str, ...args) => {
     try {
       return regExp(str, ...args);
     } catch (err) {
       return `Error creating Regular Expression from "${str}" (modifiers: ${
         args.join(``).trim() || `none`})\n${err.message}`;
     }
-  }
+  };
 
   const proxiedGetters = {
     ...addDefaults({
@@ -162,7 +162,6 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       upper: str => casingFactory(str).upper,
       case: casingFactory,
       quote: quoteFactory,
-      createRegExp,
       value,
       insert,
       format,
@@ -183,6 +182,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
 
   proxiedGetters.addProp = () => (name, fn) =>
     proxiedGetters[name] = str => proxify(fn(str));
+
 
   proxiedGetters.methods = Object.getOwnPropertyNames(proxiedGetters);
 
@@ -208,13 +208,22 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       : str);
   }
 
+  function extendWith(name, fn, isMethod = false) {
+    proxiedGetters[name] = str => isMethod
+      ? (...args) => proxify(fn(str, ...args))
+      : proxify(fn(str));
+  }
+
+  const proxifyStatics = {
+    extendWith,
+    regExp: createRegExp
+  };
+
+  Object.entries(proxifyStatics).forEach(([name, fn]) => proxify[name] = fn);
+
   // Can be used either as tagged template function or a regular function receiving a string
   // So, best of both worlds ...
   function proxify(someStr, ...args) {
-    if (someStr instanceof Array && someStr[0].trim().startsWith(`//[RE]`)) {
-       return createRegExp(``)(someStr, ...args);
-    }
-
     let str = resolveTemplateString(someStr, ...args);
     const shouldSanitize = sanitize && sanitizer && /<.+?>/gi.test(str) && !str?.trim()?.startsWith(`!!!`);
     str = shouldSanitize ? sanitizeHTML(str, true) : str.replace(/!!!/, ``);
