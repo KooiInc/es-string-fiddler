@@ -69,14 +69,13 @@ After linking the script, module is available as `window.$S`.
 ## Utility constructor methods
 The constructor (for example exposed as `$S`) has two utility methods 
 (see **[demo](https://kooiinc.github.io/es-string-fiddler/Demo)** for examples).
-- ``regExp`[template string]` ``: (*tagged template only*): create a Regular Expression (RE) from 
+- ``$S.regExp`[template string]` ``: (*tagged template only*): create a Regular Expression (RE) from 
   a template string. The string may be a multiline string. The modifiers for the
   RE are given as Array
-- `extendWith(name: string, fn: Function, isMethod: boolean)`: create additional 
-  properties or methods for the constructor. 
+- `S$.extendWith(name: string, fn: Function, isMethod: boolean)`: create additional 
+  instance properties or methods. 
 
 ## Instance methods
-
 The following description is for the default exported constructor (here exposed as `$S`). 
 
 Using `$S("[string]")` or ``$S`[string]` ``, one can use all default [String methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#instance_methods), as well as a
