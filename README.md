@@ -89,11 +89,6 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
 
 **Note**: *all `$S` instances* are checked for html and if html exists sanitized.
 
-- `addFN(name: string, fn: function)` OR
-  
-  `addMethod(name: string, fn: function)`: 
-  add extra method for usage in $S-strings
-- `addProp(name: string, fn: function)`: add extra property for usage in $S-strings
 - `append(what2Append: string | $S-string)`: append [what2append] to the string
 - `case`: `case` is a utility Object, containing 6 properties:
   - `lower`: string to lower case (`String.prototype.toLowerCase` equivalent)
