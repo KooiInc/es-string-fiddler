@@ -66,17 +66,24 @@ After linking the script, module is available as `window.$S`.
 </script>
 ```
 
-## Methods
+## Utility constructor methods
+The constructor (for example exposed as `$S`) has two utility methods 
+(see **[demo](https://kooiinc.github.io/es-string-fiddler/Demo)** for examples).
+- ``regExp`[template string]` ``: (*tagged template only*): create a Regular Expression (RE) from 
+  a template string. The string may be a multiline string. The modifiers for the
+  RE are given as Array
+- `extendWith(name: string, fn: Function, isMethod: boolean)`: create additional 
+  properties or methods for the constructor. 
 
-The following description is for the default export (here called `$S`). 
+## Instance methods
+
+The following description is for the default exported constructor (here exposed as `$S`). 
 
 Using `$S("[string]")` or ``$S`[string]` ``, one can use all default [String methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#instance_methods), as well as a
 number of extension methods. Where a method (either default or extension) returns a string, 
 it can be chained.
 
 *Do* see examples in the **[demo](https://kooiinc.github.io/es-string-fiddler/Demo).**
-
-
 
 The extension methods are (**Note**: '*string*' in this list mostly signifies a `$S` instance):
 
@@ -100,7 +107,6 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
 - `concat`: this native string method is mentioned because the `es-string-fiddler` module allows
     calling it as a [tagged template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates).
     For example ``[$S-string].concat`something ${toConcat}`; ``
-- `createRegExp`: create a regular expression from a multiline regular expression string,
 - `escHTML`: escapes html for displaying it as is in a browser (if a string contains html ofcourse),
 - `find({terms: Array | string | RegExp, caseSensitive: boolean (default: false))`: find anything within the string containing
    [terms]. Returns `{searched4: [[terms] stringified], hits: [n results], result: {term: at: [indexes of fount positions in the string]}}`.
