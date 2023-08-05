@@ -1,20 +1,22 @@
 const now = performance.now();
 import {$, logFactory} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@main/index.browser.bundled.js";
 const importUrl = /^dev\./i.test(location.host) ? `../index.esm.js` : `../Bundle/index.esm.min.js`;
+const importX = `import from "${importUrl}" `;
+// ***
 const $S = (await import(importUrl)).default;
 window.$S = $S; // try things yourself in the console ...
 demo();
 
 function demo() {
   /* region initialize constructor*/
-  //  remove stackblitz message
+  //  remove stackblitz message from sbhelpers module
   console.clear();
   $.log(`demo started`);
   $.log(`You can use $S in the console to test things`);
   const { log } = logFactory();
   const toJSON = obj => `<pre>${JSON.stringify(obj, null, 2)}</pre>`;
   setStyling();
-  
+
   log(`!!<a target="_top" href="https://github.com/KooiInc/es-string-fiddler"><b>Back to repository</b></a>`);
   log(`!!<h3>Play with the demo code <a target="_blank" href="https://stackblitz.com/edit/web-platform-gxttr1?file=index.js"
     >@StackBlitz</a></h3>`);
@@ -25,15 +27,17 @@ function demo() {
   const hi = basic.set(`hello`).ucFirst;
   const hi1 = hi.set`hithere and ${hi.toLowerCase()}`;
   const tokens = [{world: `you`}, {world: `world`}, {world: `galaxy`}, {world: `universe`}];
-  basic.addProp(`rQuot`, str => { return `=&gt; ${$S(str).quote.double}`; });
-  basic.addProp(`wrapESComments`, str => {
-    str = str.replace(/(?<!(http)|(https):)\/\/.+/gm, a => `<span class="comment">${a}</span>`);
-    return str; });
+  $S.extendWith(`rQuot`, str => { return `=&gt; ${$S(str).quote.double}`; });
+  $S.extendWith(`wrapESComments`, str =>
+    str.replace(/(?<!(http)|(https):)\/\/.+/gm, a => `<span class="comment">${a}</span>`)
+  );
+  $S.extendWith(`toCode`, str => `<code>${str}</code>`);
+  $S.extendWith(`toCodeBlock`, str => `<code class="codeBlock">${str}</code>`);
   /* endregion initialize */
 
   /* region initiate variables*/
   log(`!!<b id="initiate">Initiate, assign some variables</b></h3>`);
-  log( basic.set`!!<code class="codeBlock">import $S from "${importUrl}";
+  log( $S`import $S from "${importUrl}";
 // a basic empty string can be used as template
 const basic = $S\`\`;
 const hi = basic.set\`hello\`.ucFirst;
@@ -43,16 +47,20 @@ const tokens = [
   {world: \`you\`}, 
   {world: \`world\`}, 
   {world: \`galaxy\`}, 
-  {world: \`universe\`}, ];</code>`
+  {world: \`universe\`}, ];`
+    .toCodeBlock
     .wrapESComments
-    .concat(`<div><b>Note</b>: you can call <code>$S</code> either as a tagged template function or as a normal function.
-  <br><b>Note 2</b>: properties/methods (also native (String.prototype)) returning a string
-    can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a>.
-  <br><b>Note 3</b>: like regular ES-strings $S-strings are
-    <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a>
-  <br><b>Note 4</b>: for this example <code>$S</code> is also available in the developer console 
-    (when loaded in stackblitz, first click 'Open in New Tab' above the preview frame).
-  </div`) );
+    .insert(`!!`)
+    .concat`
+      <div>
+        <b>Note</b>: you can call <code>$S</code> either as a tagged template function or as a normal function.
+        <br><b>Note 2</b>: properties/methods (also native (String.prototype)) returning a string
+          can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a>.
+        <br><b>Note 3</b>: like regular ES-strings $S-strings are
+          <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a>
+        <br><b>Note 4</b>: for this example <code>$S</code> is also available in the developer console
+          (when loaded in stackblitz, first click 'Open in New Tab' above the preview frame).
+      </div` );
 
   log(`!!<b>Initial values</b>`);
   log(`<code>basic</code> ${basic.rQuot}<br>
@@ -63,14 +71,14 @@ const tokens = [
 
   /* region manipulate instances */
   log(`!!<b id="manipulate">Manipulate strings</b></h3>`);
-  log( $S`<code class="codeBlock">hi1
-  .insert( $S\`there you have it &amp;hellip; \` // <= nested $S-string
+  log( $S`hi1
+  .insert( $S\`there you have it &amp;hellip; \` // <= parameter $S-string
     .ucFirst
     .insert(\`"\`) )
   .append( \` and  also: that's folks"\`)
   .insert( $S\` IT \` // <= oops, forgotten 'it'. So let's insert that.
     .toTag( \`b\`, {style:\`color:blue;background:#eee\`,title:\`post hoc insertion\` })
-    .toTag( \`i\`), -7 );</code>`.wrapESComments.concat`=&gt; ${
+    .toTag( \`i\`), -7 );`.toCodeBlock.wrapESComments.concat`=&gt; ${
     hi1
       .insert( $S`there you have it &hellip; `
         .ucFirst
@@ -104,7 +112,7 @@ const tokens = [
     `<code>const yada2 = $S\`yada \`.repeat(14).ucFirst.trimEnd();</code><div>${yada2.rQuot}</div>`,
     `<code>yada2.isWellFormed()</code> =&gt; ${
       yada2.isWellFormed()}`);
-  log(`<code>yada2.trim().slice(-4).concat\` \${hi}\`.toUpperCase().toTag(\`i\`, {style: \`color: orange\`})</code> 
+  log(`<code>yada2.trim().slice(-4).concat\` \${hi}\`.toUpperCase().toTag(\`i\`, {style: \`color: orange\`})</code>
     <div>${yada2.slice(-4).concat` ${hi}`.toUpperCase().toTag( `i`, { style: `color: orange` }).rQuot }</div>`);
   log(`<code>yada2.trim().toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
     yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
@@ -129,10 +137,10 @@ const tokens = [
   /* region HTML Sanitizer */
   log(`!!<b id="sanitation">HTML (sanitation)</b> (<code>toTag</code> or directly).
       <p><i style="color:red">All <code>$S</code> instances</i> are checked for HTML inside it, and if so sanitized.
-      Tags/attributes/attribute values deemed insecure will be removed from the html. 
+      Tags/attributes/attribute values deemed insecure will be removed from the html.
       Sanitation problems are logged to the console.</p>
-      <p>It goes without saying that <code>toTag</code> will deliver a sanitized html string. 
-      When trying to wrap a string into an insecure tag (e.g. <code>script</code>), 
+      <p>It goes without saying that <code>toTag</code> will deliver a sanitized html string.
+      When trying to wrap a string into an insecure tag (e.g. <code>script</code>),
       the resulting <code>$S</code>-instance will be an error message.</p>
       <p>To <i>prevent automatic sanitation</i>, put <code>!!!</code> before the string to instantiate.</p>`);
 
@@ -147,8 +155,8 @@ const tokens = [
       { type: `application/javascript` } ) );
 
   log(`<code class="codeBlock">const src = URL.createObjectURL(
-  new Blob( 
-    [\`alert("hithere!")\`], 
+  new Blob(
+    [\`alert("hithere!")\`],
     { type: \`application/javascript\` } ) );
 basic.toTag( \`script\`, { src });</code>
   <div>Sanitized with error message:<br>=&gt; ${basic.toTag(`script`, {src})}</div>`);
@@ -182,7 +190,7 @@ basic.toTag( \`script\`, { src });</code>
   const scriptTag2 = $S`<script src="${src}"></script><span>But this will show up</span>`;
   log(`<code>$S\`&lt;script src="\${src}">&lt;/script>&lt;span>But this will show up&lt/span>\`</code><div>${scriptTag2.rQuot}</div>`);
 
-  log(`!!<b>* <i>Prevent</i> automatic sanitation</b><div><b>Note</b>: adding unsanitized html strings 
+  log(`!!<b>* <i>Prevent</i> automatic sanitation</b><div><b>Note</b>: adding unsanitized html strings
     to the DOM may end up in security breaches.</div>`);
   const rawScriptTag = $S`!!!<script src="${src}"></script>`;
   log(`<code>$S\`!!!&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag.escHTML).rQuot}</div>`);
@@ -193,37 +201,18 @@ basic.toTag( \`script\`, { src });</code>
     <div>${noSanity.rQuot}</div>`);
   /* endregion HTMLSanitize */
 
-  /* region extra methods/props creation */
-  log(`!!<b id="addMethOrProp">Create extra methods and properties</b>
-  <div><b>Note</b>: make sure the added method or property lambda returns the resulting string</div>`);
-  basic.addProp(`log`, str => { log(str); return str; })
-  log(`<code class="codeBlock">basic.addProp(\`log\`, str => {
-  log(str);
-  return str;
-} );
-basic.set\`\${hi}\`.log.append\` world\`.toTag(\`b\`).toTag(\`i\`).log;</code>`);
-  basic.set`${hi}`.log.append` world`.toTag(`b`).toTag(`i`).log;
-
-  basic.addMethod(`logPlus`, (str, ...args) => { log(str + args.join(``)); return str; })
-  log(`<code class="codeBlock">basic.addMethod( \`logPlus\`, (str, ...args) => {
-  log(str + args.join(\`\`));
-  return str;
-} );
-basic.set\`Hello {wrld}\`
-  .logPlus\` (unformatted)\`
-  .format({wrld: \`world\`})
-  .toTag(\`b\`)
-  .toTag(\`i\`)
-  .logPlus(\`( \`, \`formatted with \`, \`{wrld: "world"}\`, \`)\`)</code>`);
-  basic.set`Hello {wrld}`.logPlus` (unformatted)`.format({wrld: `world`})
-    .toTag(`b`).toTag(`i`).logPlus(` (`, `formatted with `, `{wrld: "world"}`, `)` );
-  /* endregion xtraMethods */
-
   /* region find */
-  log(`!!<b id="find">Find</b>`);
+  log(`!!<b id="find">Find in string</b>`);
   log(`!!<div><code>[xstring].find</code> receives an object with keys <code>terms</code>
   (a string, an Array of strings or a regular expression) and <code>caseSensitive</code>
-  (a boolean, default false).</div>`);
+  (a boolean, default false). It returns an object: 
+  ${$S`{ searched4: string // the term searched for,
+  hits: Number, // the number of hits,
+  result: Object {
+    term: string,  // found term
+    at: Array, // position(s) of term found in string
+  },  
+}`.toCodeBlock.wrapESComments}</div>`);
   log(`<code>$S\`Hello world, bye world, oh world!\`.find({ terms:['world', 'oh'] })</code>${
     toJSON($S`Hello world, bye world, oh world!`.find({terms: ['world', 'oh']}))}`);
   log(`<code>$S\`Hello world, bye world, oh world!\`.find({ terms: 'world' })</code>
@@ -240,14 +229,45 @@ basic.set\`Hello {wrld}\`
     toJSON($S`Hello World, bye world, oh World!`.wordsFirstUC.find({ terms: [{}, `Hello`] }))}`);
   /* endregion find */
 
+  /* region extra methods/props creation */
+  log(`!!<b id="addMethOrProp">Create extra methods and properties utility</b> <code>$S.extendWith</code>
+  <div>Add extensions or properties to the <code>$S</code> constructor.
+    <br>Syntax: ${$S`$S.extendWith(name: string, fn: Function, isMethod: boolean)`.toCode}</div>
+  <div><b>Note</b>: for chaining: make sure the added method or property lambda returns the resulting string.</div>`);
+  $S.extendWith(`log`, str => { log(str); return str; });
+  $S.extendWith(`logAdd`, (str, ...args) => { log(str + args.join(``)); return str; }, true);
+
+  log($S`<code class="codeBlock">$S.extendWith(\`log\`, str => {
+  log(str);
+  return str;
+} );
+// apply
+basic.set\`\${hi}\`.log.append\` world\`.toTag(\`b\`).toTag(\`i\`).log;</code>`.wrapESComments);
+  basic.set`${hi}`.log.append` world`.toTag(`b`).toTag(`i`).log;
+
+  log($S`<code class="codeBlock">$S.extendWith( \`logAdd\`, (str, ...args) => {
+  log(str + args.join(\`\`));
+  return str;
+}, true );
+// apply
+basic.set\`Hello {wrld}\`
+  .logAdd\` (unformatted)\`
+  .format({wrld: \`world\`})
+  .toTag(\`b\`)
+  .toTag(\`i\`)
+  .logAdd(\`( \`, \`formatted with \`, \`{wrld: "world"}\`, \`)\`)</code>`.wrapESComments);
+  basic.set`Hello {wrld}`.logAdd` (unformatted)`.format({wrld: `world`})
+    .toTag(`b`).toTag(`i`).logAdd(` (`, `formatted with `, `{wrld: "world"}`, `)` );
+
+  /* endregion xtraMethods */
+
   /* region regex */
-  log(`!!<b id="regex">RegExp</b>
+  log(`!!<b id="regex">Regular Expression utility</b> (<code>$S.regExp</code>)
     <div>Create a regular expression from a multiline string
     (see <a target="_blank" href="https://github.com/KooiInc/RegexHelper/tree/main">Github</a>)</div>
     <div><b>Note</b>: regular expressions can only be created using a tagged template (so, don't call as a function)</div>`);
 
-  log(`!!<b>* Create regular expression using <code>[$S instance].createRegExp\`[regular expression]\`</code>)</b>`);
-  const re = basic.createRegExp`
+  const reDirect = $S.regExp`
     // A 'readable' regular expression
     (?<=N)(?<matchNumber>\d{3})
     | (?<=DSC)(?<matchSeconds>\d{2})
@@ -272,41 +292,12 @@ basic.set\`Hello {wrld}\`
   \${[\`g\`]}
   //  ^ flags`;
 
-  log(`<code class="codeBlock">basic.createRegExp\`${demoStr.escHTML.wrapESComments}\`</code><div>=&gt; ${
-    $S(`!!!${re.toString()}`).escHTML}</div>`);
+  log(`<code class="codeBlock">$S.regExp\`${demoStr.escHTML.wrapESComments}\`</code>
+    <div>=&gt; ${$S`!!!${reDirect}`.escHTML.wrapESComments}`);
 
-  log(`!!<b>* Create regular expression directly by prepending <code>//[RE]</code>)</b> to the string`);
-  const nwRE4Log = `$S\`
-  //[RE]
-  // A 'readable' regular expression
-    (?<=N)(?<matchNumber>\d{3})
-  | (?<=DSC)(?<matchSeconds>\d{2})
-  | (?<=MC)(?<matchMinutes>\d{2})
-  | (?<=HC)(?<matchHours>\d{2})
-  | (?<=DD)(?<matchDay>\d{2})
-  | (?<=MD)(?<matchMonth>\d{2})
-  | (?<=NOTHING)(?<matchNoMatch>\d{2})
-  | (?<=YD)(?<matchYear>\d{2})
-  \${[\`g\`]}
-  //  ^ flags`;
-  const nwRE = $S`//[RE]
-    // A 'readable' regular expression
-      (?<=N)(?<matchNumber>\d{3})
-    | (?<=DSC)(?<matchSeconds>\d{2})
-    | (?<=MC)(?<matchMinutes>\d{2})
-    | (?<=HC)(?<matchHours>\d{2})
-    | (?<=DD)(?<matchDay>\d{2})
-    | (?<=MD)(?<matchMonth>\d{2})
-    | (?<=NOTHING)(?<matchNoMatch>\d{2})
-    | (?<=YD)(?<matchYear>\d{2})
-    ${[`g`]}
-    //  ^ flags`.toString();
-
-  log(`<code class="codeBlock">${$S`!!!${nwRE4Log}`.escHTML.wrapESComments}</code>
-    <div>=&gt; ${$S`!!!${nwRE}`.escHTML}</div>`);
-
-  log(`<code>basic.createRegExp\`[a-zA-Z](error \${[\`a\`, \`g\`]}\`</code><pre>=&gt; ${
-    basic.createRegExp`[a-zA-Z](error ${[`a`, `g`]}`}</pre>`);
+  log(`!!<b>* Invalid result returns error message`);
+  log(`<code>$S.regExp\`[a-zA-Z](error \${[\`a\`, \`g\`]}\`</code><pre>=&gt; ${
+    $S.regExp`[a-zA-Z](error ${[`a`, `g`]}`}</pre>`);
   /* endregion regex */
 
   /* region theEndMyFriend */
@@ -334,7 +325,7 @@ function testPerf(log) {
     tmpArr.push($S`${strings[Math.floor(Math.random()*len)]}`);
   }
   const lasted = (performance.now() - now)/1000;
-  log(`Created ${(nTests).toLocaleString(`nl`)} <code>$S</code> instances using 4 random string values 
+  log(`Created ${(nTests).toLocaleString(`nl`)} <code>$S</code> instances using 4 random string values
     and pushed to a temporary Array.<br>Including overhead for pushing and random string selection that took ${
       lasted.toFixed(3)} seconds (${(lasted/nTests).toFixed(7)} seconds/instance).`);
   log(`!!<b>* Random string values used</b><pre>${strings.map(v => $S(v).escHTML).join(`\n`)}</pre>`);
