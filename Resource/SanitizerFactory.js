@@ -25,32 +25,32 @@ function sanitizeHTMLFactory() {
 
     if (el2Clean instanceof HTMLElement) {
       [...el2Clean.childNodes].forEach(child => {
-        if (child?.children?.length) {
-          sanitize(child);
-        }
+        if (child?.children?.length) { sanitize(child); }
 
         if (child?.attributes) {
           const attrStore = child instanceof SVGElement ? svg : html;
 
-          [...(child ?? {attributes: []}).attributes]
+          [...child.attributes]
             .forEach(attr => {
-              const name = attr.name.trim().toLowerCase();
-              const value = attr.value.trim().toLowerCase().replace(attrRegExpStore.whiteSpace, ``);
+              const [name, value] = [
+                attr.name.trim().toLowerCase(),
+                attr.value.trim().toLowerCase().replace(attrRegExpStore.whiteSpace, ``) ];
               const evilValue = name === "href"
-                ? !attrRegExpStore.validURL.test(value) : attrRegExpStore.notAllowedValues.test(value);
-              const evilAttrib = name.startsWith(`data`) ? !attrRegExpStore.data.test(name) : !findAttr(attrStore, name);
+                ? !attrRegExpStore.validURL.test(value)
+                : attrRegExpStore.notAllowedValues.test(value);
+              const evilAttrib = name.startsWith(`data`)
+                ? !attrRegExpStore.data.test(name)
+                : !findAttr(attrStore, name);
 
               if (evilValue || evilAttrib) {
-                let val = attr.value || `none`;
                 elCreationInfo.removed[`${attr.name}`] = `attribute/property(-value) not allowed, removed. Value: ${
-                  val}`;
+                  attr.value || `none`}`;
                 child.removeAttribute(attr.name);
               }
             });
         }
-        const allowed = isAllowed(child);
 
-        if (!allowed) {
+        if (!isAllowed(child)) {
           let tagValue = (child?.outerHTML || child?.textContent).trim() || `EMPTY`;
           elCreationInfo.removed[`<${child.nodeName?.toLowerCase()}>`] = `not allowed, not rendered. Value: ${
             tagValue}`;
