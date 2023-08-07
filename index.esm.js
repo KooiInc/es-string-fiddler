@@ -43,6 +43,10 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       ? subString.slice(0, subString.lastIndexOf(" "))
       : subString) + endwith );
   };
+  const trimAll = str => keepLines =>
+    proxify( keepLines
+      ? str.trim().replace(/\n/g, `#!#`).replace(/\s{2,}/g, ` `).replace(/#!#/g, `\n`)
+      : str.trim().replace(/\s{2,}/g, ` `));
   const escHTML = str => proxify(str.replace(/</g, `&lt;`));
   const sanitizeHTML = (str, omitProxy = false) => {
     const sane = sanitizer(
@@ -140,7 +144,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     get double() { return proxify(`"${str}"`)},
     get backtick() { return proxify(`\`${str}\``)},
   });
-  const value = str => $`${str}`;
+  const value = str => `${str}`;
   const createRegExp = (str, ...args) => {
     try {
       return regExp(str, ...args);
@@ -170,6 +174,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       replaceWords,
       escHTML,
       compressHTML,
+      trimAll,
       find,
     }),
     ...nativeOverrides
@@ -211,7 +216,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
 
   Object.entries(proxifyStatics).forEach(([name, fn]) => proxify[name] = fn);
 
-  // Can be used either as tagged template function or a regular function receiving a string
+  // Can be used either as tagged template (function) or a regular function receiving a string
   // So, best of both worlds ...
   function proxify(someStr, ...args) {
     let str = resolveTemplateString(someStr, ...args);
