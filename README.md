@@ -36,10 +36,8 @@ For each flavor, the script is (bundled and) minified. The location of the minif
 // https://kooiinc.github.io/es-string-fiddler/Bundle/index.cjs.min.js
 const $S = require("[local location of the bundle]/index.cjs.min.js").$S;
 // require all
-const {
-  $S,
-  $SFactory,
-  $SNoHTML } = require("[local location of the bundle]/index.cjs.min.js");
+const {$S, $SFactory, $SNoHTML } =
+  require("[local location of the bundle]/index.cjs.min.js");
 ```
 
 ### ESM import
