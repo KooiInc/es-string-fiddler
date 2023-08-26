@@ -229,7 +229,7 @@ basic.toTag( \`script\`, { src });</code>
     toJSON($S`Hello World, bye world, oh World!`.wordsFirstUC.find({ terms: [{}, `Hello`] }))}`);
   /* endregion find */
   
-  log(`!!<b id="utilities">Constructor getters/methods</b>
+  log(`!!<b id="utilities">Constructor (utility) getters/setters/methods</b>
     <div>The constructor contains a few utility getters/methods.
       Assuming the constructor is named <code>$S</code></div>
     <ul class="sub">
@@ -349,8 +349,8 @@ basic.set\`Hello {wrld}\`
   
   /* region currentMethods */
   log(`!!<h3><code>$S.currentMethods</code></h3>
-    <div><code>currentMethods</code> is a getter, returning the names of all currently existing instance getters/methods
-      (including the ones you may have created), sorted alphabetically.`);
+    <div><code>currentMethods</code> is a getter, returning an array containing the names of all currently
+      existing instance getters/methods (including the ones you may have created), sorted alphabetically.`);
   log(`<code>$S.currentMethods</code> => [${$S.currentMethods.join(`, `)}]`);
   /* endregion currentMethods */
   
