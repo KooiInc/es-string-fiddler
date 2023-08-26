@@ -46,20 +46,20 @@ function randomStringGeneratorFactory() {
     let chrs2Use = shuffle( allChars.getChars2Use( { UC: includeUppercase, Nrs: includeNumbers, Sym: includeSymbols } ) );
     const rRange = shuffle(range(1, length-1));
     while (chrs2Use.length < length) { chrs2Use = [...chrs2Use, ...shuffle(chrs2Use)]; }
-    const initial = chrs2Use.slice(0, length).join(``);
+    const initial = chrs2Use.slice(0, length);
     
-    if (startAlphabetic && !/^[a-z]/i.test(`${initial}`)) { // first alphabetic
-      initial.splice(0, 1, allChars.UCLC[randomNr({max: allChars.UCLC.length})]);
-    }
-    
-    if (includeNumbers && !/\d/g.test(`${initial}`)) { // at least 1 number
+    if (includeNumbers && !initial.find(v => !isNaN(parseInt(v)))) { // at least 1 number
       initial.splice(rRange.shift(), 1, allChars.Nrs[randomNr({max: allChars.Nrs.length})]);
     }
     
-    if (includeSymbols && !symRE.test(`${initial}`)) { // at least 1 special char
+    if (includeSymbols && !symRE.test(initial.join(``))) { // at least 1 special char
       initial.splice(rRange.shift(), 1, allChars.Sym[randomNr({max: allChars.Sym.length})]);
     }
     
-    return `${initial}`;
+    if (startAlphabetic && !/^[a-z]/i.test(initial[0])) { // first alphabetic
+      initial.splice(0, 1, allChars.UCLC[randomNr({max: allChars.UCLC.length})]);
+    }
+    
+    return `${initial.join(``)}`;
   };
 }
