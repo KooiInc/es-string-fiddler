@@ -1,4 +1,5 @@
 import sanitizerDefault from "./Resource/SanitizerFactory.js";
+import randomString from "./Resource/randomStringFactory.js"
 const defaultHTMLSanitizer = sanitizerDefault;
 const $SFactory = XStringFactory;
 const $SNoHTML = $SFactory({sanitize: false, sanitizer: null});
@@ -6,6 +7,7 @@ const $S = XStringFactory();
 export {$S as default, $SFactory, $SNoHTML};
 
 function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaultHTMLSanitizer} = {}) {
+  /* region native overrides */
   const nativeOverrides = [
     "concat", "padEnd", "padStart", "repeat", "replace", "replaceAll",
     "slice", "toLocaleLowerCase", "toLocaleUpperCase", "toLowerCase",
@@ -24,6 +26,9 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
         }
       };
     }, {} );
+  /* endregion native overrides */
+  
+  /* region getters/setters */
   const interpolator = interpolateFactory();
   const format = str => (...tokens) => proxify`${interpolator(str, ...tokens)}`;
   const ucFirst = ([first, ...theRest]) => `${first.toUpperCase()}${theRest.join(``)}`;
@@ -153,7 +158,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
         args.join(``).trim() || `none`})\n${err.message}`;
     }
   };
-
+  
   const proxiedGetters = {
     ...addDefaults({
       isProxied: true,
@@ -179,7 +184,9 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     }),
     ...nativeOverrides
   };
+  /* endregion getters/setters */
 
+  /* region proxifier */
   const proxy = {
     get: ( target, key ) => {
       // native String methods overrides and extension methods
@@ -211,11 +218,17 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
   const proxifyStatics = {
     extendWith,
     regExp: createRegExp,
-    currentMethods: () => Object.getOwnPropertyNames(proxiedGetters)
+    randomString,
+    get currentMethods() {
+      return Object.getOwnPropertyNames(proxiedGetters)
+        .sort( (a, b) => a.localeCompare(b)); },
+    get uuid4() { return uuid4(); },
+    set sanitize(value) { sanitize = value; },
   };
-
-  Object.entries(proxifyStatics).forEach(([name, fn]) => proxify[name] = fn);
-
+  
+  Object.entries(Object.getOwnPropertyDescriptors(proxifyStatics))
+    .forEach( ([key, descriptor]) => { Object.defineProperty(proxify, key, descriptor); } );
+    
   // Can be used either as tagged template (function) or a regular function receiving a string
   // So, best of both worlds ...
   function proxify(someStr, ...args) {
@@ -227,7 +240,9 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
   }
 
   return proxify;
-
+  /* endregion proxifier */
+  
+  /* region helpers_misc */
   function addDefaults(extensions) {
     const clone = (str, ...args) => proxify(resolveTemplateString(str, ...args));
     const cloneTo = () => (nwValue, ...args) => clone(nwValue, ...args);
@@ -238,7 +253,19 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     };
     return {...defaultXs, ...extensions};
   }
-
+  
+  function uuid4() {
+    if (!window.crypto) {
+      return `Your browser does not support "crypto". Please update`;
+    }
+    
+    return [...crypto.getRandomValues(new Uint8Array(16))]
+      .map( (v, i) => `${
+        (i === 8 ? v & 0b00111111 | 0b10000000 : i === 6  ? v & 0b00001111 | 0b01000000 : v)
+          .toString(16).padStart(2, `0`)}${~[3,5,7,9].indexOf(i) ? `-` : ``}` )
+      .join(``);
+  }
+  
   function regExp(regexStr, ...args) {
     const flags = args.length && Array.isArray(args.slice(-1)) ? args.pop().join(``) : ``;
 
@@ -269,4 +296,5 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
 
     return (str, ...tokens) => interpolate(...[str,undefined,...tokens])
   }
+  /* endregion helpers_misc */
 }
