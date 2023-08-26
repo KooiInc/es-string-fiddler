@@ -44,9 +44,9 @@ const hi = basic.set\`hello\`.ucFirst;
 const hi1 = hi.set\`hithere and \${hi.case.lower}\`;
 // tokens to use with .format
 const tokens = [
-  {world: \`you\`}, 
-  {world: \`world\`}, 
-  {world: \`galaxy\`}, 
+  {world: \`you\`},
+  {world: \`world\`},
+  {world: \`galaxy\`},
   {world: \`universe\`}, ];`
     .toCodeBlock
     .wrapESComments
@@ -205,13 +205,13 @@ basic.toTag( \`script\`, { src });</code>
   log(`!!<b id="find">Find in string</b>`);
   log(`!!<div><code>[xstring].find</code> receives an object with keys <code>terms</code>
   (a string, an Array of strings or a regular expression) and <code>caseSensitive</code>
-  (a boolean, default false). It returns an object: 
+  (a boolean, default false). It returns an object:
   ${$S`{ searched4: string // the term searched for,
   hits: Number, // the number of hits,
   result: Object {
     term: string,  // found term
     at: Array, // position(s) of term found in string
-  },  
+  },
 }`.toCodeBlock.wrapESComments}</div>`);
   log(`<code>$S\`Hello world, bye world, oh world!\`.find({ terms:['world', 'oh'] })</code>${
     toJSON($S`Hello world, bye world, oh world!`.find({terms: ['world', 'oh']}))}`);
@@ -228,9 +228,22 @@ basic.toTag( \`script\`, { src });</code>
   log(`<code>${$S`Hello World, bye world, oh World!`.wordsFirstUC}.find({ terms: [{}, \`hello\`] })</code>${
     toJSON($S`Hello World, bye world, oh World!`.wordsFirstUC.find({ terms: [{}, `Hello`] }))}`);
   /* endregion find */
-
+  
+  log(`!!<b id="utilities">Constructor getters/methods</b>
+    <div>The constructor contains a few utility getters/methods.
+      Assuming the constructor is named <code>$S</code></div>
+    <ul class="sub">
+      <li><code>$S.extendWith</code>: a method to create your own extensions for instances</li>
+      <li><code>$S.regExp</code>: a tagged template method to create a Regular Expression from
+        a multiline string</li>
+      <li><code>$S.randomString</code>: a method to create a random string</li>
+      <li><code>$S.uuid4</code> a getter that returns a uuidv4 string</li>
+      <li><code>$S.currentMethods</code> a getter returns the names of all instance extension methods</li>
+      <li><code>$S.sanitize</code> a setter to enable or disable HTML sanitation</li>
+    </ul>`);
+  
   /* region extra methods/props creation */
-  log(`!!<b id="addMethOrProp">Create extra methods and properties utility</b> <code>$S.extendWith</code>
+  log(`!!<h3><code>$S.extendWith</code></h3>
   <div>Add extensions or properties to the <code>$S</code> constructor.
     <br>Syntax: ${$S`$S.extendWith(name: string, fn: Function, isMethod: boolean)`.toCode}</div>
   <div><b>Note</b>: for chaining: make sure the added method or property lambda returns the resulting string.</div>`);
@@ -262,10 +275,11 @@ basic.set\`Hello {wrld}\`
   /* endregion xtraMethods */
 
   /* region regex */
-  log(`!!<b id="regex">Regular Expression utility</b> (<code>$S.regExp</code>)
+  log(`!!<h3><code>$S.regExp</code></h3>
     <div>Create a regular expression from a multiline string
     (see <a target="_blank" href="https://github.com/KooiInc/RegexHelper/tree/main">Github</a>)</div>
-    <div><b>Note</b>: regular expressions can only be created using a tagged template (so, don't call as a function)</div>`);
+    <div><b>Note</b>: regular expressions can <i>only be created using a tagged template</i>
+    (so, don't call as a function)</div>`);
 
   const reDirect = $S.regExp`
     // A 'readable' regular expression
@@ -300,6 +314,65 @@ basic.set\`Hello {wrld}\`
     $S.regExp`[a-zA-Z](error ${[`a`, `g`]}`}</pre>`);
   /* endregion regex */
 
+  /* region randomString */
+  log(`!!<h3><code>$S.randomString</code></h3>
+    <div>Create a random string using letters and/or number and/or symbols.
+    You may use this method for example to create password strings, or random element id's.</div>
+    <p><b>Syntax</b>:</p> <code class="codeBlock">$S.randomString({
+  length: Number( default 12),
+  includeUppercase: bool (default true),
+  includeNumbers: bool (default false),
+  includeSymbols: bool (default false),
+  startAlphabetic: bool (default false) } )</code></p>`);
+  log(`<code>$S.randomString()</code><br>=> "${$S.randomString()}"`);
+  log(`<code>$S.randomString({length: 80})</code><br>=> "${$S.randomString({length: 80})}"`);
+  log(`<code>$S.randomString({includeUppercase: false, length: 48})</code><br>=> "${
+    $S.randomString({includeUppercase: false, length: 48})}"`);
+  log(`<code>$S.randomString({length: 32, includeNumbers: true})</code><br>=> "${
+    $S.randomString({length: 32, includeNumbers: true})}"`);
+  log(`<code>$S.randomString({length: 24, includeNumbers: true, includeSymbols: true})</code><br>=> "${
+    $S.randomString({length: 24, includeNumbers: true, includeSymbols: true})}"`);
+  log(`<code>$S.randomString({length: 24, includeNumbers: true, includeSymbols: true, startAlphabetic: true})</code>
+    <br>=> "${$S.randomString({length: 24, includeNumbers: true, includeSymbols: true, firstIsLetter: true})}"`);
+  /* endregion randomString */
+  
+  /* region uuid */
+  log(`!!<h3><code>$S.uuid4</code></h3>
+    <div><code>uuid4</code> is a getter, returning a random
+    <a target="_blank" href="https://www.sohamkamani.com/uuid-versions-explained/#v4--randomness"
+    >UUIDV4</a> string.</div>
+    <div><b>Note</b>: your browser should support
+    <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/crypto_property#browser_compatibility"
+    >crypto</a> to be able to use this.</div>`);
+  log(`<code>[...Array(10)].map(_ => $S.uuid4)</code> =><pre>${[...Array(10)].map(_ => $S.uuid4).join(`\n`)}</pre>`);
+  /* endregion uuid */
+  
+  /* region currentMethods */
+  log(`!!<h3><code>$S.currentMethods</code></h3>
+    <div><code>currentMethods</code> is a getter, returning the names of all currently existing instance getters/methods
+      (including the ones you may have created), sorted alphabetically.`);
+  log(`<code>$S.currentMethods</code> => [${$S.currentMethods.join(`, `)}]`);
+  /* endregion currentMethods */
+  
+  /* region setSanitize */
+  log(`!!<h3><code>$S.sanitize</code></h3>
+    <div>Using the <code>$S.sanitize</code> setter you can enable or disable HTML sanitation for all instances</div>`);
+  $S.sanitize = false;
+  const evilThing = $S`<div onclick="alert('you evil thing!')">evil!</div>`;
+  $S.sanitize = true;
+  const nothingEvil = $S`<div onclick="alert('you evil thing!')">NOT evil</div>`
+  log($S`$S.sanitize = false;
+const evilThing = $S\`&lt;div onclick="alert('you evil thing!')">evil!&lt;/div>\`;
+// re-enable
+$S.sanitize = true;
+const nothingEvil = $S\`&lt;div onclick="alert('you evil thing!')">NOT evil!&lt;/div>\`;`
+    .toCodeBlock
+    .wrapESComments
+    .insert(`!!`));
+  log(`<code>evilThing.escHTML</code> => ${evilThing.escHTML}`);
+  log(`<code>nothingEvil.escHTML</code> => ${nothingEvil.escHTML}`);
+  /* endregion setSanitize */
+  
   /* region theEndMyFriend */
   log(`!!<b id="Performance">Performance</b>
     <div><b>Note</b>: also dependent on your hardware</div>`);
@@ -368,9 +441,9 @@ function setStyling() {
     `.head div, .head pre, pre {font-weight: normal; color: #777}`,
     `.head b[id], .head b.header {
       cursor: pointer;
-      font-size: 1.2em; 
+      font-size: 1.2em;
       line-height: 1.5rem;
-      display: inline-block; 
+      display: inline-block;
       margin-top: 0.5rem
     }`,
     `@media (width > 1600px) {
@@ -425,7 +498,7 @@ function setStyling() {
       box-shadow: -2px 1px 12px #aaa;
       margin-top: 1rem;
     }`,
-    `#log2screen .content h3 { 
+    `#log2screen .content h3 {
       margin-top: 0;
       padding-left: 24px;
       color: red;
