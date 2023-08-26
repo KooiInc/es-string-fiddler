@@ -75,7 +75,16 @@ The constructor (for example exposed as `$S`) has two utility methods
   RE are given as Array
 - `S$.extendWith(name: string, fn: Function, isMethod: boolean)`: create additional 
   instance properties or methods. 
-
+- `S$.randomString({length: Number( default 12),
+  includeUppercase: bool (default true),
+  includeNumbers: bool (default false),
+  includeSymbols: bool (default false),
+  startAlphabetic: bool (default false) } )})`: create a random string with length [length]. 
+  See demo for examples ...
+- `$S.uuid4`: a getter, retrieving a [UUIDV4](https://www.sohamkamani.com/uuid-versions-explained/#v4--randomness) string
+- `$S.currentMethods`: a getter, retrieving (an array of) the names of all currently existing instance getters/methods
+  (including the ones you may have created), sorted alphabetically
+- `$S.sanitize`: a setter to enable or disable HTML sanitation for all `$S` instances
 ## Instance methods
 The following description is for the default exported constructor (here exposed as `$S`). 
 
