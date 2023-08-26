@@ -334,7 +334,7 @@ basic.set\`Hello {wrld}\`
   log(`<code>$S.randomString({length: 24, includeNumbers: true, includeSymbols: true})</code><br>=> "${
     $S.randomString({length: 24, includeNumbers: true, includeSymbols: true})}"`);
   log(`<code>$S.randomString({length: 24, includeNumbers: true, includeSymbols: true, startAlphabetic: true})</code>
-    <br>=> "${$S.randomString({length: 24, includeNumbers: true, includeSymbols: true, firstIsLetter: true})}"`);
+    <br>=> "${$S.randomString({length: 24, includeNumbers: true, includeSymbols: true, startAlphabetic: true})}"`);
   /* endregion randomString */
   
   /* region uuid */
