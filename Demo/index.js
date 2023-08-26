@@ -229,6 +229,7 @@ basic.toTag( \`script\`, { src });</code>
     toJSON($S`Hello World, bye world, oh World!`.wordsFirstUC.find({ terms: [{}, `Hello`] }))}`);
   /* endregion find */
   
+  /* region utilities */
   log(`!!<b id="utilities">Constructor (utility) getters/setters/methods</b>
     <div>The constructor contains a few utility getters/methods.
       Assuming the constructor is named <code>$S</code></div>
@@ -372,6 +373,8 @@ const nothingEvil = $S\`&lt;div onclick="alert('you evil thing!')">NOT evil!&lt;
   log(`<code>evilThing.escHTML</code> => ${evilThing.escHTML}`);
   log(`<code>nothingEvil.escHTML</code> => ${nothingEvil.escHTML}`);
   /* endregion setSanitize */
+  
+  /* endregion utilities */
   
   /* region theEndMyFriend */
   log(`!!<b id="Performance">Performance</b>

@@ -67,8 +67,8 @@ After linking the script, module is available as `window.$S`.
 </script>
 ```
 
-## Utility constructor methods
-The constructor (for example exposed as `$S`) has two utility methods 
+## Utility constructor getters/setters/methods
+The constructor (for example exposed as `$S`) contains a few utility getters/setters/methods 
 (see **[demo](https://kooiinc.github.io/es-string-fiddler/Demo)** for examples).
 - ``$S.regExp`[template string]` ``: (*tagged template only*): create a Regular Expression (RE) from 
   a template string. The string may be a multiline string. The modifiers for the
