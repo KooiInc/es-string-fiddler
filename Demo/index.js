@@ -142,7 +142,8 @@ const tokens = [
       <p>It goes without saying that <code>toTag</code> will deliver a sanitized html string.
       When trying to wrap a string into an insecure tag (e.g. <code>script</code>),
       the resulting <code>$S</code>-instance will be an error message.</p>
-      <p>To <i>prevent automatic sanitation</i>, put <code>!!!</code> before the string to instantiate.</p>`);
+      <p>To <i>prevent automatic sanitation</i>, put <code>!!!</code> before the string to instantiate,
+      or use <span class="inline" data-target="#sanitizeSetter">the <code>$S.sanitize</code> setter.</span></p>`);
 
   log(`!!<b class="header">Sanitition when using the <code>toTag</code> method</b>`);
   const niceStr = $S`nice`.ucFirst.toTag(`b`, {onclick: "alert('hi')", style: `color: red;`}).quote.backtick;
@@ -522,7 +523,8 @@ function setStyling() {
       padding-left: 24px;
       color: red;
     }`,
-    `.inline[data-target] {
+    `.inline[data-target],
+     .inline[data-target] code {
       cursor: pointer;
       color: blue;
     }`,
