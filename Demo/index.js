@@ -247,7 +247,12 @@ basic.toTag( \`script\`, { src });</code>
   log(`!!<h3><code>$S.extendWith</code></h3>
   <div>Add extensions or properties to the <code>$S</code> constructor.
     <br>Syntax: ${$S`$S.extendWith(name: string, fn: Function, isMethod: boolean)`.toCode}</div>
-  <div><b>Note</b>: for chaining: make sure the added method or property lambda returns the resulting string.</div>`);
+    <b>Notes</b>:
+    <ul class="sub">
+      <li>for chaining: make sure the added method or property lambda returns the resulting string.</li>
+      <li>Because strings are immutable, the initial string is not changed. As with regular strings,
+      to change a string you'll have to (re)assign it.</li>
+    </ul>`);
   $S.extendWith(`log`, str => { log(str); return str; });
   $S.extendWith(`logAdd`, (str, ...args) => { log(str + args.join(``)); return str; }, true);
 
