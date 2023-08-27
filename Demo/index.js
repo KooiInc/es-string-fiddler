@@ -8,7 +8,6 @@ window.$S = $S; // try things yourself in the console ...
 demo();
 
 function demo() {
-  /* region initialize constructor*/
   //  remove stackblitz message from sbhelpers module
   console.clear();
   $.log(`demo started`);
@@ -21,7 +20,8 @@ function demo() {
   log(`!!<h3>Play with the demo code <a target="_blank" href="https://stackblitz.com/edit/web-platform-gxttr1?file=index.js"
     >@StackBlitz</a></h3>`);
   log(`!!<h2 id="inits">EcmaScript (ES) <code>String</code> manipulation using ES <code>Proxy</code></h2>`);
-
+  
+  /* region initialize */
   $(`<div class="container">`).append($(`#log2screen`));
   const basic = $S``;
   const hi = basic.set(`hello`).ucFirst;
