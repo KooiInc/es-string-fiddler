@@ -229,7 +229,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     get currentMethods() {
       return Object.getOwnPropertyNames(proxiedGetters)
         .sort( (a, b) => a.localeCompare(b)); },
-    get uuid4() { return uuid4(); },
+    get uuid4() { return proxify(uuid4()); },
     set sanitize(value) { sanitize = value; },
   };
   
