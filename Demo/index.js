@@ -360,10 +360,15 @@ basic.set\`Hello {wrld}\`
     <div><code>uuid4</code> is a getter, returning a random
     <a target="_blank" href="https://www.sohamkamani.com/uuid-versions-explained/#v4--randomness"
     >UUIDV4</a> string.</div>
-    <div><b>Note</b>: your browser should support
-    <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/crypto_property#browser_compatibility"
-    >crypto</a> to be able to use this.</div>`);
+    <div><b>Notes</b>:</div>
+    <ul class="sub">
+      <li>your browser should support
+        <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/crypto_property#browser_compatibility"
+        >crypto</a> to be able to use this.</li>
+      <li><code>$S.uuid4</code> is chainable</li>
+    </ul>`);
   log(`<code>[...Array(10)].map(_ => $S.uuid4)</code> =><pre>${[...Array(10)].map(_ => $S.uuid4).join(`\n`)}</pre>`);
+  log(`<code>$S.uuid4.case.upper</code> ${$S.uuid4.case.upper.rQuot}`);
   /* endregion uuid */
   
   /* region currentMethods */
