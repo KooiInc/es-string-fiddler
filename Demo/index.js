@@ -190,10 +190,21 @@ basic.toTag( \`script\`, { src });</code>
   const scriptTag2 = $S`<script src="${src}"></script><span>But this will show up</span>`;
   log(`<code>$S\`&lt;script src="\${src}">&lt;/script>&lt;span>But this will show up&lt/span>\`</code><div>${scriptTag2.rQuot}</div>`);
 
-  log(`!!<b>* <i>Prevent</i> automatic sanitation</b><div><b>Note</b>: adding unsanitized html strings
-    to the DOM may end up in security breaches.</div>`);
+  log(`!!<b>* <i>Prevent</i> automatic sanitation</b>
+    <div>&nbsp;&nbsp;<b>Note</b>: adding unsanitized html strings to the DOM may end up in security breaches.</div>`);
   const rawScriptTag = $S`!!!<script src="${src}"></script>`;
   log(`<code>$S\`!!!&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag.escHTML).rQuot}</div>`);
+  
+  log(`!!<b>* <i>Prevent</i> automatic sanitation using the <code>$S.sanitize</code> setter</b>
+  <div>&nbsp;&nbsp;<b>Notes</b>:<ul class="sub">
+      <li><div class="inline" data-target="#sanitizeSetter">See also <code>$S.sanitize</code></div></li>
+      <li>adding unsanitized html strings to the DOM may end up in security breaches.</li>
+    </ul>`);
+  $S.sanitize = false;
+  const rawScriptTag2 = $S`<script src="${src}"></script>`;
+  $S.sanitize = true;
+  log(`<code class="codeBlock">$S.sanitize = false;
+$S\`&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag2.escHTML).rQuot}</div>`);
 
   log(`!!<b>* A <code>$S</code>-string returns, well ... the string (a <code>$S</code> instance that is)</b>`);
   const noSanity = $S`This is just a plain old fashioned string`;
@@ -361,7 +372,7 @@ basic.set\`Hello {wrld}\`
   /* endregion currentMethods */
   
   /* region setSanitize */
-  log(`!!<h3><code>$S.sanitize</code></h3>
+  log(`!!<h3 id="sanitizeSetter"><code>$S.sanitize</code></h3>
     <div>Using the <code>$S.sanitize</code> setter you can enable or disable HTML sanitation for all instances</div>`);
   $S.sanitize = false;
   const evilThing = $S`<div onclick="alert('you evil thing!')">evil!</div>`;
@@ -415,13 +426,13 @@ function testPerf(log) {
 
 /* region indexCreatr */
 function createContent() {
-  const container = $.node(`.container`)
+  const container = $.node(`.container`);
   $.delegate(`click`, `b[id]`, () => {
-    container.scrollTo(0,0);
+    container.scrollTo(0, 0);
   });
-  $.delegate(`click`, `.content li .linkLike`, evt => {
-    const origin = $(evt.target.dataset.target);
-    container.scrollTo(0, origin.dimensions.top - 12);
+  $.delegate(`click`, `[data-target]`, (_, me) => {
+    const target = $(me.data.all.target);
+    container.scrollTo(0, container.scrollTop + Math.round(target.dimensions.top) - 12);
   });
 
   const contentDiv = $.virtual(
@@ -510,6 +521,13 @@ function setStyling() {
       margin-top: 0;
       padding-left: 24px;
       color: red;
+    }`,
+    `.inline[data-target] {
+      cursor: pointer;
+      color: blue;
+    }`,
+    `.inline[data-target]:hover {
+      text-decoration: underline;
     }`,
     `#log2screen .content ul li {
       margin-left: -1.4rem;
