@@ -344,6 +344,9 @@ basic.set\`Hello {wrld}\`
   includeSymbols: bool (default false),
   startAlphabetic: bool (default false) } )</code></p>`);
   log(`<code>$S.randomString()</code><br>=> "${$S.randomString()}"`);
+  log(`<code>$S($S.randomString({includeNumbers: true, startAlphabetic: true})).insert(\`id="\`).append(\`"\`)</code>
+    <br>=> ${
+      $S($S.randomString({includeNumbers: true, startAlphabetic: true})).insert(`id="`).append(`"`)}`);
   log(`<code>$S.randomString({length: 80})</code><br>=> "${$S.randomString({length: 80})}"`);
   log(`<code>$S.randomString({includeUppercase: false, length: 48})</code><br>=> "${
     $S.randomString({includeUppercase: false, length: 48})}"`);
