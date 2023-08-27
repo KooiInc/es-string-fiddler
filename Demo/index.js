@@ -143,7 +143,8 @@ const tokens = [
       When trying to wrap a string into an insecure tag (e.g. <code>script</code>),
       the resulting <code>$S</code>-instance will be an error message.</p>
       <p>To <i>prevent automatic sanitation</i>, put <code>!!!</code> before the string to instantiate,
-      or use <span class="inline" data-target="#sanitizeSetter">the <code>$S.sanitize</code> setter.</span></p>`);
+      or use the more generic <span class="inline" data-target="#sanitizeSetter"
+      ><code>$S.sanitize</code> setter.</span></p>`);
 
   log(`!!<b class="header">Sanitition when using the <code>toTag</code> method</b>`);
   const niceStr = $S`nice`.ucFirst.toTag(`b`, {onclick: "alert('hi')", style: `color: red;`}).quote.backtick;
@@ -191,7 +192,7 @@ basic.toTag( \`script\`, { src });</code>
   const scriptTag2 = $S`<script src="${src}"></script><span>But this will show up</span>`;
   log(`<code>$S\`&lt;script src="\${src}">&lt;/script>&lt;span>But this will show up&lt/span>\`</code><div>${scriptTag2.rQuot}</div>`);
 
-  log(`!!<b>* <i>Prevent</i> automatic sanitation</b>
+  log(`!!<b>* <i>Prevent</i> automatic sanitation once using <code>$S\`!!![...]\`</code></b>
     <div>&nbsp;&nbsp;<b>Note</b>: adding unsanitized html strings to the DOM may end up in security breaches.</div>`);
   const rawScriptTag = $S`!!!<script src="${src}"></script>`;
   log(`<code>$S\`!!!&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag.escHTML).rQuot}</div>`);
