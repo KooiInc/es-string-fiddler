@@ -188,7 +188,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
 
   /* region proxifier */
   const proxy = {
-    get: ( target, key ) => {
+    get( target, key ) {
       // native String methods overrides and extension methods
       // Note: 'object' test is when a key is a symbol (not likely, but possible)
       if (proxiedGetters[key] && !/object|tostring|valueof/i.test(key)) {
@@ -201,7 +201,13 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
         return target[key] instanceof Function ? target[key].bind(target) : target[key];
       }
     },
-    has: (target, key) => key in proxiedGetters || key in target,
+    has( target, key ) { return key in proxiedGetters || key in target; },
+    ownKeys( target ) {
+      return [...Reflect.ownKeys(proxiedGetters), ...Reflect.ownKeys(target)];
+    },
+    getOwnPropertyDescriptor( target, prop ) {
+      return Object.getOwnPropertyDescriptor(proxiedGetters, prop) ?? Object.getOwnPropertyDescriptor(target, prop);
+    },
   };
 
   function resolveTemplateString(str, ...args) {
