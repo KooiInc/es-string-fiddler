@@ -201,6 +201,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
         return target[key] instanceof Function ? target[key].bind(target) : target[key];
       }
     },
+    has: (target, key) => key in proxiedGetters || key in target,
   };
 
   function resolveTemplateString(str, ...args) {
