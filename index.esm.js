@@ -1,5 +1,5 @@
 import sanitizerDefault from "./Resource/SanitizerFactory.js";
-import randomString from "./Resource/randomStringFactory.js"
+import { randomString, uuid4 } from "./Resource/randomStringFactory.js"
 const defaultHTMLSanitizer = sanitizerDefault;
 const $SFactory = XStringFactory;
 const $SNoHTML = $SFactory({sanitize: false, sanitizer: null});
@@ -252,18 +252,6 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       set: cloneTo,
     };
     return {...defaultXs, ...extensions};
-  }
-  
-  function uuid4() {
-    if (!window.crypto) {
-      return `Your browser does not support "crypto". Please update`;
-    }
-    
-    return [...crypto.getRandomValues(new Uint8Array(16))]
-      .map( (v, i) => `${
-        (i === 8 ? v & 0b00111111 | 0b10000000 : i === 6  ? v & 0b00001111 | 0b01000000 : v)
-          .toString(16).padStart(2, `0`)}${~[3,5,7,9].indexOf(i) ? `-` : ``}` )
-      .join(``);
   }
   
   function regExp(regexStr, ...args) {
