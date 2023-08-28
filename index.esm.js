@@ -27,8 +27,8 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       };
     }, {} );
   /* endregion native overrides */
-  
-  /* region getters/setters */
+
+  /* region extensions */
   const interpolator = interpolateFactory();
   const format = str => (...tokens) => proxify`${interpolator(str, ...tokens)}`;
   const ucFirst = ([first, ...theRest]) => `${first.toUpperCase()}${theRest.join(``)}`;
@@ -117,12 +117,13 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     const re = RegExp(termsIsRE ? terms : terms.join(`|`), `g${xCase}`);
     let result = [...str.matchAll(re)];
     const hits = result.length;
+    const foundAny = hits > 0;
 
-    result = hits > 0
+    result = foundAny
       ? result.reduce( (acc, v) =>
         ({...acc, ...{ [v[0]]: { at: ( acc[v[0]]?.at || []).concat(v.index) } } } ),{})
       : {};
-    return { searched4: termsIsRE ? terms.toString() : terms.join(`, `), foundAny: +(hits || 0) > 0, hits, result };
+    return { searched4: termsIsRE ? terms.toString() : terms.join(`, `), foundAny, hits, result };
   };
   const compressHTML = str =>
     proxify(str.replace(/[\n\r]/g, ``)
@@ -132,9 +133,8 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       .replace(/(\w)\s+</g, (_, b) => `${b}<`)
       .replace(/ +>/g, `>`)
       .replace(/^\s+|\s+$/, ``));
-  const insert = str => (str2Insert, at = 0) => {
-    return proxify(`${str.slice(0, at > 0 ? at : at)}${str2Insert}${str.slice(at)}`);
-  };
+  const insert = str => (str2Insert, at = 0) => proxify(`${str.slice(0, at > 0 ? at : at)}${str2Insert}${str.slice(at)}`);
+  const append = str => str2Append => proxify(`${str}${str2Append}`);
   const casingFactory = str => ({
     get lower() { return proxify(str.toLowerCase()); },
     get upper() { return proxify(str.toUpperCase()); },
@@ -148,7 +148,6 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     get double() { return proxify(`"${str}"`)},
     get backtick() { return proxify(`\`${str}\``)},
   });
-  const value = str => `${str}`;
   const createRegExp = (str, ...args) => {
     try {
       return regExp(str, ...args);
@@ -157,7 +156,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
         args.join(``).trim() || `none`})\n${err.message}`;
     }
   };
-  
+
   const proxiedGetters = {
     ...addDefaults({
       isProxied: true,
@@ -165,13 +164,13 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       toCamelCase: str => casingFactory(str).camel,
       toDashedNotation: str => casingFactory(str).dashed,
       ucFirst: str => casingFactory(str).firstUC,
-      append: str => str2Append => proxify(`${str}${str2Append}`),
       lower: str => casingFactory(str).lower,
       upper: str => casingFactory(str).upper,
+      value: str => `${str}`,
+      append,
+      insert,
       case: casingFactory,
       quote: quoteFactory,
-      value,
-      insert,
       format,
       toTag,
       truncate,
@@ -183,7 +182,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     }),
     ...nativeOverrides
   };
-  /* endregion getters/setters */
+  /* endregion extensions */
 
   /* region proxifier */
   const proxy = {
@@ -231,10 +230,10 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     get uuid4() { return proxify(uuid4()); },
     set sanitize(value) { sanitize = value; },
   };
-  
+
   Object.entries(Object.getOwnPropertyDescriptors(proxifyStatics))
     .forEach( ([key, descriptor]) => { Object.defineProperty(proxify, key, descriptor); } );
-    
+
   // Can be used either as tagged template (function) or a regular function receiving a string
   // So, best of both worlds ...
   function proxify(someStr, ...args) {
@@ -247,7 +246,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
 
   return proxify;
   /* endregion proxifier */
-  
+
   /* region helpers_misc */
   function addDefaults(extensions) {
     const clone = (str, ...args) => proxify(resolveTemplateString(str, ...args));
@@ -259,7 +258,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     };
     return {...defaultXs, ...extensions};
   }
-  
+
   function regExp(regexStr, ...args) {
     const flags = args.length && Array.isArray(args.slice(-1)) ? args.pop().join(``) : ``;
 
