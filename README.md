@@ -1,6 +1,7 @@
 # (chainable) String extensions using ES Proxy
 
-`es-string-fiddler` is a utility adding some nifty properties/methods to regular ECMAScript (ES) strings (String Objects). It uses ES [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) for that.
+`es-string-fiddler` is a utility module adding some nifty properties/methods to regular ECMAScript (ES) strings (String Objects). It uses ES [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) for that. 
+The module is programmed using a [class free object oriented](https://depth-first.com/articles/2019/03/04/class-free-object-oriented-programming) coding style.
 
 Properties and/or methods (either native or extensions) returning a string can be [chained](https://www.geeksforgeeks.org/method-chaining-in-javascript/). 
 
