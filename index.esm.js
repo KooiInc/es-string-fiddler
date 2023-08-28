@@ -110,7 +110,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     const termsOk = !termsIsRE && !terms.find(t => t.constructor !== String);
 
     if (!termsIsRE && (!termsOk || !terms.length)) {
-      return {hits: `n/a`, result: `please provide valid terms`};
+      return {hits: `n/a`, result: `please provide valid search terms`};
     }
 
     const xCase = termsIsRE && `${terms.flags ?? ``}` || (!caseSensitive ? `` : `i`);
@@ -122,8 +122,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       ? result.reduce( (acc, v) =>
         ({...acc, ...{ [v[0]]: { at: ( acc[v[0]]?.at || []).concat(v.index) } } } ),{})
       : {};
-
-    return { searched4: termsIsRE ? terms.toString() : terms.join(`, `), hits, result };
+    return { searched4: termsIsRE ? terms.toString() : terms.join(`, `), foundAny: +(hits || 0) > 0, hits, result };
   };
   const compressHTML = str =>
     proxify(str.replace(/[\n\r]/g, ``)
