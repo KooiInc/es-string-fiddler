@@ -52,15 +52,16 @@ const tokens = [
     .wrapESComments
     .insert(`!!`)
     .concat`
-      <div>
-        <b>Note</b>: you can call <code>$S</code> either as a tagged template function or as a normal function.
-        <br><b>Note 2</b>: properties/methods (also native (String.prototype)) returning a string
-          can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a>.
-        <br><b>Note 3</b>: like regular ES-strings $S-strings are
-          <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a>
-        <br><b>Note 4</b>: for this example <code>$S</code> is also available in the developer console
-          (when loaded in stackblitz, first click 'Open in New Tab' above the preview frame).
-      </div` );
+      <div><b>Notes</b>:</div>
+      <ul class="sub">
+        <li>you can call <code>$S</code> either as a tagged template function or as a normal function.</li>
+        <li>properties/methods (also native (String.prototype)) returning a string
+          can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a></li>
+        <li>like regular ES-strings $S-strings are
+          <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a></li>
+        <li>for this example <code>$S</code> is also available in the developer console
+          (when loaded in stackblitz, first click 'Open in New Tab' above the preview frame).</li>
+      </ul>` );
 
   log(`!!<b>Initial values</b>`);
   log(`<code>basic</code> ${basic.rQuot}<br>
@@ -121,23 +122,29 @@ const tokens = [
   /* region format (aka interpolate)*/
   log(`!!<b id="format">Format with tokens</b>
   (see <a target="_blank" href="https://github.com/KooiInc/StringInterpolator">Github</a>)</div>`);
-  const escaped4Log = $S`$S\`<li>\${hi\} {world}</li>\\n\``.escHTML;
-  log(`<div><code>${escaped4Log}.format(...tokens).toTag(\`ul\`, {class: \`sub\`})</code></div>
-    ${$S`<li> ${hi} {world} </li>\n`.format(...tokens).toTag(`ul`, {class: `sub`})}`);
+  const escaped4Log = $S`$S\`\\n  <li>\${hi\} {world}</li>\\n\``.escHTML;
+  log(`<code>tokens</code>: <pre>${JSON.stringify(tokens)}</pre>
+    <code class="codeBlock">${escaped4Log}
+  .format(...tokens)
+  .toTag(\`ul\`, {class: \`sub\`, id: \`formatted\`})</code>${
+      $S`\n  <li> ${hi} {world} </li>`.format(...tokens).toTag(`ul`, {class: `sub`, id: `formatted`}) }`);
   /* endregion format */
 
   /* region html Escape/Compress */
   log(`!!<b id="escHtml">HTML (escape/compress)</b>`);
-  log(`<code>$S(document.querySelector('ul.sub').outerHTML).escHTML.quote.double</code> =&gt;
-  <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).escHTML.quote.double}</pre>`,
-    `<code>$S(document.querySelector('ul.sub').outerHTML).compressHTML.escHTML.quote.double</code> =&gt;
-    <pre class="ws">${$S($(`ul.sub`).HTML.get(1)).compressHTML.escHTML.quote.double}</pre>`);
+  log(`!!* <code>escHTML</code>`,
+      `<code>$S(document.querySelector('ul#formatted').outerHTML).escHTML.quote.double</code> =&gt;
+        <pre>${$S($(`ul#formatted`).HTML.get(1)).escHTML.quote.double}</pre>`,
+      `!!* <code>compressHTML</code>`,
+      `<code>$S(document.querySelector('ul#formatted').outerHTML).compressHTML.escHTML.quote.double</code> =&gt;
+        <pre class="ws">${$S($(`ul#formatted`).HTML.get(1)).compressHTML.escHTML.quote.double}</pre>`);
   /* endregion htmlEscCompress */
 
   /* region HTML Sanitizer */
   log(`!!<b id="sanitation">HTML (sanitation)</b> (<code>toTag</code> or directly).
-      <p><i style="color:red">All <code>$S</code> instances</i> are checked for HTML inside it, and if so sanitized.
-      Tags/attributes/attribute values deemed insecure will be removed from the html.
+      <p><i class="red">All <code>$S</code> instances</i> are checked for HTML inside it. If a string
+       contains HTML, the HTML is sanitized:
+      tags/attributes/attribute values deemed insecure will be removed from it.
       Sanitation problems are logged to the console.</p>
       <p>It goes without saying that <code>toTag</code> will deliver a sanitized html string.
       When trying to wrap a string into an insecure tag (e.g. <code>script</code>),
@@ -383,7 +390,9 @@ basic.set\`Hello {wrld}\`
   
   /* region setSanitize */
   log(`!!<h3 id="sanitizeSetter"><code>$S.sanitize</code></h3>
-    <div>Using the <code>$S.sanitize</code> setter you can enable or disable HTML sanitation for all instances</div>`);
+    <div>Using the <code>$S.sanitize</code> setter you can enable or disable HTML sanitation
+      for all subsequent instances</div>
+    <div><b>Note</b>: adding unsanitized html strings to the DOM may end up in security breaches.</div>`);
   $S.sanitize = false;
   const evilThing = $S`<div onclick="alert('you evil thing!')">evil!</div>`;
   $S.sanitize = true;
@@ -493,6 +502,7 @@ function setStyling() {
       }
       ul#log2screen, #log2screen .content { max-width: 90vw; }
     }`,
+    `.red, .red * { color: red; }`,
     `#log2screen h2 { line-height: 1.7rem; }`,
     `#log2screen li pre { margin-top: 0.2rem; }`,
     `.ws { white-space: pre-line; }`,
