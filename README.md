@@ -1,6 +1,8 @@
 # (chainable) String extensions using ES Proxy
 
-`es-string-fiddler` is a utility module adding some nifty properties/methods to regular ECMAScript (ES) strings (String Objects). It uses ES [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) for that. 
+`es-string-fiddler` is a utility module adding some nifty properties/methods to regular ECMAScript (ES) strings. 
+  It is actually a modified `String` constructor using ES [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) to create `String` instances with extra functionality.
+
 The module is programmed using a [class free object oriented](https://depth-first.com/articles/2019/03/04/class-free-object-oriented-programming) coding style.
 
 Properties and/or methods (either native or extensions) returning a string can be [chained](https://www.geeksforgeeks.org/method-chaining-in-javascript/). 
@@ -138,7 +140,7 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
    The [demo](https://kooiinc.github.io/es-string-fiddler/Demo) contains examples of HTML-sanitation.
 - `trimAll(keepLines: boolean)`: trim all whitespace outside (remove) and within (multiple to one space) the string. Will not remove the line breaks (`\n`) when `keepLines` is true. 
 - `truncate({at: Number, html: boolean, wordBoundary: boolean})`: truncates the string on the [at] position (when the string is longer than [at]) and adds either `&hellip;` (html: true) or `...` to it. If [wordBoundary] is true, the string is truncated at the end of the last whole word before [at]. [html] and [wordBoundary] are default: false.
-- `ucFirst`: see `case.ucFirst`
+- `ucFirst`: see `case.firstUC`
 - `upper`: see `case.upper`
 - `value`: the plain string value of the $S-string
 - `wordsFirstUC`: see `case.wordFirstUC`
