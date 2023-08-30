@@ -355,15 +355,15 @@ basic.set\`Hello {wrld}\`
   log(`<code>$S.randomString({includeNumbers: true, startAlphabetic: true}).insert(\`id="\`).append(\`"\`)</code>
     <br>=> ${
       $S.randomString({includeNumbers: true, startAlphabetic: true}).insert(`id="`).append(`"`)}`);
-  log(`<code>$S.randomString({length: 80})</code><br>=> "${$S.randomString({length: 80})}"`);
-  log(`<code>$S.randomString({includeUppercase: false, length: 48})</code><br>=> "${
-    $S.randomString({includeUppercase: false, length: 48})}"`);
+  log(`<code>$S.randomString({len: 80})</code><br>=> "${$S.randomString({len: 80})}"`);
+  log(`<code>$S.randomString({includeUppercase: false, len: 48})</code><br>=> "${
+    $S.randomString({includeUppercase: false, len: 48})}"`);
   log(`<code>$S.randomString({length: 32, includeNumbers: true})</code><br>=> "${
-    $S.randomString({length: 32, includeNumbers: true})}"`);
-  log(`<code>$S.randomString({length: 24, includeNumbers: true, includeSymbols: true})</code><br>=> "${
-    $S.randomString({length: 24, includeNumbers: true, includeSymbols: true})}"`);
-  log(`<code>$S.randomString({length: 24, includeNumbers: true, includeSymbols: true, startAlphabetic: true})</code>
-    <br>=> "${$S.randomString({length: 24, includeNumbers: true, includeSymbols: true, startAlphabetic: true})}"`);
+    $S.randomString({len: 32, includeNumbers: true})}"`);
+  log(`<code>$S.randomString({len: 24, includeNumbers: true, includeSymbols: true})</code><br>=> "${
+    $S.randomString({len: 24, includeNumbers: true, includeSymbols: true})}"`);
+  log(`<code>$S.randomString({len: 24, includeNumbers: true, includeSymbols: true, startAlphabetic: true})</code>
+    <br>=> "${$S.randomString({len: 24, includeNumbers: true, includeSymbols: true, startAlphabetic: true})}"`);
   /* endregion randomString */
 
   /* region uuid */
