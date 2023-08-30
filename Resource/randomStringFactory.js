@@ -47,15 +47,15 @@ function randomStringGeneratorFactory() {
 
   return {
     randomString: function( {
-        length = 12,
+        len = 12,
         includeUppercase = true,
         includeNumbers = false,
         includeSymbols = false,
         startAlphabetic = false } = {} ) {
       let chrs2Use = shuffle( allChars.getChars2Use( { UC: includeUppercase, Nrs: includeNumbers, Sym: includeSymbols } ) );
-      const rRange = shuffle(range(1, length-1));
-      while (chrs2Use.length < length) { chrs2Use = [...chrs2Use, ...shuffle(chrs2Use)]; }
-      const initial = chrs2Use.slice(0, length);
+      const rRange = shuffle(range(1, len-1));
+      while (chrs2Use.length < len) { chrs2Use = [...chrs2Use, ...shuffle(chrs2Use)]; }
+      const initial = chrs2Use.slice(0, len);
 
       if (includeNumbers && !initial.find(v => !isNaN(parseInt(v)))) { // at least 1 number
         initial.splice(rRange.shift(), 1, allChars.Nrs[randomNr({max: allChars.Nrs.length})]);

@@ -345,7 +345,7 @@ basic.set\`Hello {wrld}\`
     <div>Create a random string using letters and/or number and/or symbols.
     You may use this method for example to create password strings, or random element id's.</div>
     <p><b>Syntax</b>:<br><code class="codeBlock">$S.randomString({
-  length: Number( default 12),
+  len: Number( default 12),
   includeUppercase: bool (default true),
   includeNumbers: bool (default false),
   includeSymbols: bool (default false),
