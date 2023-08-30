@@ -20,7 +20,7 @@ function demo() {
   log(`!!<h3>Play with the demo code <a target="_blank" href="https://stackblitz.com/edit/web-platform-gxttr1?file=index.js"
     >@StackBlitz</a></h3>`);
   log(`!!<h2 id="inits">EcmaScript (ES) <code>String</code> manipulation using ES <code>Proxy</code></h2>`);
-  
+
   /* region initialize */
   $(`<div class="container">`).append($(`#log2screen`));
   const basic = $S``;
@@ -203,7 +203,7 @@ basic.toTag( \`script\`, { src });</code>
     <div>&nbsp;&nbsp;<b>Note</b>: adding unsanitized html strings to the DOM may end up in security breaches.</div>`);
   const rawScriptTag = $S`!!!<script src="${src}"></script>`;
   log(`<code>$S\`!!!&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag.escHTML).rQuot}</div>`);
-  
+
   log(`!!<b>* <i>Prevent</i> automatic sanitation using the <code>$S.sanitize</code> setter</b>
   <div>&nbsp;&nbsp;<b>Notes</b>:<ul class="sub">
       <li><div class="inline" data-target="#sanitizeSetter">See also <code>$S.sanitize</code></div></li>
@@ -248,7 +248,7 @@ $S\`&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag2.escHTM
   log(`<code>${$S`Hello World, bye world, oh World!`.wordsFirstUC}.find({ terms: [{}, \`hello\`] })</code>${
     toJSON($S`Hello World, bye world, oh World!`.wordsFirstUC.find({ terms: [{}, `Hello`] }))}`);
   /* endregion find */
-  
+
   /* region utilities */
   log(`!!<b id="utilities">Constructor (utility) getters/setters/methods</b>
     <div>The constructor contains a few utility getters/methods.
@@ -262,7 +262,7 @@ $S\`&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag2.escHTM
       <li><code>$S.currentMethods</code> a getter returns the names of all instance extension methods</li>
       <li><code>$S.sanitize</code> a setter to enable or disable HTML sanitation</li>
     </ul>`);
-  
+
   /* region extra methods/props creation */
   log(`!!<h3><code>$S.extendWith</code></h3>
   <div>Add extensions or properties to the <code>$S</code> constructor.
@@ -364,30 +364,24 @@ basic.set\`Hello {wrld}\`
   log(`<code>$S.randomString({length: 24, includeNumbers: true, includeSymbols: true, startAlphabetic: true})</code>
     <br>=> "${$S.randomString({length: 24, includeNumbers: true, includeSymbols: true, startAlphabetic: true})}"`);
   /* endregion randomString */
-  
+
   /* region uuid */
   log(`!!<h3><code>$S.uuid4</code></h3>
     <div><code>uuid4</code> is a getter, returning a random
     <a target="_blank" href="https://www.sohamkamani.com/uuid-versions-explained/#v4--randomness"
     >UUIDV4</a> string.</div>
-    <div><b>Notes</b>:</div>
-    <ul class="sub">
-      <li>your browser should support
-        <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/crypto_property#browser_compatibility"
-        >crypto</a> to be able to use this.</li>
-      <li><code>$S.uuid4</code> is chainable</li>
-    </ul>`);
+    <div><b>Note</b>: <code>$S.uuid4</code> is chainable`);
   log(`<code>[...Array(10)].map(_ => $S.uuid4)</code> =><pre>${[...Array(10)].map(_ => $S.uuid4).join(`\n`)}</pre>`);
   log(`<code>$S.uuid4.case.upper</code> ${$S.uuid4.case.upper.rQuot}`);
   /* endregion uuid */
-  
+
   /* region currentMethods */
   log(`!!<h3><code>$S.currentMethods</code></h3>
     <div><code>currentMethods</code> is a getter, returning an array containing the names of all currently
       existing instance getters/methods (including the ones you may have created), sorted alphabetically.`);
   log(`<code>$S.currentMethods</code> => [${$S.currentMethods.join(`, `)}]`);
   /* endregion currentMethods */
-  
+
   /* region setSanitize */
   log(`!!<h3 id="sanitizeSetter"><code>$S.sanitize</code></h3>
     <div>Using the <code>$S.sanitize</code> setter you can enable or disable HTML sanitation
@@ -408,9 +402,9 @@ const nothingEvil = $S\`&lt;div onclick="alert('you evil thing!')">NOT evil!&lt;
   log(`<code>evilThing.escHTML</code> => ${evilThing.escHTML}`);
   log(`<code>nothingEvil.escHTML</code> => ${nothingEvil.escHTML}`);
   /* endregion setSanitize */
-  
+
   /* endregion utilities */
-  
+
   /* region theEndMyFriend */
   log(`!!<b id="Performance">Performance</b>
     <div><b>Note</b>: also dependent on your hardware</div>`);
