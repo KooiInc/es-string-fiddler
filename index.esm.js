@@ -223,7 +223,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
   const proxifyStatics = {
     extendWith,
     regExp: createRegExp,
-    randomString,
+    randomString: strRandom,
     get currentMethods() {
       return Object.getOwnPropertyNames(proxiedGetters)
         .sort( (a, b) => a.localeCompare(b)); },
@@ -257,6 +257,11 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       set: cloneTo,
     };
     return {...defaultXs, ...extensions};
+  }
+
+
+  function strRandom(params) {
+    return proxify(randomString(params));
   }
 
   function regExp(regexStr, ...args) {
