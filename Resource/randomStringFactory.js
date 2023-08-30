@@ -2,12 +2,11 @@ const { randomString, uuid4 } = randomStringGeneratorFactory();
 export { randomString as default, randomString, uuid4 };
 
 function randomStringGeneratorFactory() {
-  const getRandomValue = () => [...crypto.getRandomValues(new Uint32Array(1))].shift() / 2**32;
-  const randomNr = window.crypto
-    ? ({min = 0, max = Number.MAX_SAFE_INTEGER} = {}) =>
-       Math.floor( getRandomValue() * (max - min + 1) + min )
-    : ({min = 0, max = Number.MAX_SAFE_INTEGER} = {}) =>
-       Math.floor(Math.random() * (max - min + 1) + min);
+  const getRandomValue = () => window.crypto
+    ? [...crypto.getRandomValues(new Uint32Array(1))].shift() / 2**32
+    : Math.random();
+  const randomNr = ({min = 0, max = Number.MAX_SAFE_INTEGER} = {}) =>
+     Math.floor( getRandomValue() * (max - min + 1) + min );
   const [range, map2Chrs, symRE] = [
     (start = 0, len = 10, reMap) => reMap && reMap instanceof Function
       ? [...Array(len)].map((_, i) => start + i).map(reMap)
