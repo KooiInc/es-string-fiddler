@@ -344,16 +344,17 @@ basic.set\`Hello {wrld}\`
   log(`!!<h3><code>$S.randomString</code></h3>
     <div>Create a random string using letters and/or number and/or symbols.
     You may use this method for example to create password strings, or random element id's.</div>
-    <p><b>Syntax</b>:</p> <code class="codeBlock">$S.randomString({
-  length: Number( default 12),
+    <p><b>Syntax</b>:<br><code class="codeBlock">$S.randomString({
+  len: Number( default 12),
   includeUppercase: bool (default true),
   includeNumbers: bool (default false),
   includeSymbols: bool (default false),
-  startAlphabetic: bool (default false) } )</code></p>`);
+  startAlphabetic: bool (default false) } )</code></p>
+  <p><b>Note</b>: <code>$S.randomString({...})</code> is chainable</p>`);
   log(`<code>$S.randomString()</code><br>=> "${$S.randomString()}"`);
-  log(`<code>$S($S.randomString({includeNumbers: true, startAlphabetic: true})).insert(\`id="\`).append(\`"\`)</code>
+  log(`<code>$S.randomString({includeNumbers: true, startAlphabetic: true}).insert(\`id="\`).append(\`"\`)</code>
     <br>=> ${
-      $S($S.randomString({includeNumbers: true, startAlphabetic: true})).insert(`id="`).append(`"`)}`);
+      $S.randomString({includeNumbers: true, startAlphabetic: true}).insert(`id="`).append(`"`)}`);
   log(`<code>$S.randomString({length: 80})</code><br>=> "${$S.randomString({length: 80})}"`);
   log(`<code>$S.randomString({includeUppercase: false, length: 48})</code><br>=> "${
     $S.randomString({includeUppercase: false, length: 48})}"`);
