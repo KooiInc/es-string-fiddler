@@ -367,7 +367,7 @@ basic.set\`Hello {wrld}\`
   /* endregion randomString */
 
   /* region uuid */
-  log(`!!<h3><code>$S.uuid4</code></h3>
+   log(`!!<h3><code>$S.uuid4</code></h3>
     <div><code>uuid4</code> is a getter, returning a random
     <a target="_blank" href="https://www.sohamkamani.com/uuid-versions-explained/#v4--randomness"
     >UUIDV4</a> string.</div>
