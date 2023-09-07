@@ -31,46 +31,45 @@ function randomStringGeneratorFactory() {
     LC,
     Nrs: shuffle(range()),
     Sym: shuffle(`!@#$%^&+*=-_;?`.split(``)),
-    getChars2Use(use) {
-      return Object.entries(use).reduce( (acc, [key, value]) =>
-        value ? [...acc, ...this[key]] : acc, LC );
-    }
   };
+  const getChars2Use =  use => Object.entries(use)
+    .reduce( (acc, [key, value]) => value ? [...acc, ...allChars[key]] : acc, LC );
 
   function uuid4() {
-    return [...new Uint8Array(16)].map(_ => randomNr({max: 255}))
-      .map( (v, i) => `${
-        (i === 8 ? v & 0b00111111 | 0b10000000 : i === 6  ? v & 0b00001111 | 0b01000000 : v)
-          .toString(16).padStart(2, `0`)}${~[3,5,7,9].indexOf(i) ? `-` : ``}` )
-      .join(``);
+    return window.crypto?.randomUUID
+      ? crypto.randomUUID()
+      : [...new Uint8Array(16)].map(_ => randomNr({max: 255}))
+          .map( (v, i) => `${
+            (i === 8 ? v & 0b00111111 | 0b10000000 : i === 6  ? v & 0b00001111 | 0b01000000 : v)
+              .toString(16).padStart(2, `0`)}${~[3,5,7,9].indexOf(i) ? `-` : ``}` )
+          .join(``);
   }
 
-  return {
-    randomString: function( {
-        len = 12,
-        includeUppercase = true,
-        includeNumbers = false,
-        includeSymbols = false,
-        startAlphabetic = false } = {} ) {
-      let chrs2Use = shuffle( allChars.getChars2Use( { UC: includeUppercase, Nrs: includeNumbers, Sym: includeSymbols } ) );
-      const rRange = shuffle(range(1, len-1));
-      while (chrs2Use.length < len) { chrs2Use = [...chrs2Use, ...shuffle(chrs2Use)]; }
-      const initial = chrs2Use.slice(0, len);
+  function randomString( {
+      len = 12,
+      includeUppercase = true,
+      includeNumbers = false,
+      includeSymbols = false,
+      startAlphabetic = false } = {} ) {
+    let chrs2Use = shuffle( getChars2Use( { UC: includeUppercase, Nrs: includeNumbers, Sym: includeSymbols } ) );
+    const rRange = shuffle(range(1, len-1));
+    do { chrs2Use = [...chrs2Use, ...shuffle(chrs2Use)]; } while (chrs2Use.length < len);
+    const initial = chrs2Use.slice(0, len);
 
-      if (includeNumbers && !initial.find(v => !isNaN(parseInt(v)))) { // at least 1 number
-        initial.splice(rRange.shift(), 1, allChars.Nrs[randomNr({max: allChars.Nrs.length})]);
-      }
+    if (includeNumbers && !initial.find(v => !isNaN(parseInt(v)))) { // at least 1 number
+      initial.splice(rRange.shift(), 1, allChars.Nrs[randomNr({max: allChars.Nrs.length})]);
+    }
 
-      if (includeSymbols && !symRE.test(initial.join(``))) { // at least 1 special char
-        initial.splice(rRange.shift(), 1, allChars.Sym[randomNr({max: allChars.Sym.length})]);
-      }
+    if (includeSymbols && !symRE.test(initial.join(``))) { // at least 1 special char
+      initial.splice(rRange.shift(), 1, allChars.Sym[randomNr({max: allChars.Sym.length})]);
+    }
 
-      if (startAlphabetic && !/^[a-z]/i.test(initial[0])) { // first alphabetic
-        initial.splice(0, 1, allChars.UCLC[randomNr({max: allChars.UCLC.length})]);
-      }
+    if (startAlphabetic && !/^[a-z]/i.test(initial[0])) { // first alphabetic
+      initial.splice(0, 1, allChars.UCLC[randomNr({max: allChars.UCLC.length})]);
+    }
 
-      return `${initial.join(``)}`;
-    },
-    uuid4,
-  };
+    return `${initial.join(``)}`;
+  }
+
+  return { randomString, uuid4, };
 }
