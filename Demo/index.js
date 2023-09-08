@@ -358,7 +358,7 @@ basic.set\`Hello {wrld}\`
   log(`<code>$S.randomString({len: 80})</code><br>=> "${$S.randomString({len: 80})}"`);
   log(`<code>$S.randomString({includeUppercase: false, len: 48})</code><br>=> "${
     $S.randomString({includeUppercase: false, len: 48})}"`);
-  log(`<code>$S.randomString({length: 32, includeNumbers: true})</code><br>=> "${
+  log(`<code>$S.randomString({len: 32, includeNumbers: true})</code><br>=> "${
     $S.randomString({len: 32, includeNumbers: true})}"`);
   log(`<code>$S.randomString({len: 24, includeNumbers: true, includeSymbols: true})</code><br>=> "${
     $S.randomString({len: 24, includeNumbers: true, includeSymbols: true})}"`);
