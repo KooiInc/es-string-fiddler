@@ -14,7 +14,6 @@ function randomStringGeneratorFactory() {
   const map2Chrs = v => String.fromCharCode(v);
   const symbols = `!?@#$%^&*=+_;-`.split(``);
   const symRE = RegExp(`[${symbols.map(v => `\\${v}`).join(``)}]`, `g`);
-  console.log(symRE);
   const shuffle = array => {
     let i = array.length;
     while (i--) {
@@ -77,7 +76,7 @@ function randomStringGeneratorFactory() {
     while (chrs2Use.length < len) { chrs2Use = [...chrs2Use, ...shuffle(chrs2Use)]; }
     let strFound;
     
-    for (let i = 0; i < chrs2Use.length; i += len) {
+    for (let i = 0; i < chrs2Use.length; i += 1) {
       strFound = chrs2Use.slice(i, i + len).join(``);
       
       if (strTest(strFound, includeNumbers, includeSymbols)) {
