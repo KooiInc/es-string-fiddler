@@ -55,14 +55,11 @@ function randomStringGeneratorFactory() {
             : true);
   }
   
-  function alphaStart(strFound, shouldSwap) {
-    if (shouldSwap) {
-      const nw = [...strFound]
-      const idx = nw.findIndex(v => /[a-z]/i.test(v));
-      [nw[0], nw[idx]] = [nw[idx], nw[0]];
-      strFound = nw.join(``);
-    }
-    return strFound;
+  function alphaSwap(strFound) {
+    const chars = [...strFound];
+    const idx = chars.findIndex(v => /[a-z]/i.test(v));
+    [chars[0], chars[idx]] = [chars[idx], chars[0]];
+    return chars.join(``);
   }
   
   function randomString( {
@@ -72,15 +69,18 @@ function randomStringGeneratorFactory() {
       includeSymbols = false,
       startAlphabetic = false } = {} ) {
     len = len < 6 ? 6 : len;
-    let chrs2Use = shuffle( getChars2Use( { UC: includeUppercase, Nrs: includeNumbers, Sym: includeSymbols } ) );
-    while (chrs2Use.length < len) { chrs2Use = [...chrs2Use, ...shuffle(chrs2Use)]; }
     let strFound;
+    let chrs2Use = shuffle( getChars2Use( { UC: includeUppercase, Nrs: includeNumbers, Sym: includeSymbols } ) );
+    
+    while (chrs2Use.length < len) { chrs2Use = [...chrs2Use, ...shuffle(chrs2Use)]; }
+    
+    if (!(includeNumbers || includeSymbols)) { return chrs2Use.slice(0, len).join(``); }
     
     for (let i = 0; i < chrs2Use.length; i += 1) {
       strFound = chrs2Use.slice(i, i + len).join(``);
       
       if (strTest(strFound, includeNumbers, includeSymbols)) {
-        return alphaStart(strFound, startAlphabetic && !/^[a-z]/i.test(strFound));
+        return startAlphabetic && !/^[a-z]/i.test(strFound) ? alphaSwap(strFound) : strFound;
       }
     }
     
