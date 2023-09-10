@@ -62,12 +62,7 @@ function randomStringGeneratorFactory() {
     return chars.join(``);
   }
   
-  function randomString( {
-      len = 12,
-      includeUppercase = true,
-      includeNumbers = false,
-      includeSymbols = false,
-      startAlphabetic = false } = {} ) {
+  function randomString( {len = 12, includeUppercase = true, includeNumbers, includeSymbols, startAlphabetic} = {} ) {
     len = len < 6 ? 6 : len;
     let strFound;
     let chrs2Use = shuffle( getChars2Use( { UC: includeUppercase, Nrs: includeNumbers, Sym: includeSymbols } ) );
