@@ -149,9 +149,8 @@ const tokens = [
     <p>It goes without saying that <code>toTag</code> will deliver a sanitized html string.
     When trying to wrap a string into an insecure tag (e.g. <code>script</code>),
     the resulting <code>$S</code>-instance will be an error message.</p>
-    <p>To <i>prevent automatic sanitation</i>, put <code>!!!</code> before the string to instantiate,
-    or use the more generic <span class="inline" data-target="#sanitizeSetter"
-    ><code>$S.sanitize</code> setter.</span></p>`);
+    <p>To <i>prevent automatic sanitation</i> use <span class="inline" data-target="#sanitizeSetter">
+      <code>$S.sanitize</code> setter.</span></p>`);
 
   log(`!!<b class="header">Sanitition when using the <code>toTag</code> method</b>`);
   const niceStr = $S`nice`.ucFirst.toTag(`b`, {onclick: "alert('hi')", style: `color: red;`}).quote.backtick;
@@ -198,11 +197,6 @@ basic.toTag( \`script\`, { src });</code>
   log(`!!<b>* With mix of invalid and valid tags, the valid tags are preserved</b>`);
   const scriptTag2 = $S`<script src="${src}"></script><span>But this will show up</span>`;
   log(`<code>$S\`&lt;script src="\${src}">&lt;/script>&lt;span>But this will show up&lt/span>\`</code><div>${scriptTag2.rQuot}</div>`);
-
-  log(`!!<b>* <i>Prevent</i> automatic sanitation once using <code>$S\`!!![...]\`</code></b>
-  <div>&nbsp;&nbsp;<b>Note</b>: adding unsanitized html strings to the DOM may end up in security breaches.</div>`);
-  const rawScriptTag = $S`!!!<script src="${src}"></script>`;
-  log(`<code>$S\`!!!&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag.escHTML).rQuot}</div>`);
 
   log(`!!<b>* <i>Prevent</i> automatic sanitation using the <code>$S.sanitize</code> setter</b>
 <div>&nbsp;&nbsp;<b>Notes</b>:<ul class="sub">
@@ -306,7 +300,7 @@ basic.set\`Hello {wrld}\`
   (see <a target="_blank" href="https://github.com/KooiInc/RegexHelper/tree/main">Github</a>)</div>
   <div><b>Note</b>: regular expressions can <i>only be created using a tagged template</i>
   (so, don't call as a function)</div>`);
-
+  $S.sanitize = false;
   const reDirect = $S.regExp`
   // A 'readable' regular expression
   (?<=N)(?<matchNumber>\d{3})
@@ -319,7 +313,7 @@ basic.set\`Hello {wrld}\`
   | (?<=YD)(?<matchYear>\d{2})
   ${[`g`]}
   //  ^ flags`;
-  const demoStr = $S`!!!
+  const demoStr = $S`
 // A 'readable' regular expression
   (?<=N)(?<matchNumber>\d{3})
 | (?<=DSC)(?<matchSeconds>\d{2})
@@ -331,13 +325,13 @@ basic.set\`Hello {wrld}\`
 | (?<=YD)(?<matchYear>\d{2})
 \${[\`g\`]}
 //  ^ flags`;
-
   log(`<code class="codeBlock">$S.regExp\`${demoStr.escHTML.wrapESComments}\`</code>
-  <div>=&gt; ${$S`!!!${reDirect}`.escHTML.wrapESComments}`);
+  <div>=&gt; ${$S`${reDirect}`.escHTML.wrapESComments}`);
 
   log(`!!<b>* Invalid result returns error message`);
   log(`<code>$S.regExp\`[a-zA-Z](error \${[\`a\`, \`g\`]}\`</code><pre>=&gt; ${
     $S.regExp`[a-zA-Z](error ${[`a`, `g`]}`}</pre>`);
+  $S.sanitize = true;
   /* endregion regex */
 
   /* region randomString */

@@ -64,16 +64,17 @@ function randomStringGeneratorFactory() {
   
   function randomString( {len = 12, includeUppercase = true, includeNumbers, includeSymbols, startAlphabetic} = {} ) {
     len = len < 6 ? 6 : len;
-    let strFound;
     let chrs2Use = shuffle( getChars2Use( { UC: includeUppercase, Nrs: includeNumbers, Sym: includeSymbols } ) );
     
     while (chrs2Use.length < len) { chrs2Use = [...chrs2Use, ...shuffle(chrs2Use)]; }
     
-    if (!(includeNumbers || includeSymbols)) { return chrs2Use.slice(0, len).join(``); }
+    let strFound = chrs2Use.slice(0, len).join(``);
+    
+    if (!(includeNumbers || includeSymbols)) { return strFound; }
     
     for (let i = 0; i < chrs2Use.length; i += 1) {
-      strFound = chrs2Use.slice(i, i + len).join(``);
-      
+       strFound = chrs2Use.slice(i, i + len).join(``);
+    
       if (strTest(strFound, includeNumbers, includeSymbols)) {
         return startAlphabetic && !/^[a-z]/i.test(strFound) ? alphaSwap(strFound) : strFound;
       }

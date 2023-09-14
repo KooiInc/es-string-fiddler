@@ -238,8 +238,8 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
   // So, best of both worlds ...
   function proxify(someStr, ...args) {
     let str = resolveTemplateString(someStr, ...args);
-    const shouldSanitize = sanitize && sanitizer && /<.+?>/gi.test(str) && !str?.trim()?.startsWith(`!!!`);
-    str = shouldSanitize ? sanitizeHTML(str, true) : str.replace(/!!!/, ``);
+    const shouldSanitize = sanitize && sanitizer && /<.+?>/gi.test(str);
+    str = shouldSanitize ? sanitizeHTML(str, true) : str;
 
     return new Proxy(new String(str), proxy);
   }
