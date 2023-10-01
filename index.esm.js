@@ -169,6 +169,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       value: str => `${str}`,
       append,
       insert,
+      prepend: (str) => str2Prepend => insert(str, str2Prepend),
       case: casingFactory,
       quote: quoteFactory,
       format,
