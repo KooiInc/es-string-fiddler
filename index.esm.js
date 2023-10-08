@@ -75,7 +75,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     const tagStr = `<${tag} ${propsStr}>${str}</${tag}>`;
 
     if (!sanitize || !doSanitize) {
-      return proxify(tagStr.replace(/\s+>/g, `>`));
+      return proxify(tagStr.replace(/<?\s+>/g, `>`));
     }
 
     const elemTest = sanitizer(
