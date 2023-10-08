@@ -75,7 +75,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     const tagStr = `<${tag} ${propsStr}>${str}</${tag}>`;
 
     if (!sanitize || !doSanitize) {
-      return proxify(tagStr);
+      return proxify(tagStr.replace(/\s+>/g, `>`));
     }
 
     const elemTest = sanitizer(
@@ -239,7 +239,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
   // So, best of both worlds ...
   function proxify(someStr, ...args) {
     let str = resolveTemplateString(someStr, ...args);
-    const shouldSanitize = sanitize && sanitizer && /<.+?>/gi.test(str);
+    const shouldSanitize = sanitize && sanitizer && /<.+?>/g.test(str);
     str = shouldSanitize ? sanitizeHTML(str, true) : str;
 
     return new Proxy(new String(str), proxy);
