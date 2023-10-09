@@ -225,6 +225,12 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     extendWith,
     regExp: createRegExp,
     randomString: strRandom,
+    rawHTML: (str, ...args) => {
+      sanitize = false;
+      const unSanitized = proxify(str, ...args);
+      sanitize = true;
+      return unSanitized;
+    },
     get currentMethods() {
       return Object.getOwnPropertyNames(proxiedGetters)
         .sort( (a, b) => a.localeCompare(b)); },
