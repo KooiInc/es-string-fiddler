@@ -150,7 +150,7 @@ const tokens = [
     When trying to wrap a string into an insecure tag (e.g. <code>script</code>),
     the resulting <code>$S</code>-instance will be an error message.</p>
     <p>To <i>prevent automatic sanitation</i> use <span class="inline" data-target="#sanitizeSetter">
-      <code>$S.sanitize</code> setter.</span></p>`);
+      <code>$S.sanitize</code> setter</span>, <b><i>or</i></b> the static method <code>$S.rawHTML</code></p>`);
 
   log(`!!<b class="header">Sanitition when using the <code>toTag</code> method</b>`);
   const niceStr = $S`nice`.ucFirst.toTag(`b`, {onclick: "alert('hi')", style: `color: red;`}).quote.backtick;
@@ -208,7 +208,11 @@ basic.toTag( \`script\`, { src });</code>
   $S.sanitize = true;
   log(`<code class="codeBlock">$S.sanitize = false;
 $S\`&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag2.escHTML).rQuot}</div>`);
-
+  
+  log(`!!<b>* <i>Prevent</i> automatic sanitation using the <code>$S.rawHTML</code> static method</b>`);
+  const rawHtmlStr = $S.rawHTML(`<script src="${src}"></script>`);
+  log(`<code>$S.rawHTML\`${rawHtmlStr.escHTML}\`</code><br>=> ${rawHtmlStr.escHTML}`);
+  
   log(`!!<b>* A <code>$S</code>-string returns, well ... the string (a <code>$S</code> instance that is)</b>`);
   const noSanity = $S`This is just a plain old fashioned string`;
   log(`<code>$S${noSanity.escHTML.quote.backtick}</code>
