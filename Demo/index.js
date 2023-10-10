@@ -209,7 +209,11 @@ basic.toTag( \`script\`, { src });</code>
   log(`<code class="codeBlock">$S.sanitize = false;
 $S\`&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag2.escHTML).rQuot}</div>`);
   
-  log(`!!<b>* <i>Prevent</i> automatic sanitation using the <code>$S.rawHTML</code> static method</b>`);
+  log(`!!<b>* <i>Prevent</i> automatic sanitation using the <code>$S.rawHTML</code> static method</b>
+    <div>&nbsp;&nbsp;<b>Note</b>:<ul class="sub">
+      <li>this can only be used on a single string (applying subsequent methods on the resulting
+      instance will revert to sanitation, use <code>$S.sanitize</code> to prevent sanitation
+      on multiple operations).</li></ul></div>`);
   const rawHtmlStr = $S.rawHTML(`<script src="${src}"></script>`);
   log(`<code>$S.rawHTML\`${rawHtmlStr.escHTML}\`</code><br>=> ${rawHtmlStr.escHTML}`);
   
