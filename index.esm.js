@@ -1,10 +1,9 @@
 import sanitizerDefault from "./Resource/SanitizerFactory.js";
 import { randomString, uuid4 } from "./Resource/randomStringFactory.js"
 const defaultHTMLSanitizer = sanitizerDefault;
-const $SFactory = XStringFactory;
-const $SNoHTML = $SFactory({sanitize: false, sanitizer: null});
+const $SRaw = XStringFactory({sanitize: false, sanitizer: null});
 const $S = XStringFactory();
-export {$S as default, $SFactory, $SNoHTML};
+export {$S as default, $SRaw as $SNoHTML, XStringFactory as $SFactory};
 
 function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaultHTMLSanitizer} = {}) {
   /* region native overrides */
@@ -48,6 +47,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       ? subString.slice(0, subString.lastIndexOf(" "))
       : subString) + endwith );
   };
+  const extract = str => (start, end) => str.slice(start || 0, end || str.length-1);
   const trimAll = str => keepLines =>
     proxify( keepLines
       ? str.trim().replace(/\n/g, `#!#`).replace(/\s{2,}/g, ` `).replace(/#!#/g, `\n`)
@@ -167,6 +167,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       lower: str => casingFactory(str).lower,
       upper: str => casingFactory(str).upper,
       value: str => `${str}`,
+      extract,
       append,
       insert,
       prepend: insert,
@@ -225,12 +226,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     extendWith,
     regExp: createRegExp,
     randomString: strRandom,
-    rawHTML: (str, ...args) => {
-      sanitize = false;
-      const unSanitized = proxify(str, ...args);
-      sanitize = true;
-      return unSanitized;
-    },
+    rawHTML: (str, ...args) => $SRaw(str, ...args),
     get currentMethods() {
       return Object.getOwnPropertyNames(proxiedGetters)
         .sort( (a, b) => a.localeCompare(b)); },
