@@ -134,7 +134,8 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       .replace(/ +>/g, `>`)
       .replace(/^\s+|\s+$/, ``));
   const insert = str => (str2Insert, at = 0) => proxify(`${str.slice(0, at > 0 ? at : at)}${str2Insert}${str.slice(at)}`);
-  const append = str => str2Append => proxify(`${str}${str2Append}`);
+  const prepend = str => (str2Prepend, ...args) => proxify(`${resolveTemplateString(str2Prepend, ...args)}${str}`)
+  const append = str => (str2Append, ...args) => proxify(`${str}${resolveTemplateString(str2Append, ...args)}`);
   const casingFactory = str => ({
     get lower() { return proxify(str.toLowerCase()); },
     get upper() { return proxify(str.toUpperCase()); },
