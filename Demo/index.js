@@ -24,6 +24,8 @@ function demo() {
   /* region initialize */
   $(`<div class="container">`).append($(`#log2screen`));
   const basic = $S``;
+  const basicRefusedFromContract1 = $S({});
+  const basicRefusedFromContract2 = $S(undefined);
   const hi = basic.set(`hello`).ucFirst;
   const hi1 = hi.set`hithere and ${hi.toLowerCase()}`;
   const tokens = [{world: `you`}, {world: `world`}, {world: `galaxy`}, {world: `universe`}];
@@ -40,14 +42,16 @@ function demo() {
   log( $S`import $S from "${importUrl}";
 // a basic empty string can be used as template
 const basic = $S\`\`;
+const basicRefusedFromContract1 = $S({});
+const basicRefusedFromContract2 = $S(undefined);
 const hi = basic.set\`hello\`.ucFirst;
 const hi1 = hi.set\`hithere and \${hi.case.lower}\`;
 // tokens to use with .format
 const tokens = [
-{world: \`you\`},
-{world: \`world\`},
-{world: \`galaxy\`},
-{world: \`universe\`}, ];`
+  {world: \`you\`},
+  {world: \`world\`},
+  {world: \`galaxy\`},
+  {world: \`universe\`}, ];`
     .toCodeBlock
     .wrapESComments
     .insert(`!!`)
@@ -65,6 +69,8 @@ const tokens = [
 
   log(`!!<b>Initial values</b>`);
   log(`<code>basic</code> ${basic.rQuot}<br>
+    <code>basicRefusedFromContract1</code> ${basicRefusedFromContract1.rQuot} (see console)<br>
+    <code>basicRefusedFromContract2</code> ${basicRefusedFromContract2.rQuot} (see console)<br>
     <code>hi</code> ${hi.rQuot}<br>
     <code>hi1</code> ${hi1.rQuot}<br>
     <code>basic.isProxied</code> ${basic.isProxied}`);
@@ -199,7 +205,7 @@ basic.toTag( \`script\`, { src });</code>
   log(`<code>$S\`&lt;script src="\${src}">&lt;/script>&lt;span>But this will show up&lt/span>\`</code><div>${scriptTag2.rQuot}</div>`);
 
   log(`!!<b>* <i>Prevent</i> automatic sanitation using the <code>$S.sanitize</code> setter</b>
-<div>&nbsp;&nbsp;<b>Notes</b>:<ul class="sub">
+  <div>&nbsp;&nbsp;<b>Notes</b>:<ul class="sub">
     <li><div class="inline" data-target="#sanitizeSetter">See also <code>$S.sanitize</code></div></li>
     <li>adding unsanitized html strings to the DOM may end up in security breaches.</li>
   </ul>`);
@@ -225,12 +231,28 @@ $S\`&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag2.escHTM
 (a string, an Array of strings or a regular expression) and <code>caseSensitive</code>
 (a boolean, default false). It returns an object:
 ${$S`{ searched4: string // the term searched for,
-hits: Number, // the number of hits,
-result: Object {
-  term: string,  // found term
-  at: Array, // position(s) of term found in string
-},
-}`.toCodeBlock.wrapESComments}</div>`);
+  hits: Number, // the number of hits,
+  result: Object {
+    term: string,  // found term
+    at: Array, // position(s) of term found in string
+  },
+}`.toCodeBlock.wrapESComments}
+<div><b>Note</b>:<ul class="sub">
+    <li>
+      The native <code>String.prototype.indexOf</code> and <code>String.prototype.lastIndexOf</code>
+      methods return -1 when nothing is found. These methods are overridden for a $S instance:
+      both now return either <code>undefined</code> if nothing is found or the index of the found
+      substring. See <a href="https://youtu.be/99Zacm7SsWQ?t=2101"
+      target="_blank">this video</a> for an explanation. The first two examples demonstrate this
+      for <code>.indexOf</code>.
+    </li>
+  </ul></div>`);
+  log(`instead of <code>$S\`Hello World, bye world, oh World!\`.indexOf(\`wrrld\`) > -1 || \`NOT FOUND\`</code>
+  <br>  we now can use
+  <br><code>$S\`Hello World, bye world, oh World!\`.indexOf(\`wrrld\`) ?? \`NOT FOUND!\</code>
+  <br>=> ${$S`Hello World, bye world, oh World!`.indexOf(`wrrld`) ?? `NOT FOUND!`}`);
+  log(`<code>$S\`Hello World, bye world, oh World!\`.indexOf(\`world\`)</code><br>
+  => ${$S`Hello World, bye world, oh World!`.indexOf(`world`)}`);
   log(`<code>$S\`Hello world, bye world, oh world!\`.find({ terms:['world', 'oh'] })</code>${
     toJSON($S`Hello world, bye world, oh world!`.find({terms: ['world', 'oh']}))}`);
   log(`<code>$S\`Hello world, bye world, oh world!\`.find({ terms: 'world' })</code>
