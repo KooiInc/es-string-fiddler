@@ -125,6 +125,15 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       : {};
     return { searched4: termsIsRE ? terms.toString() : terms.join(`, `), foundAny, hits, result };
   };
+  // SEE https://youtu.be/99Zacm7SsWQ?t=2101
+  const indexOf = str => findMe => {
+    const index = str.indexOf(findMe);
+    return index < 0 ? undefined : index;
+  };
+  const lastIndexOf = str => findMe => {
+    const index = str.lastIndexOf(findMe);
+    return index < 0 ? undefined : index;
+  };
   const compressHTML = str =>
     proxify(str.replace(/[\n\r]/g, ``)
       .replace(/\s{2,}/g, ` `)
@@ -182,6 +191,8 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       compressHTML,
       trimAll,
       find,
+      indexOf,
+      lastIndexOf,
     }),
     ...nativeOverrides
   };
@@ -237,16 +248,30 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
 
   Object.entries(Object.getOwnPropertyDescriptors(proxifyStatics))
     .forEach( ([key, descriptor]) => { Object.defineProperty(proxify, key, descriptor); } );
-
+  
+  function isStringOrArrayOfStrings(str) {
+    return str?.constructor === String
+      || str && Array.isArray(str) && !str.find(s => s?.constructor !== String);
+  }
+  
+  function byContract(str, ...args) {
+    const isMet = str?.isProxied || isStringOrArrayOfStrings(str)
+      && (Array.isArray(args) || !args);
+    if (!isMet) { console.info(`✘ Contract not met: input [${String(str)}] is not a (template) string`)};
+    return !isMet ? `` : resolveTemplateString(str, ...args);
+  }
+  
   // Can be used either as tagged template (function) or a regular function receiving a string
   // So, best of both worlds ...
+  // 2023/10/19 By contract: input MUST be a string or a template string now
   function proxify(someStr, ...args) {
-    let str = resolveTemplateString(someStr, ...args);
-    const shouldSanitize = sanitize && sanitizer && /<.+?>/g.test(str);
+    let str = byContract(someStr, ...args);
+    const shouldSanitize = sanitize && sanitizer && /<.+?>/gi.test(str);
     str = shouldSanitize ? sanitizeHTML(str, true) : str;
-
+    
     return new Proxy(new String(str), proxy);
   }
+
 
   return proxify;
   /* endregion proxifier */
