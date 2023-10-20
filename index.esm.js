@@ -254,7 +254,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
   function byContract(str, ...args) {
     const isMet = isStringOrArrayOfStrings(str);
     if (!isMet) { console.info(`✘ Contract not met: input [${String(str)}] is not a (template) string`)};
-    return !isMet ? `` : str.raw ? resolveTemplateString(str, ...args) : str;
+    return !isMet ? `` : resolveTemplateString(str, ...args);
   }
   
   // Can be used either as tagged template (function) or a regular function receiving a string
