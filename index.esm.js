@@ -221,11 +221,9 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
       return Object.getOwnPropertyDescriptor(proxiedGetters, prop) ?? Object.getOwnPropertyDescriptor(target, prop);
     },
   };
-
+  
   function resolveTemplateString(str, ...args) {
-    return new String(Array.isArray(str) && args.length
-      ? str.reduce( (acc, v, i) => acc?.concat(`${v}${args[i] ?? ``}`) || acc, ``)
-      : str);
+    return str.raw ? str.reduce( (acc, v, i) => acc?.concat(`${v}${args[i] ?? ``}`) || acc, ``) : str;
   }
 
   function extendWith(name, fn, isMethod = false) {
@@ -250,15 +248,13 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
     .forEach( ([key, descriptor]) => { Object.defineProperty(proxify, key, descriptor); } );
   
   function isStringOrArrayOfStrings(str) {
-    return str?.constructor === String
-      || str && Array.isArray(str) && !str.find(s => s?.constructor !== String);
+    return str?.isProxied || str?.constructor === String || str?.raw;
   }
   
   function byContract(str, ...args) {
-    const isMet = str?.isProxied || isStringOrArrayOfStrings(str)
-      && (Array.isArray(args) || !args);
+    const isMet = isStringOrArrayOfStrings(str);
     if (!isMet) { console.info(`✘ Contract not met: input [${String(str)}] is not a (template) string`)};
-    return !isMet ? `` : resolveTemplateString(str, ...args);
+    return !isMet ? `` : str.raw ? resolveTemplateString(str, ...args) : str;
   }
   
   // Can be used either as tagged template (function) or a regular function receiving a string
