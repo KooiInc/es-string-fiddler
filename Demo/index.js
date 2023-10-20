@@ -297,26 +297,27 @@ ${$S`{ searched4: string // the term searched for,
   $S.extendWith(`logAdd`, (str, ...args) => { log(str + args.join(``)); return str; }, true);
 
   log($S`<code class="codeBlock">$S.extendWith(\`log\`, str => {
-log(str);
-return str;
-} );
+    log(str);
+    return str;
+  } );
 // apply
 basic.set\`\${hi}\`.log.append\` world\`.toTag(\`b\`).toTag(\`i\`).log;</code>`.wrapESComments);
+  
   basic.set`${hi}`.log.append` world`.toTag(`b`).toTag(`i`).log;
-
+  
   log($S`<code class="codeBlock">$S.extendWith( \`logAdd\`, (str, ...args) => {
-log(str + args.join(\`\`));
-return str;
-}, true );
+      log(str + args.join(\`\`));
+      return str;
+    }, true );
 // apply
 basic.set\`Hello {wrld}\`
-.logAdd\` (unformatted)\`
-.format({wrld: \`world\`})
-.toTag(\`b\`)
-.toTag(\`i\`)
-.logAdd(\`( \`, \`formatted with \`, \`{wrld: "world"}\`, \`)\`)</code>`.wrapESComments);
+  .logAdd\` (unformatted)\`
+  .format({wrld: \`world\`})
+  .toTag(\`b\`)
+  .toTag(\`i\`)
+  .logAdd(\`( \`, \`formatted with \`, \`{wrld: "world"}\`, \`)\`)</code>`.wrapESComments);
   basic.set`Hello {wrld}`.logAdd` (unformatted)`.format({wrld: `world`})
-    .toTag(`b`).toTag(`i`).logAdd(` (`, `formatted with `, `{wrld: "world"}`, `)` );
+      .toTag(`b`).toTag(`i`).logAdd(` (`, `formatted with `, `{wrld: "world"}`, `)` );
 
   /* endregion xtraMethods */
 
