@@ -329,8 +329,20 @@ basic.set\`Hello {wrld}\`
   (so, don't call as a function)</div>`);
   $S.sanitize = false;
   const reDirect = $S.regExp`
+    // A 'readable' regular expression
+    (?<=N)(?<matchNumber>\d{3})
+    | (?<=DSC)(?<matchSeconds>\d{2})
+    | (?<=MC)(?<matchMinutes>\d{2})
+    | (?<=HC)(?<matchHours>\d{2})
+    | (?<=DD)(?<matchDay>\d{2})
+    | (?<=MD)(?<matchMonth>\d{2})
+    | (?<=NOTHING)(?<matchNoMatch>\d{2})
+    | (?<=YD)(?<matchYear>\d{2})
+    ${[`g`]}
+    //  ^ flags`;
+  const demoStr = $S`
   // A 'readable' regular expression
-  (?<=N)(?<matchNumber>\d{3})
+    (?<=N)(?<matchNumber>\d{3})
   | (?<=DSC)(?<matchSeconds>\d{2})
   | (?<=MC)(?<matchMinutes>\d{2})
   | (?<=HC)(?<matchHours>\d{2})
@@ -338,20 +350,8 @@ basic.set\`Hello {wrld}\`
   | (?<=MD)(?<matchMonth>\d{2})
   | (?<=NOTHING)(?<matchNoMatch>\d{2})
   | (?<=YD)(?<matchYear>\d{2})
-  ${[`g`]}
+  \${[\`g\`]}
   //  ^ flags`;
-  const demoStr = $S`
-// A 'readable' regular expression
-  (?<=N)(?<matchNumber>\d{3})
-| (?<=DSC)(?<matchSeconds>\d{2})
-| (?<=MC)(?<matchMinutes>\d{2})
-| (?<=HC)(?<matchHours>\d{2})
-| (?<=DD)(?<matchDay>\d{2})
-| (?<=MD)(?<matchMonth>\d{2})
-| (?<=NOTHING)(?<matchNoMatch>\d{2})
-| (?<=YD)(?<matchYear>\d{2})
-\${[\`g\`]}
-//  ^ flags`;
   log(`<code class="codeBlock">$S.regExp\`${demoStr.escHTML.wrapESComments}\`</code>
   <div>=&gt; ${$S`${reDirect}`.escHTML.wrapESComments}`);
 
@@ -366,11 +366,11 @@ basic.set\`Hello {wrld}\`
   <div>Create a random string using letters and/or number and/or symbols.
   You may use this method for example to create password strings, or random element id's.</div>
   <p><b>Syntax</b>:<br><code class="codeBlock">$S.randomString({
-len: Number( default 12),
-includeUppercase: bool (default true),
-includeNumbers: bool (default false),
-includeSymbols: bool (default false),
-startAlphabetic: bool (default false) } )</code></p>
+  len: Number( default 12),
+  includeUppercase: bool (default true),
+  includeNumbers: bool (default false),
+  includeSymbols: bool (default false),
+  startAlphabetic: bool (default false) } )</code></p>
 <ul class="sub"><li><code>$S.randomString({...})</code> is chainable</li>
   <li>The <i>minimum</i> generated string length (len) is 6</li></ul>`);
   log(`<code>$S.randomString()</code><br>=> "${$S.randomString()}"`);
