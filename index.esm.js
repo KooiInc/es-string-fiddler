@@ -223,9 +223,9 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
   };
   
   function resolveTemplateString(str, ...args) {
-    return str.raw ? str.reduce( (acc, v, i) => acc?.concat(`${v}${args[i] ?? ``}`) || acc, ``) : str;
+    return str.raw ?  String.raw({ raw: str }, ...args) : str;
   }
-
+  
   function extendWith(name, fn, isMethod = false) {
     proxiedGetters[name] = str => isMethod
       ? (...args) => proxify(fn(str, ...args))
@@ -253,7 +253,7 @@ function XStringFactory({sanitize = true, silentFail = false, sanitizer = defaul
   
   function byContract(str, ...args) {
     const isMet = isStringOrArrayOfStrings(str);
-    if (!isMet) { console.info(`✘ Contract not met: input [${String(str)}] is not a (template) string`)};
+    if (!isMet) { console.info(`✘ String contract not met: input [${String(str)?.slice(0, 15)}] is not a (template) string`)};
     return !isMet ? `` : resolveTemplateString(str, ...args);
   }
   
