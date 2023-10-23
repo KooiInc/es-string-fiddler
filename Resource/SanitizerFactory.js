@@ -1,4 +1,4 @@
-import tagsInfo from "./htmlInfo.js";
+import tagsInfo from "./HTMLInfo.js";
 export default sanitizeHTMLFactory();
 
 function sanitizeHTMLFactory() {

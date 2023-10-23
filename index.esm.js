@@ -1,6 +1,6 @@
 import xtensions from "./Resource/Extensions.js";
 import defaultHTMLSanitizer from "./Resource/SanitizerFactory.js";
-import { randomString, uuid4 } from "./Resource/randomStringFactory.js"
+import { randomString, uuid4 } from "./Resource/RandomStringFactory.js"
 import proxyHelpers from "./Resource/ProxyHelpers.js";
 
 const $SRaw = XStringFactory({sanitize: false, sanitizer: undefined});
