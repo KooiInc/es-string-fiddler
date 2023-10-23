@@ -3,7 +3,7 @@ import defaultHTMLSanitizer from "./Resource/SanitizerFactory.js";
 import { randomString, uuid4 } from "./Resource/randomStringFactory.js"
 import proxyHelpers from "./Resource/ProxyHelpers.js";
 
-const $SRaw = XStringFactory({sanitize: false, sanitizer: null});
+const $SRaw = XStringFactory({sanitize: false, sanitizer: undefined});
 const $S = XStringFactory();
 
 export {$S as default, $SRaw as $SNoHTML, XStringFactory as $SFactory};
