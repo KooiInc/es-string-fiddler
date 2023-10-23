@@ -455,10 +455,10 @@ function testPerf(log) {
     tmpArr.push($S`${strings[Math.floor(Math.random()*len)]}`);
   }
   const lasted = (performance.now() - now)/1000;
-  log(`Created ${(nTests).toLocaleString(`nl`)} <code>$S</code> instances using 4 random string values
-  and pushed to a temporary Array.<br>Including overhead for pushing and random string selection that took ${
-    lasted.toFixed(3)} seconds (${(lasted/nTests).toFixed(7)} seconds/instance).`);
-  log(`!!<b>* Random string values used</b><pre>${strings.map(v => $S(v).escHTML).join(`\n`)}</pre>`);
+  log(`Created ${(nTests).toLocaleString(`nl`)} <code>$S</code> instances using 4 (randomly chosen)
+    string values and pushed to a temporary Array. Including overhead for pushing and random string
+    selection that took ${lasted.toFixed(3)} seconds (${(lasted/nTests).toFixed(7)} seconds/instance).`);
+  log(`!!<b>* Test string values used</b><pre>${strings.map(v => $S(v).escHTML).join(`\n`)}</pre>`);
 }
 /* endregion testPerformance */
 
