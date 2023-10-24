@@ -356,8 +356,8 @@ basic.set\`Hello {wrld}\`
   
   log(`!!<b>* Invalid result returns error message`);
   const reError = $S`$S.regExp\`[a-z](?<letterFollowedBynumber>\d+)\${["a", "g"]})\``.escHTML;
-  const reErrorResult = $S.rawHTML($S.regExp`[a-z](?<letterFollowedBynumber>\d+)${[`a`, `g`]}`).escHTML;
-  log(`<code>${reError}</code><pre>=&gt; ${reErrorResult}</pre>`);
+  const reErrorResult = $S( $S.regExp`[a-z](?<letterFollowedBynumber>\d+)${[`a`, `g`]}` );
+  log(`<code>${reError}</code><pre>=&gt; ${reErrorResult.escHTML}</pre>`);
   $S.sanitize = true;
   /* endregion regex */
   
