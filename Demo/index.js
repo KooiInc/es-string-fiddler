@@ -20,7 +20,7 @@ function demo() {
   log(`!!<h3>Play with the demo code <a target="_blank" href="https://stackblitz.com/edit/web-platform-gxttr1?file=index.js"
     >@StackBlitz</a></h3>`);
   log(`!!<h2 id="inits">EcmaScript (ES) <code>String</code> manipulation using ES <code>Proxy</code></h2>`);
-
+  
   /* region initialize */
   $(`<div class="container">`).append($(`#log2screen`));
   const basic = $S``;
@@ -36,7 +36,7 @@ function demo() {
   $S.extendWith(`toCode`, str => `<code>${str}</code>`);
   $S.extendWith(`toCodeBlock`, str => `<code class="codeBlock">${str}</code>`);
   /* endregion initialize */
-
+  
   /* region initiate variables*/
   log(`!!<b id="initiate">Initiate, assign some variables</b></h3>`);
   log( $S`import $S from "${importUrl}";
@@ -66,7 +66,7 @@ const tokens = [
       <li>for this example <code>$S</code> is also available in the developer console
         (when loaded in stackblitz, first click 'Open in New Tab' above the preview frame).</li>
     </ul>` );
-
+  
   log(`!!<b>Initial values</b>`);
   log(`<code>basic</code> ${basic.rQuot}<br>
     <code>basicRefusedFromContract1</code> ${basicRefusedFromContract1.rQuot} (see console)<br>
@@ -75,7 +75,7 @@ const tokens = [
     <code>hi1</code> ${hi1.rQuot}<br>
     <code>basic.isProxied</code> ${basic.isProxied}`);
   /* endregion initiate */
-
+  
   /* region manipulate instances */
   log(`!!<b id="manipulate">Manipulate strings</b></h3>`);
   log( $S`hi1
@@ -100,20 +100,20 @@ const tokens = [
   log(`<code>camelCased.toDashedNotation</code><div>${camelCased.toDashedNotation.rQuot}</div>`);
   log(`<code>$S(\`$S called as {rf}\`).format({rf: \`regular function (&lt;code>$S([string])&lt;/code>)\`})</code>
   <div>${$S(`$S called as {rf}`).format({rf: `regular function (<code>$S([string])</code>)`}).rQuot}`);
-
+  
   log(`<code>$S\`nice\`.ucFirst.toTag(\`b\`, {style: \`color: red;\`}).quote.backtick</code><div>=&gt; ${
     $S`nice`.ucFirst.toTag(`b`, {style: `color: red;`}).quote.backtick}</div>`);
-
+  
   log(`<code>$S\`Hello world, o cruel world\`.replaceWords('world', 'universe')</code><div>${
     $S`Hello world, o cruel world`.replaceWords('world', 'universe').rQuot}`);
   const yada2 = $S`yada `.repeat(14).ucFirst.trimEnd();
   log(`<code>const yada2 = $S\`yada \`.repeat(14).ucFirst;</code><div>${yada2.trim().rQuot}</div>`,
-    `<code>yada2.truncate({at: 38}).toTag(\`i\)</code><div>${
+    `<code>yada2.truncate({at: 38}).toTag(\`i\`)</code><div>${
       yada2.truncate({at: 38}).toTag(`i`).rQuot}`);
-  log(`<code>yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(\`b\)</code><div>${
+  log(`<code>yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(\`b\`)</code><div>${
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
   /* endregion manipulate */
-
+  
   /* region combine native methods with extensions */
   log(`!!<b id="chainEtc">Use/chain/combine native/custom methods</b>`,
     `<code>const yada2 = $S\`yada \`.repeat(14).ucFirst.trimEnd();</code><div>${yada2.rQuot}</div>`,
@@ -124,7 +124,7 @@ const tokens = [
   log(`<code>yada2.trim().toUpperCase().case.camel.toTag(\`div\`, {style:\`text-indent:1rem\`})</code> ${
     yada2.trim().toUpperCase().case.camel.rQuot.toTag(`div`, {style:`text-indent:1rem`})}`)
   /* endregion useCombine */
-
+  
   /* region format (aka interpolate)*/
   log(`!!<b id="format">Format with tokens</b>
 (see <a target="_blank" href="https://github.com/KooiInc/StringInterpolator">Github</a>)</div>`);
@@ -135,7 +135,7 @@ const tokens = [
 .toTag(\`ul\`, {class: \`sub\`, id: \`formatted\`})</code>${
     $S`\n  <li> ${hi} {world} </li>`.format(...tokens).toTag(`ul`, {class: `sub`, id: `formatted`}) }`);
   /* endregion format */
-
+  
   /* region html Escape/Compress */
   log(`!!<b id="escHtml">HTML (escape/compress)</b>`);
   log(`!!* <code>escHTML</code>`,
@@ -145,7 +145,7 @@ const tokens = [
     `<code>$S(document.querySelector('ul#formatted').outerHTML).compressHTML.escHTML.quote.double</code> =&gt;
       <pre class="ws">${$S($(`ul#formatted`).HTML.get(1)).compressHTML.escHTML.quote.double}</pre>`);
   /* endregion htmlEscCompress */
-
+  
   /* region HTML Sanitizer */
   log(`!!<b id="sanitation">HTML (sanitation)</b> (<code>toTag</code> or directly).
     <p><i class="red">All <code>$S</code> instances</i> are checked for HTML inside it. If a string
@@ -157,53 +157,53 @@ const tokens = [
     the resulting <code>$S</code>-instance will be an error message.</p>
     <p>To <i>prevent automatic sanitation</i> use <span class="inline" data-target="#sanitizeSetter">
       <code>$S.sanitize</code> setter</span>, <b><i>or</i></b> the static method <code>$S.rawHTML</code></p>`);
-
+  
   log(`!!<b class="header">Sanitition when using the <code>toTag</code> method</b>`);
   const niceStr = $S`nice`.ucFirst.toTag(`b`, {onclick: "alert('hi')", style: `color: red;`}).quote.backtick;
   log(`<code>$S\`nice\`.ucFirst.toTag(\`b\`, {onclick: "alert('hi')",style: \`color: red;\`}).quote.backtick</code><div>=&gt; ${
     niceStr} Sanitized: <code>onclick</code> removed =&gt; ${niceStr.escHTML}</div>`);
-
+  
   const src = URL.createObjectURL(
     new Blob(
       [`alert("hithere!")`],
       { type: `application/javascript` } ) );
-
+  
   log(`<code class="codeBlock">const src = URL.createObjectURL(
 new Blob(
   [\`alert("hithere!")\`],
   { type: \`application/javascript\` } ) );
 basic.toTag( \`script\`, { src });</code>
 <div>Sanitized with error message:<br>=&gt; ${basic.toTag(`script`, {src})}</div>`);
-
+  
   const blockToLog = basic.set`<script>function runMe() { alert("hi!"); }</script><b onclick="javascript:runMe()">Hello!</b>`.toTag(`span`);
   log(`<code>basic.set\`&lt;script>function runMe() { alert("hi!"); }&lt;/script>&lt;b onclick="javascript:runMe()">Hello!&lt;/b>\`.toTag( \`span\`);</code>
   <div>Sanitized (script tag/onclick removed): ${blockToLog} =&gt; ${blockToLog.escHTML}</div>`);
-
+  
   log(`!!<b class="header">Default sanitation of <code>$S</code>-instances</b>`);
   const sane = $S`<span mytag="removed" onclick="alert('removed')" class="xyz"><b style="color: red">Hello!</b></span>`;
   log(`<code class="codeBlock">\$S\`
 &lt;span mytag="removed" onclick="alert('removed')" class="xyz">
-&lt;b style="color: red">Hello!&lt;/b>
+  &lt;b style="color: red">Hello!&lt;/b>
 &lt;/span>\`</code>
   ${sane} Sanitized ${sane.escHTML.rQuot}`);
-
+  
   const xcript = $S`<span style="color:steelblue"><script></script>Hithere!</span>`;
   log(`<code>$S\`&lt;span style="color:steelblue">&lt;script>&lt;/script>Hithere&lt;/span>\`</code>
   <div>${xcript} Sanitized ${xcript.escHTML.rQuot}</div>`);
-
+  
   const tagsWithin = $S`A string <i>containing <b>tags</b></i> <span onclick="javascript:sayHi()">will be sanitized</span>`;
   log(`!!<b>* Sanitizing a string with some html within</b>`);
   log(`<code>$S\`A string &lt;i>containing &lt;b>tags&lt;/b>&lt;/i> &lt;span onclick="javascript:sayHi()">will be sanitized&lt;/span>\`</code>
   <div>${tagsWithin}<br>Sanitized: ${tagsWithin.escHTML.rQuot}</div>`);
-
+  
   log(`!!<b>* Error message when creating an single invalid (root level) tag</b>`);
   const scriptTag = $S`<script src="${src}"></script>`;
   log(`<code>$S\`&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(scriptTag).rQuot}</div>`);
-
+  
   log(`!!<b>* With mix of invalid and valid tags, the valid tags are preserved</b>`);
   const scriptTag2 = $S`<script src="${src}"></script><span>But this will show up</span>`;
   log(`<code>$S\`&lt;script src="\${src}">&lt;/script>&lt;span>But this will show up&lt/span>\`</code><div>${scriptTag2.rQuot}</div>`);
-
+  
   log(`!!<b>* <i>Prevent</i> automatic sanitation using the <code>$S.sanitize</code> setter</b>
   <div>&nbsp;&nbsp;<b>Notes</b>:<ul class="sub">
     <li><div class="inline" data-target="#sanitizeSetter">See also <code>$S.sanitize</code></div></li>
@@ -224,7 +224,7 @@ $S\`&lt;script src="\${src}">&lt;/script>\`</code><div>${$S(rawScriptTag2.escHTM
   log(`<code>$S${noSanity.escHTML.quote.backtick}</code>
   <div>${noSanity.rQuot}</div>`);
   /* endregion HTMLSanitize */
-
+  
   /* region find */
   log(`!!<b id="find">Find in string</b>`);
   log(`!!<div><code>[xstring].find</code> receives an object with keys <code>terms</code>
@@ -268,7 +268,7 @@ ${$S`{ searched4: string // the term searched for,
   log(`<code>${$S`Hello World, bye world, oh World!`.wordsFirstUC}.find({ terms: [{}, \`hello\`] })</code>${
     toJSON($S`Hello World, bye world, oh World!`.wordsFirstUC.find({ terms: [{}, `Hello`] }))}`);
   /* endregion find */
-
+  
   /* region utilities */
   log(`!!<b id="utilities">Constructor (utility) getters/setters/methods</b>
   <div>The constructor contains a few utility getters/methods.
@@ -282,7 +282,7 @@ ${$S`{ searched4: string // the term searched for,
     <li><code>$S.currentMethods</code> a getter returns the names of all instance extension methods</li>
     <li><code>$S.sanitize</code> a setter to enable or disable HTML sanitation</li>
   </ul>`);
-
+  
   /* region extra methods/props creation */
   log(`!!<h3><code>$S.extendWith</code></h3>
 <div>Add extensions or properties to the <code>$S</code> constructor.
@@ -295,7 +295,7 @@ ${$S`{ searched4: string // the term searched for,
   </ul>`);
   $S.extendWith(`log`, str => { log(str); return str; });
   $S.extendWith(`logAdd`, (str, ...args) => { log(str + args.join(``)); return str; }, true);
-
+  
   log($S`<code class="codeBlock">$S.extendWith(\`log\`, str => {
     log(str);
     return str;
@@ -317,10 +317,10 @@ basic.set\`Hello {wrld}\`
   .toTag(\`i\`)
   .logAdd(\`( \`, \`formatted with \`, \`{wrld: "world"}\`, \`)\`)</code>`.wrapESComments);
   basic.set`Hello {wrld}`.logAdd` (unformatted)`.format({wrld: `world`})
-      .toTag(`b`).toTag(`i`).logAdd(` (`, `formatted with `, `{wrld: "world"}`, `)` );
-
+    .toTag(`b`).toTag(`i`).logAdd(` (`, `formatted with `, `{wrld: "world"}`, `)` );
+  
   /* endregion xtraMethods */
-
+  
   /* region regex */
   log(`!!<h3><code>$S.regExp</code></h3>
   <div>Create a regular expression from a multiline string
@@ -328,7 +328,7 @@ basic.set\`Hello {wrld}\`
   <div><b>Note</b>: regular expressions can <i>only be created using a tagged template</i>
   (so, don't call as a function)</div>`);
   $S.sanitize = false;
-  const reDirect = $S.regExp`
+  const regExample = $S.regExp`
     // A 'readable' regular expression
     (?<=N)(?<matchNumber>\d{3})
     | (?<=DSC)(?<matchSeconds>\d{2})
@@ -340,7 +340,7 @@ basic.set\`Hello {wrld}\`
     | (?<=YD)(?<matchYear>\d{2})
     ${[`g`]}
     //  ^ flags`;
-  const demoStr = $S`
+  const demoStr = $S($S.rawHTML`\$S.regExp\`
   // A 'readable' regular expression
     (?<=N)(?<matchNumber>\d{3})
   | (?<=DSC)(?<matchSeconds>\d{2})
@@ -351,16 +351,15 @@ basic.set\`Hello {wrld}\`
   | (?<=NOTHING)(?<matchNoMatch>\d{2})
   | (?<=YD)(?<matchYear>\d{2})
   \${[\`g\`]}
-  //  ^ flags`;
-  log(`<code class="codeBlock">$S.regExp\`${demoStr.escHTML.wrapESComments}\`</code>
-  <div>=&gt; ${$S`${reDirect}`.escHTML.wrapESComments}`);
-
+  //  ^ flags`.escHTML).toCodeBlock.wrapESComments;
+  log(`${demoStr}<div>=&gt; ${$S.rawHTML`${regExample}`.escHTML}`);
+  
   log(`!!<b>* Invalid result returns error message`);
-  log(`<code>$S.regExp\`[a-zA-Z](error \${[\`a\`, \`g\`]}\`</code><pre>=&gt; ${
-    $S.regExp`[a-zA-Z](error ${[`a`, `g`]}`}</pre>`);
+  log(`<code>$S.regExp\`[a-zA-Z](error \${[\`a\`, \`g\`]})\`</code><pre>=&gt; ${
+    $S.regExp`[a-zA-Z](error ${[`a`, `g`]})`}</pre>`);
   $S.sanitize = true;
   /* endregion regex */
-
+  
   /* region randomString */
   log(`!!<h3><code>$S.randomString</code></h3>
   <div>Create a random string using letters and/or number and/or symbols.
@@ -389,7 +388,7 @@ basic.set\`Hello {wrld}\`
   log(`<code>$S.randomString({len: 4, includeNumbers: true, includeSymbols: true, startAlphabetic: true})</code>
   <br>=> "${$S.randomString({len: 4, includeNumbers: true, includeSymbols: true, startAlphabetic: true})}" (minimum length 6)`);
   /* endregion randomString */
-
+  
   /* region uuid */
   log(`!!<h3><code>$S.uuid4</code></h3>
   <div><code>uuid4</code> is a getter, returning a random
@@ -399,14 +398,14 @@ basic.set\`Hello {wrld}\`
   log(`<code>[...Array(10)].map(_ => $S.uuid4)</code> =><pre>${[...Array(10)].map(_ => $S.uuid4).join(`\n`)}</pre>`);
   log(`<code>$S.uuid4.case.upper</code> ${$S.uuid4.case.upper.rQuot}`);
   /* endregion uuid */
-
+  
   /* region currentMethods */
   log(`!!<h3><code>$S.currentMethods</code></h3>
   <div><code>currentMethods</code> is a getter, returning an array containing the names of all currently
     existing instance getters/methods (including the ones you may have created), sorted alphabetically.`);
   log(`<code>$S.currentMethods</code> => [${$S.currentMethods.join(`, `)}]`);
   /* endregion currentMethods */
-
+  
   /* region setSanitize */
   log(`!!<h3 id="sanitizeSetter"><code>$S.sanitize</code></h3>
   <div>Using the <code>$S.sanitize</code> setter you can enable or disable HTML sanitation
@@ -427,9 +426,9 @@ const nothingEvil = $S\`&lt;div onclick="alert('you evil thing!')">NOT evil!&lt;
   log(`<code>evilThing.escHTML</code> => ${evilThing.escHTML}`);
   log(`<code>nothingEvil.escHTML</code> => ${nothingEvil.escHTML}`);
   /* endregion setSanitize */
-
+  
   /* endregion utilities */
-
+  
   /* region theEndMyFriend */
   log(`!!<b id="Performance">Performance</b>
   <div><b>Note</b>: also dependent on your hardware</div>`);
@@ -472,10 +471,10 @@ function createContent() {
     const target = $(me.data.all.target);
     container.scrollTo(0, container.scrollTop + Math.round(target.dimensions.top) - 12);
   });
-
+  
   const contentDiv = $.virtual(
     `<div class="content" id="content"><h3>Content</h3><ul></ul></div>`, $.node(`#inits`), `afterend`);
-
+  
   const ul = contentDiv.find$(`ul`);
   $(`b[id]`).each( chapter => {
     chapter = $(chapter);
@@ -497,90 +496,82 @@ function setStyling() {
     `.container { position: absolute; inset: 0; overflow-y: auto; }`,
     `.head div, .head pre, pre {font-weight: normal; color: #777}`,
     `.head b[id], .head b.header {
-    cursor: pointer;
-    font-size: 1.2em;
-    line-height: 1.5rem;
-    display: inline-block;
-    margin-top: 0.5rem
-  }`,
+      cursor: pointer;
+      font-size: 1.2em;
+      line-height: 1.5rem;
+      display: inline-block;
+      margin-top: 0.5rem }`,
     `@media (width > 1600px) {
-    code.codeblock {
-      width: 40vw;
-    }
-    ul#log2screen, #log2screen .content { max-width: 40vw; }
-  }`,
+    code.codeblock { width: 40vw;  }
+    ul#log2screen, #log2screen .content { max-width: 40vw; } }`,
     `@media (width < 1600px) {
-    code.codeblock {
-      width: 70vw;
-    }
-    ul#log2screen, #log2screen .content { max-width: 70vw; }
-  }`,
+      code.codeblock { width: 70vw; }
+      ul#log2screen, #log2screen .content { max-width: 70vw; }
+    }`,
     `@media (width < 1024px) {
-    code.codeblock {
-      width: 90vw;
-    }
-    ul#log2screen, #log2screen .content { max-width: 90vw; }
-  }`,
+      code.codeblock { width: 90vw; }
+      ul#log2screen, #log2screen .content { max-width: 90vw; }
+    }`,
     `.red, .red * { color: red; }`,
     `#log2screen h2 { line-height: 1.7rem; }`,
-    `#log2screen li pre { margin-top: 0.2rem; }`,
+    `#log2screen li pre { margin-top: 0.2rem; white-space: pre-wrap; }`,
     `.ws { white-space: pre-line; }`,
     `code.codeBlock {
-    display: block;
-    background-color: rgb(255, 255, 248);
-    border: 1px dotted rgb(153, 153, 153);
-    color: rgb(81, 76, 125);
-    margin: 1rem 0 0.5rem 0;
-    font-weight: normal;
-    white-space: pre-wrap;
-    padding: 2px 6px;
-  }`,
+      display: block;
+      background-color: rgb(255, 255, 248);
+      border: 1px dotted rgb(153, 153, 153);
+      color: rgb(81, 76, 125);
+      margin: 1rem 0 0.5rem 0;
+      font-weight: normal;
+      white-space: pre-wrap;
+      padding: 2px 6px;
+    }`,
     `code.codeBlock .comment { color: rgb(169 156 156); }`,
     `ul#log2screen {margin: 0 auto;}`,
     `ul#log2screen li {margin-top: 0.8rem;}`,
     `ul#log2screen ul.sub li { margin-top: 0.3rem; }`,
     `#log2screen .content ul {
-    margin-left: initial;
-    margin-top: -0.7rem;
-  }`,
+      margin-left: initial;
+      margin-top: -0.7rem;
+    }`,
     `#log2screen .content {
-    margin-top: -1rem;
-    color: #000;
-  }`,
+      margin-top: -1rem;
+      color: #000;
+    }`,
     `#log2screen .content ul li div[data-target]:hover {
-    color: blue;
-  }`,
+      color: blue;
+    }`,
     `#log2screen .content {
-    padding: 0.5rem;
-    border-radius: 7px;
-    box-shadow: -2px 1px 12px #aaa;
-    margin-top: 1rem;
-  }`,
+      padding: 0.5rem;
+      border-radius: 7px;
+      box-shadow: -2px 1px 12px #aaa;
+      margin-top: 1rem;
+    }`,
     `#log2screen .content h3 {
-    margin-top: 0;
-    padding-left: 24px;
-    color: red;
-  }`,
+      margin-top: 0;
+      padding-left: 24px;
+      color: red;
+    }`,
     `.inline[data-target],
-   .inline[data-target] code {
-    cursor: pointer;
-    color: blue;
-  }`,
+     .inline[data-target] code {
+      cursor: pointer;
+      color: blue;
+    }`,
     `.inline[data-target]:hover {
-    text-decoration: underline;
-  }`,
+      text-decoration: underline;
+    }`,
     `#log2screen .content ul li {
-    margin-left: -1.4rem;
-    margin-top: auto;
-    list-style: '\\27A4';
-    cursor: pointer;
-  }`,
+      margin-left: -1.4rem;
+      margin-top: auto;
+      list-style: '\\27A4';
+      cursor: pointer;
+    }`,
     `b[id]:before {
-    content: "🔝";
-    font-size: 1.2rem;
-    color: blue;
-    padding-right: 3px;
-  }`,
+      content: "\u{1f51d}";
+      font-size: 1.2rem;
+      color: blue;
+      padding-right: 3px;
+    }`,
   );
 }
 /* endregion styling */

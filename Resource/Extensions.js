@@ -48,7 +48,6 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     if (elemTest.innerHTML.trim().length) {
       return proxify(elemTest.innerHTML);
     }
-    
     const invalidTag = truncate(`<${tag} ${propsStr}>${str}</${tag}>`)({at: 40, html: true});
     
     return silentFail ?
@@ -97,14 +96,13 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     return index < 0 ? undefined : index;
   };
   const compressHTML = str => proxify(str.replace(/[\n\r]/g, ``)
-      .replace(/\s{2,}/g, ` `)
-      .replace(/(>\s+<)/g, `><`)
-      .replace(/>\s+(\w)/g, (_, b) => `>${b}`)
-      .replace(/(\w)\s+</g, (_, b) => `${b}<`)
-      .replace(/ +>/g, `>`)
-      .replace(/^\s+|\s+$/, ``));
+    .replace(/\s{2,}/g, ` `)
+    .replace(/(>\s+<)/g, `><`)
+    .replace(/>\s+(\w)/g, (_, b) => `>${b}`)
+    .replace(/(\w)\s+</g, (_, b) => `${b}<`)
+    .replace(/ +>/g, `>`)
+    .replace(/^\s+|\s+$/, ``));
   const insert = str => (str2Insert, at = 0) => proxify(`${str.slice(0, at > 0 ? at : at)}${str2Insert}${str.slice(at)}`);
-  const prepend = str => (str2Prepend, ...args) => proxify(`${resolveTemplateString(str2Prepend, ...args)}${str}`)
   const append = str => (str2Append, ...args) => proxify(`${str}${resolveTemplateString(str2Append, ...args)}`);
   const casingFactory = str => ({
     get lower() { return proxify(str.toLowerCase()); },
@@ -119,14 +117,6 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     get double() { return proxify(`"${str}"`)},
     get backtick() { return proxify(`\`${str}\``)},
   });
-  const createRegExp = (str, ...args) => {
-    try {
-      return regExp(str, ...args);
-    } catch (err) {
-      return `Error creating Regular Expression from "${str}" (modifiers: ${
-        args.join(``).trim() || `none`})\n${err.message}`;
-    }
-  };
   
   return {
     isProxied: true,
@@ -172,5 +162,5 @@ function interpolateFactory() {
   const interpolate = (str, defaultReplacer = undefined, ...tokens) => tokens.flat()
     .reduce( (acc, token) => acc.concat(!isObject(token) ? `` : replace(str, token, defaultReplacer )), ``);
   
-  return (str, ...tokens) => interpolate(...[str,undefined,...tokens])
+  return (str, ...tokens) => interpolate(...[str, undefined, ...tokens])
 }
