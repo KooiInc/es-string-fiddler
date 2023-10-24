@@ -355,8 +355,9 @@ basic.set\`Hello {wrld}\`
   log(`${demoStr}<div>=&gt; ${$S.rawHTML`${regExample}`.escHTML}`);
   
   log(`!!<b>* Invalid result returns error message`);
-  log(`<code>$S.regExp\`[a-zA-Z](error \${[\`a\`, \`g\`]})\`</code><pre>=&gt; ${
-    $S.regExp`[a-zA-Z](error ${[`a`, `g`]})`}</pre>`);
+  const reError = $S`$S.regExp\`[a-z](?<letterFollowedBynumber>\d+)\${["a", "g"]})\``.escHTML;
+  const reErrorResult = $S.rawHTML($S.regExp`[a-z](?<letterFollowedBynumber>\d+)${[`a`, `g`]}`).escHTML;
+  log(`<code>${reError}</code><pre>=&gt; ${reErrorResult}</pre>`);
   $S.sanitize = true;
   /* endregion regex */
   
@@ -514,7 +515,7 @@ function setStyling() {
     }`,
     `.red, .red * { color: red; }`,
     `#log2screen h2 { line-height: 1.7rem; }`,
-    `#log2screen li pre { margin-top: 0.2rem; white-space: pre-wrap; }`,
+    `#log2screen li pre { margin-top: 0.2rem; }`,
     `.ws { white-space: pre-line; }`,
     `code.codeBlock {
       display: block;

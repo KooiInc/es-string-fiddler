@@ -54,8 +54,10 @@ function Helpers(proxify, sanitizer, stringExtensions, resolveTemplateString) {
     try {
       return regExp(str, ...args);
     } catch (err) {
-      return `Error creating Regular Expression from string "${resolveTemplateString(str, ...args)}" (modifiers: ${
-        args.join(``).trim() || `none`})\nRegExp error message: ${err.message}`;
+      args = args && args.map(arg => `\${${ Array.isArray(arg) ? JSON.stringify(arg) : arg }}`) || [];
+      
+      return `Error creating Regular Expression from string "${
+        resolveTemplateString(str, ...args)}" \nRegExp error message: "${err.message}"`;
     }
   }
   
