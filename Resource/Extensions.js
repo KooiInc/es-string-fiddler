@@ -87,12 +87,12 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     return { searched4: termsIsRE ? terms.toString() : terms.join(`, `), foundAny, hits, result };
   };
   // SEE https://youtu.be/99Zacm7SsWQ?t=2101
-  const indexOf = str => findMe => {
-    const index = str.indexOf(findMe);
+  const indexOf = str => (findMe, fromIndex) => {
+    const index = str.indexOf(findMe, fromIndex);
     return index < 0 ? undefined : index;
   };
-  const lastIndexOf = str => findMe => {
-    const index = str.lastIndexOf(findMe);
+  const lastIndexOf = str => (findMe, beforeIndex) => {
+    const index = str.lastIndexOf(findMe, beforeIndex);
     return index < 0 ? undefined : index;
   };
   const compressHTML = str => proxify(str.replace(/[\n\r]/g, ``)
