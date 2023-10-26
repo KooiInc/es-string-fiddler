@@ -1,11 +1,13 @@
 import xtensions from "./Resource/Extensions.js";
 import sanitizerDefault from "./Resource/SanitizerFactory.js";
 import helperLib from "./Resource/ProxyHelpers.js";
+import createDefaultStringBuilder from "./Resource/StringbuilderFactory.js";
 
 const $SRaw = XStringFactory({sanitize: false, sanitizer: undefined});
 const $S = XStringFactory();
+const stringBuilderFactory = createDefaultStringBuilder($S);
 
-export {$S as default, $SRaw as $SNoHTML, XStringFactory as $SFactory};
+export { $S as default, $SRaw as $SNoHTML, XStringFactory as $SFactory, stringBuilderFactory };
 
 function XStringFactory({sanitize = true, silentFail = false, sanitizer = sanitizerDefault} = {}) {
   const stringExtensions = xtensions(proxify, resolveTemplateString, {sanitize, sanitizer, silentFail} );

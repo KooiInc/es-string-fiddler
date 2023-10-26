@@ -1,10 +1,14 @@
+//import {$Sm} from "../index.esm";
 const now = performance.now();
 import {$, logFactory} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@main/index.browser.bundled.js";
 const importUrl = /^dev\./i.test(location.host) ? `../index.esm.js` : `../Bundle/index.esm.min.js`;
 const importX = `import from "${importUrl}" `;
 // ***
-const $S = (await import(importUrl)).default;
-window.$S = $S; // try things yourself in the console ...
+const {$S, stringBuilderFactory} = (await import(importUrl).then(r => ({...{$S: r.default}, ...r})));
+// try things yourself in the console ...
+window.$S = $S;
+window.$SB = stringBuilderFactory({sanitizeHTML: false, $S});
+
 demo();
 
 function demo() {
@@ -429,6 +433,26 @@ const nothingEvil = $S\`&lt;div onclick="alert('you evil thing!')">NOT evil!&lt;
   /* endregion setSanitize */
   
   /* endregion utilities */
+  
+  /* region stringbuilder */
+  log(`!!<b id="Stringbuilder">Stringbuilder utility</b>
+  <div>The <code>es-string-fiddler</code> library also exports a <code>stringBuilder</code>
+    utility. This utility creates a <i>mutable</i> string constructor, using the
+    <code>$S</code> constructor as its internal string value. With it one can build
+    strings using nearly all methods from the internal <code>$S</code> instance</div>
+    <ul class="sub">
+      <li>Initialization by
+      <code class="codeBlock">import stringBuilderFactory from "[location of es-string-fiddler]";
+const $SB = stringBuilderFactory({
+  [sanitizeHTML]: boolean,
+  [$S]: es-string-fiddler constructor });</code>
+      Where <code>sanitizeHTML</code> indicates <code>$SB</code> should sanitize HTML (default <code>false</code>)
+      and <code>$S</code> is the es-string-fiddler constructor (in its <i>present state</i>, so including
+      extra methods or properties created by the user; default the initial <code>$S</code> constructor).
+      See <a target="_blank" href="https://stackblitz.com/edit/web-platform-k1jygm?file=StringBuilderFactory.js"
+      >this stackblitz project</a> for a few examples.</li>
+    </ul>`);
+  /* endregion stringbuilder */
   
   /* region theEndMyFriend */
   log(`!!<b id="Performance">Performance</b>
