@@ -27,7 +27,7 @@ The module exports four properties:
   - `sanitizer: Function | null`: The function to sanitize HTML in instances. Default: internal sanitizer function.
   - `silentFail: true/false` =>  false: sanitation error message strings may be returned. Default: false
 - `$SNoHTML`: instantiates the constructor *without default HTML sanitation*, ready for use
-- `StringBuilderFactory`: a factory to instantiate a *mutable* String constructor (internally using the $S-constructor).
+- `stringBuilderFactory`: a factory to instantiate a *mutable* String constructor (internally using the $S-constructor).
 
 ## Import & initialize
 
