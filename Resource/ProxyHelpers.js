@@ -62,12 +62,14 @@ function Helpers(proxify, sanitizer, stringExtensions, resolveTemplateString) {
   }
   
   function isStringOrTemplate(str) {
+    str = str?.constructor === Number ? String(str) : str;
     return str?.isProxied || str?.constructor === String || str?.raw;
   }
   
   function byContract(str, ...args) {
     const isMet = isStringOrTemplate(str);
-    if (!isMet) { console.info(`✘ String contract not met: input [${String(str)?.slice(0, 15)}] is not a (template) string`) };
+    if (!isMet) { console.info(`✘ String contract not met: input [${String(str)?.slice(0, 15)
+      }] not a (template) string or number`) };
     return !isMet ? `` : resolveTemplateString(str, ...args);
   }
   
