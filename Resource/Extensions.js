@@ -26,13 +26,29 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
       ? str.trim().replace(/\n/g, `#!#`).replace(/\s{2,}/g, ` `).replace(/#!#/g, `\n`)
       : str.trim().replace(/\s{2,}/g, ` `));
   const escHTML = str => proxify(str.replace(/</g, `&lt;`));
+  const sanitizeHTML = str => {
+    const elemTest = sanitizer(
+      Object.assign(document.createElement(`div`),
+        { innerHTML: String(str) } )
+    );
+    
+    if (elemTest.innerHTML.trim().length) {
+      return proxify(elemTest.innerHTML);
+    }
+    
+    const invalidHTML = truncate(str)({at: 40, html: true});
+    
+    return silentFail ?
+      proxify(escHTML(str)) :
+      proxify`${escHTML(invalidHTML)} is not valid (see console)`;
+  };
   const toTag = str => (tag, props) => {
     if (!tag) { return proxify(string); }
     const doSanitize = props?.dontSanitize ?? true;
     delete props?.dontSanitize;
     
     const propsStr = props && Object.entries(props).reduce( (acc, [k, v]) => {
-      return [...acc, `${k}="${v}"`];
+      return [...acc, `${k}="${v.replace(/"/g, `'`)}"`];
     }, []).join(` `) || ``;
     const tagStr = `<${tag} ${propsStr}>${str}</${tag}>`;
     
@@ -40,19 +56,7 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
       return proxify(tagStr.replace(/<?\s+>/g, `>`));
     }
     
-    const elemTest = sanitizer(
-      Object.assign(document.createElement(`div`),
-        { innerHTML: tagStr } )
-    );
-    
-    if (elemTest.innerHTML.trim().length) {
-      return proxify(elemTest.innerHTML);
-    }
-    const invalidTag = truncate(`<${tag} ${propsStr}>${str}</${tag}>`)({at: 40, html: true});
-    
-    return silentFail ?
-      proxify(escHTML(str)) :
-      proxify`${escHTML(invalidTag)} is not valid (see console)`;
+    return sanitizeHTML(tagStr);
   };
   const replaceWords = str => (initial, replacement) => {
     const cando = [initial, replacement].filter( v =>
@@ -127,6 +131,7 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     lower: str => casingFactory(str).lower,
     upper: str => casingFactory(str).upper,
     value: str => `${str}`,
+    sanitizeHTML,
     extract,
     append,
     insert,
