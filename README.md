@@ -17,7 +17,7 @@ Strings containing HTML elements are sanitized by default: tags/attributes/attri
 **[DEMO](https://kooiinc.github.io/es-string-fiddler/Demo)**
 
 ## Exports
-The module exports three properties:
+The module exports four properties:
 - The default export instantiates the constructor, ready for use.
 - `$SFactory` is the factory to create the constructor. The factory It takes 3 parameters (as `Object`):
   
@@ -27,6 +27,7 @@ The module exports three properties:
   - `sanitizer: Function | null`: The function to sanitize HTML in instances. Default: internal sanitizer function.
   - `silentFail: true/false` =>  false: sanitation error message strings may be returned. Default: false
 - `$SNoHTML`: instantiates the constructor *without default HTML sanitation*, ready for use
+- `StringBuilderFactory`: a factory to instantiate a *mutable* String constructor (internally using the $S-constructor).
 
 ## Import & initialize
 
