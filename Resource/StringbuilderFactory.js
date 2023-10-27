@@ -13,16 +13,20 @@ function createDefaultStringBuilder($SInitial) {
     return function Create(theString, ...args) {
       theString = $XS(theString, ...args);
       const strObj = {
-        toString() { return theString.value; },
-        valueOf() { return theString.value; },
-        get clear() { return theString = $XS``; },
+        toString() { return String(theString.value); },
+        valueOf() { return theString.value.toString(); },
+        get clear() { return Create(``); },
         set value(val) { theString = $XS(val); },
         get value() { return theString; },
-        get clone() { return Create(String(theString)); },
-        is(val, ...args) { return Create(val, ...args); },
+        get clone() { return Create(theString.value); },
+        is(val, ...args) {
+          theString = $XS(val, ...args);
+          return me;
+        }
       };
       
-      return new Proxy(strObj, proxyHandler);
+      const me = new Proxy(strObj, proxyHandler);
+      return me;
     }
   }
 }
@@ -32,26 +36,25 @@ function initProxyHandler() {
     get(target, key) {
       key = String(key).trim();
       
-      if (/^case|^quot/i.test(key)) {
-        return /^case/i.test(key)
-          ? casing(target)[key.slice(4)] ?? target
-          : quoting(target)[key.slice(4)] ?? target;
+      if (!/^symbol/i.test(key)) {
+        if (/^case|^quot/i.test(key)) {
+          return /^case/i.test(key)
+            ? casing(target)[key.slice(4)] ?? target
+            : quoting(target)[key.slice(4)] ?? target;
+        }
+        
+        if (key in target) {
+          return target[key];
+        }
+        
+        if (target.value[key] && canMutate(key, target.value[key])) {
+          return (...args) => target.is(target.value[key](...args));
+        }
+        
+        if (target.value[key] && !canMutate(key, target.value[key])) {
+          return target.value[key];
+        }
       }
-      
-      
-      if (key in target) {
-        return target[key];
-      }
-      
-      if (target.value[key] && canMutate(key, target.value[key])) {
-        return (...args) => target.is(target.value[key](...args));
-      }
-      
-      if (target.value[key] && !canMutate(key, target.value[key])) {
-        return target.value[key];
-      }
-      
-      return target;
     }
   };
 }
