@@ -29,6 +29,8 @@ The module exports four properties:
 - `$SNoHTML`: instantiates the constructor *without default HTML sanitation*, ready for use
 - `stringBuilderFactory`: a factory to instantiate a *mutable* String constructor (internally using the $S-constructor).
 
+  See a small demo <a target="_blank" href="https://stackblitz.com/edit/web-platform-k1jygm?file=script.js">@Stackblitz</a>.
+
 ## Import & initialize
 
 There are *three flavors* of this library. One for scripts with type `module` or projects with `"type": "module"` in package.json (ecmascript module, esm). One non module variant for the browser and one to use with `require` in NodeJS (commonjs, cjs).
@@ -53,7 +55,8 @@ const $S = ( await
   import("https://kooiinc.github.io/es-string-fiddler/Bundle/index.esm.min.js") 
 ).default;
 // import all
-import { $S, $SFactory, $SNoHTML } from "https://kooiinc.github.io/es-string-fiddler/Bundle/index.esm.min.js";
+import { default as $S, $SFactory, $SNoHTML, stringBuilderFactory }
+  from "https://kooiinc.github.io/es-string-fiddler/Bundle/index.esm.min.js";
 ```
 
 ### Browser script
