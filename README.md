@@ -43,9 +43,9 @@ For each flavor, the script is (bundled and) minified. The location of the minif
 ``` javascript
 // after download of the bundle from
 // https://kooiinc.github.io/es-string-fiddler/Bundle/index.cjs.min.js
-const $S = require("[local location of the bundle]/index.cjs.min.js").$S;
+const $S = require("[local location of the bundle]/index.cjs.min.js").default;
 // require all
-const {$S, $SFactory, $SNoHTML } =
+const {default as $S, $SFactory, $SNoHTML } =
   require("[local location of the bundle]/index.cjs.min.js");
 ```
 
@@ -73,6 +73,7 @@ After linking the script, module is available as `window.$S`.
   const xStringFactory = window.$S.$SFactory;
   // use the module without HTML sanitation
   const $S = window.$S.$SNoHTML;
+  const SBFactory = window.$S.stringBuilderFactory;
   /** ... code using $S */
 </script>
 ```
