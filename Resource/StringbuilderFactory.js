@@ -8,10 +8,11 @@ function createDefaultStringBuilder($SInitial) {
   return stringBuilderFactory;
   
   function stringBuilderFactory({sanitizeHTML = false, $S = $SInitial} = {}) {
-    const $XS = (str, ...args) => sanitizeHTML ? $S(str, ...args) : $S.rawHTML(str, ...args);
+    const $XS = retrieve$XS($S, sanitizeHTML);
     
     return function Create(theString, ...args) {
       theString = $XS(theString, ...args);
+      
       const strObj = {
         toString() { return String(theString.value); },
         valueOf() { return theString.value.toString(); },
@@ -21,14 +22,22 @@ function createDefaultStringBuilder($SInitial) {
         get clone() { return Create(theString.value); },
         is(val, ...args) {
           theString = $XS(val, ...args);
-          return me;
+          
+          return proxify(strObj, proxyHandler);
         }
       };
       
-      const me = new Proxy(strObj, proxyHandler);
-      return me;
+      return proxify(strObj, proxyHandler)
     }
   }
+}
+
+function proxify(actualStrObj, proxyHandler) {
+  return new Proxy(actualStrObj, proxyHandler);
+}
+
+function retrieve$XS($S, sanitize) {
+  return (str, ...args) => sanitize ? $S(str, ...args) : $S.rawHTML(str, ...args);
 }
 
 function initProxyHandler() {
@@ -48,14 +57,14 @@ function initProxyHandler() {
         }
         
         if (target.value[key] && canMutate(key, target.value[key])) {
-          return (...args) => target.is(target.value[key](...args));
+          return (...args) => { return target.is(target.value[key](...args)) };
         }
         
         if (target.value[key] && !canMutate(key, target.value[key])) {
           return target.value[key];
         }
       }
-    }
+    },
   };
 }
 
@@ -73,7 +82,7 @@ function canMutate(key, obj) {
   return obj instanceof Function && !nonMutables.find(v => v === key);
 }
 
-// we can't use the value's case/quote internatl methods, so
+// we can't use the internal $S case/quote internal methods, so
 // here are the mutating casing and quoting getters for the stringbuilder
 // [instance].case[casing method] or [instance].quot[quoting method]
 // e.g. [SB instance].caseFirstup or [SB instance].quotSingle
