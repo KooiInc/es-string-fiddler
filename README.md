@@ -6,7 +6,7 @@
 The module is programmed using a [class free object oriented](https://depth-first.com/articles/2019/03/04/class-free-object-oriented-programming) coding style. 
 
 Furthermore the module is programmed ['by contract'](https://en.wikipedia.org/wiki/Design_by_contract). 
-This means that the constructor expects either a `String` or a `template String`. Calling the constructor with any other input will return an instance with an extended *empty string*.
+This means that the constructor expects either a `String`, a `Number` (will be stringified) or a `template String`. Calling the constructor with any other input will return an instance with an extended *empty string*.
 
 Properties and/or methods (either native or extensions) returning a string can be [chained](https://www.geeksforgeeks.org/method-chaining-in-javascript/). 
 
