@@ -44,8 +44,8 @@ For each flavor, the script is (bundled and) minified. The location of the minif
 // after download of the bundle from
 // https://kooiinc.github.io/es-string-fiddler/Bundle/index.cjs.min.js
 const $S = require("[local location of the bundle]/index.cjs.min.js").default;
-// require all
-const {default as $S, $SFactory, $SNoHTML } =
+// require others
+const { $SFactory, $SNoHTML, stringBuilderFactory } =
   require("[local location of the bundle]/index.cjs.min.js");
 ```
 
@@ -53,14 +53,14 @@ const {default as $S, $SFactory, $SNoHTML } =
 ``` javascript
 const $S = ( await 
   import("https://kooiinc.github.io/es-string-fiddler/Bundle/index.esm.min.js") 
-).default;
+);
 // import all
 import { default as $S, $SFactory, $SNoHTML, stringBuilderFactory }
   from "https://kooiinc.github.io/es-string-fiddler/Bundle/index.esm.min.js";
 ```
 
 ### Browser script
-After linking the script, module is available as `window.$S`.
+After linking the script, the module exports are exposed within `window.$S`.
 
 ``` html
 <script 
@@ -95,6 +95,7 @@ The constructor (for example exposed as `$S`) contains a few utility getters/set
 - `$S.uuid4`: a getter, retrieving a [UUIDV4](https://www.sohamkamani.com/uuid-versions-explained/#v4--randomness) string
 - `$S.currentMethods`: a getter, retrieving (an array of) the names of all currently existing instance getters/methods
   (including the ones you may have created), sorted alphabetically
+- `$S.rawHTML`: create a string without default sanitizing the HTML in it
 - `$S.sanitize`: a setter to enable or disable HTML sanitation for all `$S` instances
 ## Instance methods
 The following description is for the default exported constructor (here exposed as `$S`). 
@@ -134,9 +135,12 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
    - `single`: wrap a string in single quotes (hi => 'hi')
    - `backtick`: wrap a string in backticks (hi => \`hi\`)
 - `replaceWords(initial: string, replacement: string | $S-string)`: replace all words [initial] in the string with [replacement]
-- `set`: set the (intermediate) value of a string,
+- `sanitizeHTML`: when html sanitizing is disabled (either by using the `$SNoHTML` constructor,
+   the `sanitize` constructor property (`$S.sanitize`) or the constructors' `rawHTML`
+   method, one can manually sanitize a html string using `[$S instance].sanitizeHTML`
+- `set`: set the (intermediate) value of a string
 - `toCamelCase`: see `case.came`
-- `toDashedNotation`: see `case.dashed`,
+- `toDashedNotation`: see `case.dashed`
 - `toTag(tagName: string, [properties: Object])`: wraps the string into a html element, using [tagName]
    and (optionally) create [properties] (like `class`, `title`, `style`) for that html element.
     
