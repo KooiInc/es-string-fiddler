@@ -1,10 +1,12 @@
 export default createDefaultStringBuilder;
 
 const nonMutables = allNonStringReturns();
-const [casing, quoting] = initFactories();
 const proxyHandler = initProxyHandler();
+let $CaseAndQuote;
 
 function createDefaultStringBuilder($SInitial) {
+  $CaseAndQuote = [...$SCaseQuotKeys($SInitial), ...$SCaseQuotKeys($SInitial, true)];
+  
   return stringBuilderFactory;
   
   function stringBuilderFactory({sanitizeHTML = false, $S = $SInitial} = {}) {
@@ -13,7 +15,7 @@ function createDefaultStringBuilder($SInitial) {
     return function Create(theString, ...args) {
       theString = $XS(theString, ...args);
       
-      const strObj = {
+      const strX = {
         toString() { return String(theString.value); },
         valueOf() { return theString.value.toString(); },
         get clear() { return Create(``); },
@@ -22,47 +24,51 @@ function createDefaultStringBuilder($SInitial) {
         get clone() { return Create(theString.value); },
         is(val, ...args) {
           theString = $XS(val, ...args);
-          
-          return proxify(strObj, proxyHandler);
+          return me;
         }
       };
       
-      return proxify(strObj, proxyHandler)
+      const me = new Proxy(strX, proxyHandler);
+      return me;
     }
   }
-}
-
-function proxify(actualStrObj, proxyHandler) {
-  return new Proxy(actualStrObj, proxyHandler);
 }
 
 function retrieve$XS($S, sanitize) {
   return (str, ...args) => sanitize ? $S(str, ...args) : $S.rawHTML(str, ...args);
 }
 
+function getCQKey(key) {
+  return `${key.slice(1,2).toLowerCase()}${key.slice(2)}`;
+}
+
+function cleanupKey(key) {
+  return String(key).trim().replace(/^case|^quot/i, v => v[0].toLowerCase());
+}
+
 function initProxyHandler() {
   return {
     get(target, key) {
-      key = String(key).trim();
+      key = cleanupKey(key);
       
       if (!/^symbol/i.test(key)) {
-        if (/^case|^quot/i.test(key)) {
-          return /^case/i.test(key)
-            ? casing(target)[key.slice(4)] ?? target
-            : quoting(target)[key.slice(4)] ?? target;
+        const fromInternalStringValue = target.value[key];
+        const fromOwnValue = target[key];
+        
+        if ($CaseAndQuote.find(k => k === key)) {
+          const realKey = getCQKey(key);
+          return key.startsWith(`c`)
+            ? target.is(target.value.case[realKey])
+            : target.is(target.value.quote[realKey])
         }
         
-        if (key in target) {
-          return target[key];
-        }
-        
-        if (target.value[key] && canMutate(key, target.value[key])) {
-          return (...args) => { return target.is(target.value[key](...args)) };
-        }
-        
-        if (target.value[key] && !canMutate(key, target.value[key])) {
-          return target.value[key];
-        }
+        return fromOwnValue
+          ? fromOwnValue
+          : fromInternalStringValue
+            ? canMutate(key, fromInternalStringValue)
+              ? (...args) => { return target.is(fromInternalStringValue(...args)); }
+              : fromInternalStringValue
+          : target
       }
     },
   };
@@ -82,26 +88,9 @@ function canMutate(key, obj) {
   return obj instanceof Function && !nonMutables.find(v => v === key);
 }
 
-// we can't use the internal $S case/quote internal methods, so
-// here are the mutating casing and quoting getters for the stringbuilder
-// [instance].case[casing method] or [instance].quot[quoting method]
-// e.g. [SB instance].caseFirstup or [SB instance].quotSingle
-function initFactories() {
-  const casing = thatsMe => ({
-    get Up() { return thatsMe.is(thatsMe.value.case.upper); },
-    get Low() { return thatsMe.is(thatsMe.value.case.lower) },
-    get WordsFirstup() { return thatsMe.is(thatsMe.value.case.wordsFirstUC); },
-    get Firstup() { return thatsMe.is(thatsMe.value.case.firstUC); },
-    get Camel() {  return thatsMe.is(thatsMe.value.case.camel); },
-    get Dashed() { return thatsMe.is(thatsMe.value.case.dashed); },
-  });
-  const quoting = thatsMe => ({
-    get Double() { return thatsMe.is(thatsMe.value.quote.double); },
-    get Single() { return thatsMe.is(thatsMe.value.quote.single); },
-    get Backtick() { return thatsMe.is(thatsMe.value.quote.backtick); },
-  });
-  
-  return [casing, quoting];
+function $SCaseQuotKeys($S, quot) {
+  return Object.keys($S``[quot ? `quote` : `case`])
+    .map(v => `${quot ? `q` : `c`}${$S(v).case.firstUC}`);
 }
 
 
