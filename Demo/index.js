@@ -442,7 +442,7 @@ const nothingEvil = $S\`&lt;div onclick="alert('you evil thing!')">NOT evil!&lt;
     strings using nearly all methods from the internal <code>$S</code> instance</div>
     <ul class="sub">
       <li>Initialization by
-      <code class="codeBlock">import stringBuilderFactory from "[location of es-string-fiddler]";
+      <code class="codeBlock">import {stringBuilderFactory} from "[location of es-string-fiddler]";
 const $SB = stringBuilderFactory({
   [sanitizeHTML]: boolean,
   [$S]: es-string-fiddler constructor });</code>
@@ -551,6 +551,7 @@ function setStyling() {
       white-space: pre-wrap;
       padding: 2px 6px;
     }`,
+    `ul.sub li .codeBlock { max-width: 90vw; margin-top: 0.2rem; }`,
     `code.codeBlock .comment { color: rgb(169 156 156); }`,
     `ul#log2screen {margin: 0 auto;}`,
     `ul#log2screen li {margin-top: 0.8rem;}`,
