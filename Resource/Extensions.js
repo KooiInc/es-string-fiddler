@@ -117,9 +117,10 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     get firstUC() { return proxify(ucFirst(str)); },
   });
   const quoteFactory = str => ({
-    get single() { return proxify(`'${str}'`)},
-    get double() { return proxify(`"${str}"`)},
-    get backtick() { return proxify(`\`${str}\``)},
+    get single() { return proxify(`'${str}'`) },
+    get double() { return proxify(`"${str}"`) },
+    get backtick() { return proxify(`\`${str}\``) },
+    get remove() { return proxify(`${str.trim().replace(/^[`'"]|[`'"]$/g, "")}`) },
   });
   
   return {
