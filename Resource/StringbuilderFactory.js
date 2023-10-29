@@ -5,25 +5,26 @@ const proxyHandler = initProxyHandler();
 let $CaseAndQuote;
 
 function createDefaultStringBuilder($SInitial) {
-  $CaseAndQuote = [...$SCaseQuotKeys($SInitial), ...$SCaseQuotKeys($SInitial, true)];
+  $CaseAndQuote = $SCaseQuotKeys($SInitial);
   
   return stringBuilderFactory;
   
   function stringBuilderFactory({sanitizeHTML = false, $S = $SInitial} = {}) {
     const $XS = retrieve$XS($S, sanitizeHTML);
+    return Create;
     
-    return function Create(theString, ...args) {
-      theString = $XS(theString, ...args);
+    function Create(internalStringValue, ...args) {
+      internalStringValue = $XS(internalStringValue, ...args);
       
       const strX = {
-        toString() { return String(theString.value); },
-        valueOf() { return theString.value.toString(); },
-        get clear() { return Create(``); },
-        set value(val) { theString = $XS(val); },
-        get value() { return theString; },
-        get clone() { return Create(theString.value); },
+        toString() { return String(internalStringValue.value); },
+        valueOf() { return internalStringValue.value.toString(); },
+        get clear() { internalStringValue = $XS``; return me; },
+        set value(val) { internalStringValue = $XS(val); },
+        get value() { return internalStringValue; },
+        get clone() { return Create(internalStringValue.value); },
         is(val, ...args) {
-          theString = $XS(val, ...args);
+          internalStringValue = $XS(val, ...args);
           return me;
         }
       };
@@ -59,13 +60,15 @@ function initProxyHandler() {
           const realKey = getCQKey(key);
           return key.startsWith(`c`)
             ? target.is(target.value.case[realKey])
-            : target.is(target.value.quote[realKey])
+            : realKey === `custom`
+              ? (...args) => target.is(target.value.quote[realKey](...args))
+              : target.is(target.value.quote[realKey])
         }
         
         return fromOwnValue
           ? fromOwnValue
           : fromInternalStringValue
-            ? canMutate(key, fromInternalStringValue)
+            ? isFunctionAndMutable(key, fromInternalStringValue)
               ? (...args) => { return target.is(fromInternalStringValue(...args)); }
               : fromInternalStringValue
           : target
@@ -84,13 +87,13 @@ function allNonStringReturns() {
     .map( ([key,]) => key );
 }
 
-function canMutate(key, obj) {
+function isFunctionAndMutable(key, obj) {
   return obj instanceof Function && !nonMutables.find(v => v === key);
 }
 
-function $SCaseQuotKeys($S, quot) {
-  return Object.keys($S``[quot ? `quote` : `case`])
-    .map(v => `${quot ? `q` : `c`}${$S(v).case.firstUC}`);
+function $SCaseQuotKeys($S) {
+  const $SInstance = $S``;
+  const caseKeys = Object.keys($SInstance.case).map(v =>`c${$S(v).case.firstUC}`);
+  const quotKeys = Object.keys($SInstance.quote).map(v =>`q${$S(v).case.firstUC}`);
+  return [...caseKeys, ...quotKeys];
 }
-
-
