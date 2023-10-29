@@ -15,13 +15,10 @@ function createDefaultStringBuilder($SInitial) {
     
     function Create(internalStringValue, ...args) {
       internalStringValue = $XS(internalStringValue, ...args);
-      let quoted = false;
       
       const strX = {
         toString() { return String(internalStringValue.value); },
         valueOf() { return internalStringValue.value.toString(); },
-        get isQuoted() {return quoted; },
-        set isQuoted(val) { quoted = val },
         get clear() { internalStringValue = $XS``; return me; },
         set value(val) { internalStringValue = $XS(val); },
         get value() { return internalStringValue; },
@@ -52,21 +49,16 @@ function cleanupKey(key) {
 
 
 function handleQuoting(target, realKey) {
-  if (target.isQuoted) {
-    target.is(target.value.quote.remove);
-    target.isQuoted = false;
-  }
-  
-  if (realKey === `custom`) {
-    target.isQuoted = true;
-    return (...args) => target.is(target.value.quote[realKey](...args))
-  }
-  
-  if (realKey === `remove` && target.isQuoted) {
+  if (realKey === `remove`) {
     return target.is(target.value.quote.remove);
   }
   
-  target.isQuoted = true;
+  target.is(target.value.quote.remove);
+  
+  if (realKey === `custom`) {
+    return (...args) => target.is(target.value.quote[realKey](...args))
+  }
+  
   return target.is(target.value.quote[realKey]);
 }
 
