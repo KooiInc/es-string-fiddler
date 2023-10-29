@@ -23,16 +23,21 @@ function createDefaultStringBuilder($SInitial) {
         set value(val) { internalStringValue = $XS(val); },
         get value() { return internalStringValue; },
         get clone() { return Create(internalStringValue.value); },
-        is(val, ...args) {
-          internalStringValue = $XS(val, ...args);
-          return me;
-        }
+        get allKeys() { return retrieveAllMethodNames(me); },
+        is(val, ...args) { return (internalStringValue = $XS(val, ...args), me); }
       };
       
       const me = new Proxy(strX, proxyHandler);
       return me;
     }
   }
+}
+
+function retrieveAllMethodNames(forMe) {
+  const noNr = v => isNaN(+v);
+  const inValue = Object.keys(forMe.value).filter(noNr);
+  const inInstance = Object.keys(forMe).filter(noNr);
+  return {inValue, inInstance, all: inInstance.concat(inValue), };
 }
 
 function retrieve$XS($S, sanitize) {
@@ -86,6 +91,9 @@ function initProxyHandler() {
               : fromInternalStringValue
           : target
       }
+    },
+    has(target, key) {
+      return key in target.value || key in target;
     },
   };
 }
