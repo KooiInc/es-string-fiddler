@@ -117,10 +117,21 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     get firstUC() { return proxify(ucFirst(str)); },
   });
   const quoteFactory = str => ({
-    get single() { return proxify(`'${str}'`) },
-    get double() { return proxify(`"${str}"`) },
-    get backtick() { return proxify(`\`${str}\``) },
-    get remove() { return proxify(`${str.trim().replace(/^[`'"]|[`'"]$/g, "")}`) },
+    get single() { return proxify(`'${str}'`); },
+    get double() { return proxify(`"${str}"`); },
+    get backtick() { return proxify(`\`${str}\``); },
+    get curlyDouble() { return proxify(`“${str}”`); },
+    get curlyDoubleUni() { return proxify(`“${str}“`); },
+    get curlySingle() { return proxify(`❛${str}❜`); },
+    get curlySingleUni() { return proxify(`❛${str}❛`); },
+    get pointyDouble() { return proxify(`«${str}»`); },
+    get pointySingle() { return proxify(`‹${str}›`); },
+    get curlyLHDouble() { return proxify(`„${str}”`); },
+    get curlyLHSingle() { return proxify(`‚${str}’`); },
+    get curlyLHDoubleUni() { return proxify(`„${str}“`); },
+    get curlyLHSingleUni() { return proxify(`‚${str}❛`); },
+    get remove() { return proxify(`${str.trim().slice(1, -1)}`); },
+    custom({start = `'`, end = `'`} = {}) { return proxify(`${start}${str}${end}`); },
   });
   
   return {
