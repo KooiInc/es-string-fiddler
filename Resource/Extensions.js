@@ -130,7 +130,7 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     get curlyLHSingle() { return proxify(`‚${str}’`); },
     get curlyLHDoubleUni() { return proxify(`„${str}“`); },
     get curlyLHSingleUni() { return proxify(`‚${str}❛`); },
-    get remove() { return proxify(`${str.trim().slice(1, -1)}`); },
+    get remove() { return proxify(`${str.trim().replace(/^[^a-z0-9]|[^a-z0-9]$/gi, ``)}`); },
     custom({start = `'`, end = `'`} = {}) { return proxify(`${start}${str}${end}`); },
   });
   
