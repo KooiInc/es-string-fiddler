@@ -1,4 +1,3 @@
-//import {$Sm} from "../index.esm";
 const now = performance.now();
 import {$, logFactory} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@main/index.browser.bundled.js";
 const importUrl = /^dev\./i.test(location.host) ? `../index.esm.js` : `../Bundle/index.esm.min.js`;
