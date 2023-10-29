@@ -35,9 +35,9 @@ function createDefaultStringBuilder($SInitial) {
 
 function retrieveAllMethodNames(forMe) {
   const noNr = v => isNaN(+v);
-  const inValue = Object.keys(forMe.value).filter(noNr);
+  const inInstanceValue = Object.keys(forMe.value).filter(noNr);
   const inInstance = Object.keys(forMe).filter(noNr);
-  return {inValue, inInstance, all: inInstance.concat(inValue), };
+  return {inInstance, inInstanceValue, all: inInstance.concat(inInstanceValue), };
 }
 
 function retrieve$XS($S, sanitize) {
