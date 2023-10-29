@@ -15,10 +15,13 @@ function createDefaultStringBuilder($SInitial) {
     
     function Create(internalStringValue, ...args) {
       internalStringValue = $XS(internalStringValue, ...args);
+      let quoted = false;
       
       const strX = {
         toString() { return String(internalStringValue.value); },
         valueOf() { return internalStringValue.value.toString(); },
+        get isQuoted() {return quoted; },
+        set isQuoted(val) { quoted = val },
         get clear() { internalStringValue = $XS``; return me; },
         set value(val) { internalStringValue = $XS(val); },
         get value() { return internalStringValue; },
@@ -47,27 +50,45 @@ function cleanupKey(key) {
   return String(key).trim().replace(/^case|^quot/i, v => v[0].toLowerCase());
 }
 
+
+function handleQuoting(target, realKey) {
+  if (target.isQuoted) {
+    target.is(target.value.quote.remove);
+    target.isQuoted = false;
+  }
+  
+  if (realKey === `custom`) {
+    target.isQuoted = true;
+    return (...args) => target.is(target.value.quote[realKey](...args))
+  }
+  
+  if (realKey === `remove` && target.isQuoted) {
+    return target.is(target.value.quote.remove);
+  }
+  
+  target.isQuoted = true;
+  return target.is(target.value.quote[realKey]);
+}
+
 function initProxyHandler() {
   return {
     get(target, key) {
       key = cleanupKey(key);
       
       if (!/^symbol/i.test(key)) {
-        const fromInternalStringValue = target.value[key];
-        const fromOwnValue = target[key];
+        let fromInternalStringValue = target.value[key];
+        let fromOwnValue = target[key];
         
         if ($CaseAndQuote.find(k => k === key)) {
           const realKey = getCQKey(key);
           return key.startsWith(`c`)
             ? target.is(target.value.case[realKey])
-            : realKey === `custom`
-              ? (...args) => target.is(target.value.quote[realKey](...args))
-              : target.is(target.value.quote[realKey])
+            : handleQuoting(target, realKey);
         }
         
-        return fromOwnValue
+        return fromOwnValue !== undefined
           ? fromOwnValue
-          : fromInternalStringValue
+          : fromInternalStringValue !== undefined
             ? isFunctionAndMutable(key, fromInternalStringValue)
               ? (...args) => { return target.is(fromInternalStringValue(...args)); }
               : fromInternalStringValue
