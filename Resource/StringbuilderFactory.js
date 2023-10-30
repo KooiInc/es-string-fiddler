@@ -19,6 +19,7 @@ function createDefaultStringBuilder($SInitial) {
       const strX = {
         toString() { return String(internalStringValue.value); },
         valueOf() { return internalStringValue.value.toString(); },
+        currentCustomQuotes: null,
         get clear() { internalStringValue = $XS``; return me; },
         set value(val) { internalStringValue = $XS(val); },
         get value() { return internalStringValue; },
@@ -52,19 +53,42 @@ function cleanupKey(key) {
   return String(key).trim().replace(/^case|^quot/i, v => v[0].toLowerCase());
 }
 
+function escape4RegExp(str) {
+  return str.replace(/([*\[\]()-+{}.$?\\])/g, v => `\\${v}`);
+}
+
+function removeCustomQuotes(str, {start, end}) {
+  const reStr = escape4RegExp(`${start}_!_${end}`).replace(`_!_`, `|`);
+  return str.trim().replace(RegExp(`^${reStr}$`, `g`), ``);
+}
+
+function removeQuotes(str) {
+  return str.trim().replace(/^[^a-z0-9]|[^a-z0-9]$/gi, ``);
+}
 
 function handleQuoting(target, realKey) {
   if (realKey === `remove`) {
-    return target.is(target.value.quote.remove);
+    if (target.currentCustomQuotes !== null) {
+      const quotCopy = {...target.currentCustomQuotes};
+      target.currentCustomQuotes = null;
+      return target.is(removeCustomQuotes(target.value, quotCopy));
+    }
+    
+    return target.is(removeQuotes(target.value))
   }
-  
-  target.is(target.value.quote.remove);
   
   if (realKey === `custom`) {
-    return (...args) => target.is(target.value.quote[realKey](...args))
+    return ({start, end} = {}) => {
+      if (start && end) {
+        target.currentCustomQuotes = {start, end};
+        return target.is(removeQuotes(target.value)).is(target.value.quote.custom({start, end}));
+      }
+      
+      return target.is(target.value);
+    }
   }
   
-  return target.is(target.value.quote[realKey]);
+  return target.is(removeQuotes(target.value)).is(target.value.quote[realKey]);
 }
 
 function initProxyHandler() {

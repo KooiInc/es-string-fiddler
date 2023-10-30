@@ -108,6 +108,7 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     .replace(/^\s+|\s+$/, ``));
   const insert = str => (str2Insert, at = 0) => proxify(`${str.slice(0, at > 0 ? at : at)}${str2Insert}${str.slice(at)}`);
   const append = str => (str2Append, ...args) => proxify(`${str}${resolveTemplateString(str2Append, ...args)}`);
+  const removeCustom = str => ({start, end}) => proxify(str.trim().replace(RegExp(`^${start}|${end}$`, `g`), ``));
   const casingFactory = str => ({
     get lower() { return proxify(str.toLowerCase()); },
     get upper() { return proxify(str.toUpperCase()); },
@@ -131,7 +132,7 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
     get curlyLHDoubleUni() { return proxify(`„${str}“`); },
     get curlyLHSingleUni() { return proxify(`‚${str}❛`); },
     get remove() { return proxify(`${str.trim().replace(/^[^a-z0-9]|[^a-z0-9]$/gi, ``)}`); },
-    custom({start = `'`, end = `'`} = {}) { return proxify(`${start}${str}${end}`); },
+    custom({start, end} = {}) { return start && end ? proxify(`${start}${str}${end}`) : proxify(`${str}`); },
   });
   
   return {
