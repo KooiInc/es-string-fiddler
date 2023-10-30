@@ -90,6 +90,12 @@ function handleQuoting(target, realKey) {
     }
   }
   
+  if (target.currentCustomQuotes !== null) {
+    const quotCopy = {...target.currentCustomQuotes};
+    target.currentCustomQuotes = null;
+    return target.is(removeCustomQuotes(target.value, quotCopy)).is(target.value.quote[realKey]);
+  }
+  
   return target.is(target.value.quote.remove).is(target.value.quote[realKey]);
 }
 
