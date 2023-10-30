@@ -74,21 +74,22 @@ function handleQuoting(target, realKey) {
       return target.is(removeCustomQuotes(target.value, quotCopy));
     }
     
-    return target.is(removeQuotes(target.value))
+    return target.is(target.value.quote.remove);
   }
   
   if (realKey === `custom`) {
     return ({start, end} = {}) => {
       if (start && end) {
         target.currentCustomQuotes = {start, end};
-        return target.is(removeQuotes(target.value)).is(target.value.quote.custom({start, end}));
+        return target.is(target.value.quote.remove)
+          .is(target.value.prepend(start).append(end));
       }
       
       return target.is(target.value);
     }
   }
   
-  return target.is(removeQuotes(target.value)).is(target.value.quote[realKey]);
+  return target.is(target.value.quote.remove).is(target.value.quote[realKey]);
 }
 
 function initProxyHandler() {
@@ -139,6 +140,7 @@ function isFunctionAndMutable(key, obj) {
 function $SCaseQuotKeys($S) {
   const $SInstance = $S``;
   const caseKeys = Object.keys($SInstance.case).map(v =>`c${$S(v).case.firstUC}`);
-  const quotKeys = Object.keys($SInstance.quote).map(v =>`q${$S(v).case.firstUC}`);
+  const quotKeys = Object.keys($SInstance.quote).map(v =>`q${$S(v).case.firstUC}`)
+    .concat(`qCustom`, `quotCustom`, `quoteCustom`);
   return [...caseKeys, ...quotKeys];
 }
