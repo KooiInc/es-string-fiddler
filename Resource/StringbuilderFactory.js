@@ -15,11 +15,10 @@ function createDefaultStringBuilder($SInitial) {
     
     function Create(internalStringValue, ...args) {
       internalStringValue = $XS(internalStringValue, ...args);
-      
+      let currentCustomQuotes = null;
       const strX = {
         toString() { return String(internalStringValue.value); },
         valueOf() { return internalStringValue.value.toString(); },
-        currentCustomQuotes: null,
         get clear() { internalStringValue = $XS``; return me; },
         set value(val) { internalStringValue = $XS(val); },
         get value() { return internalStringValue; },
@@ -27,7 +26,12 @@ function createDefaultStringBuilder($SInitial) {
         get allKeys() { return retrieveAllMethodNames(me); },
         is(val, ...args) { return (internalStringValue = $XS(val, ...args), me); }
       };
-      
+      Object.defineProperty(
+        strX,
+        `currentCustomQuotes`, {
+          get() { return currentCustomQuotes; },
+          set(val) { currentCustomQuotes = val; },
+          enumerable: false } );
       const me = new Proxy(strX, proxyHandler);
       return me;
     }
@@ -60,10 +64,6 @@ function escape4RegExp(str) {
 function removeCustomQuotes(str, {start, end}) {
   const reStr = escape4RegExp(`${start}_!_${end}`).replace(`_!_`, `|`);
   return str.trim().replace(RegExp(`^${reStr}$`, `g`), ``);
-}
-
-function removeQuotes(str) {
-  return str.trim().replace(/^[^a-z0-9]|[^a-z0-9]$/gi, ``);
 }
 
 function handleQuoting(target, realKey) {
