@@ -33,6 +33,7 @@ function createDefaultStringBuilder($SInitial) {
           set(val) { currentCustomQuotes = val; },
           enumerable: false } );
       const me = new Proxy(strX, proxyHandler);
+      
       return me;
     }
   }
