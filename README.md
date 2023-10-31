@@ -28,7 +28,6 @@ The module exports four properties:
   - `silentFail: true/false` =>  false: sanitation error message strings may be returned. Default: false
 - `$SNoHTML`: instantiates the constructor *without default HTML sanitation*, ready for use
 - `stringBuilderFactory`: a factory to instantiate a *mutable* String constructor (internally using the $S-constructor).
-
   See a small demo <a target="_blank" href="https://stackblitz.com/edit/web-platform-k1jygm?file=script.js">@Stackblitz</a>.
 
 ## Import & initialize
