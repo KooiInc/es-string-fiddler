@@ -65,7 +65,9 @@ const tokens = [
       <li>properties/methods (also native (String.prototype)) returning a string
         can be <a target="_blank" href="https://www.tutorialspoint.com/method-chaining-in-javascript">chained</a></li>
       <li>like regular ES-strings $S-strings are
-        <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a></li>
+        <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Immutable">immutable</a>
+        (but check the <span class="inline" data-target="b#Stringbuilder">string builder</span> utility
+        this library provides)</li>
       <li>for this example <code>$S</code> is also available in the developer console
         (when loaded in stackblitz, first click 'Open in New Tab' above the preview frame).</li>
     </ul>` );
