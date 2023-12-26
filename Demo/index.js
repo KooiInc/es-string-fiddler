@@ -31,7 +31,7 @@ function demo() {
   const basicRefusedFromContract2 = $S(undefined);
   const hi = basic.set(`hello`).ucFirst;
   const hi1 = hi.set`hithere and ${hi.toLowerCase()}`;
-  const tokens = [{world: `you`}, {world: `world`}, {world: `galaxy`}, {world: `universe`}];
+  const tokens = [ {world: [`you`, `world`, `galaxy`, `universe`] } ];
   $S.extendWith(`rQuot`, str => { return `=&gt; ${$S(str).quote.double}`; });
   $S.extendWith(`wrapESComments`, str =>
     str.replace(/(?<!(http)|(https):)\/\/.+/gm, a => `<span class="comment">${a}</span>`)
