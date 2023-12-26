@@ -134,7 +134,7 @@ const tokens = [
   log(`!!<b id="format">Format with tokens</b>
 (see <a target="_blank" href="https://github.com/KooiInc/StringInterpolator">Github</a>)</div>`);
   const escaped4Log = $S`$S\`\\n  <li>\${hi\} {world}</li>\\n\``.escHTML;
-  log(`<code>tokens</code>: <pre>${JSON.stringify(tokens)}</pre>
+  log(`<code>tokens</code>: <pre>${JSON.stringify(tokens[0])}</pre>
   <code class="codeBlock">${escaped4Log}
 .format(...tokens)
 .toTag(\`ul\`, {class: \`sub\`, id: \`formatted\`})</code>${
