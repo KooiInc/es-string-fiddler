@@ -6,7 +6,10 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
   const ucFirst = ([first, ...theRest]) => `${first.toUpperCase()}${theRest.join(``)}`;
   const toDashedNotation = str2Convert =>
     str2Convert.replace(/[A-Z]/g, a => `-${a.toLowerCase()}`).replace(/^-|-$/, ``);
-  const wordsFirstUp = str => str.split(` `).map(s => s.replace(/[a-z]/i, a => ucFirst(a))).join(` `);
+  const wordsFirstUp = str => [...str.toLowerCase()].slice(1).reduce( (acc, v, i) =>
+    acc + ( !/\p{L}/u.test(acc.at(-1)) ? v.toUpperCase() : v.toLowerCase() ),
+    str[0].toUpperCase()
+  );
   const toCamelcase = str2Convert => str2Convert.toLowerCase()
     .trim()
     .split(/[- ]/)
