@@ -117,6 +117,11 @@ const tokens = [
       yada2.truncate({at: 38}).toTag(`i`).rQuot}`);
   log(`<code>yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(\`b\`)</code><div>${
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
+  log(`<code>$S\`HELLO WORLDS\`.wordsFirstUC</code><div>${
+    $S`HELLO WORLDS`.wordsFirstUC.rQuot}</div>`);
+  log(`<code>$S\`HELLO home @ WORLDS@Milky way|ûniverSE\`.wordsFirstUC</code><div>${
+    $S`HELLO home @ WORLDS@Milky way|ûniverSE`.wordsFirstUC.rQuot}</div>`);
+  
   /* endregion manipulate */
   
   /* region combine native methods with extensions */
