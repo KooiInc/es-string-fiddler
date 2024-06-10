@@ -1,9 +1,8 @@
 export default extensions;
-import dummy from "./Interpolator.js";
+import interpolate from "https://cdn.jsdelivr.net/gh/KooiInc/StringInterpolator@latest/Interpolate.module.min.js";
 
 function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silentFail,} = {}) {
-  const tokenize = Symbol.for("interpolate");
-  const format = str => (...tokens) => proxify`${str[tokenize](...tokens)}`;
+  const format = str => (...tokens) => proxify`${interpolate(str, ...tokens)}`;
   const ucFirst = ([first, ...theRest]) => `${first.toUpperCase()}${theRest.join(``)}`;
   const toDashedNotation = str2Convert =>
     str2Convert.replace(/[A-Z]/g, a => `-${a.toLowerCase()}`).replace(/^-|-$/, ``);
