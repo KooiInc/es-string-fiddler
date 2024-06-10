@@ -40,9 +40,8 @@ For each flavor, the script is (bundled and) minified. The location of the minif
 **Note**: to make this work, you probably should wrap it into some nodejs DOM-wrapper, like [jsdom](https://github.com/jsdom/jsdom) (you'll need `document` for HTML sanitation), use the the `$NoHTML`-constructur, or use `$SFactory` with your own HTML sanitizer function.
 
 ``` javascript
-// after download of the bundle from
-// https://kooiinc.github.io/es-string-fiddler/Bundle/index.cjs.min.js
-const $S = require("[local location of the bundle]/index.cjs.min.js").default;
+// after download of the module from https://kooiinc.github.io/es-string-fiddler/
+const $S = require("[local location of the module]/Bundle/index.cjs.min.js").default;
 // require others
 const { $SFactory, $SNoHTML, stringBuilderFactory } =
   require("[local location of the bundle]/index.cjs.min.js");
@@ -51,7 +50,7 @@ const { $SFactory, $SNoHTML, stringBuilderFactory } =
 ### ESM import
 ``` javascript
 const $S = ( await 
-  import("https://kooiinc.github.io/es-string-fiddler/Bundle/index.esm.min.js") 
+  import("[local location of the module]/Bundle/index.esm.min.js") 
 );
 // import all
 import { default as $S, $SFactory, $SNoHTML, stringBuilderFactory }
@@ -63,7 +62,7 @@ After linking the script, the module exports are exposed within `window.$S`.
 
 ``` html
 <script 
-  src="https://kooiinc.github.io/es-string-fiddler/Bundle/index.browser.min.js">
+  src="[local location of the module]/Bundle/index.browser.min.js">
 </script>
 <script>
   // use the default
