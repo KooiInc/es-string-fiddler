@@ -7,7 +7,7 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
   const toDashedNotation = str2Convert =>
     str2Convert.replace(/[A-Z]/g, a => `-${a.toLowerCase()}`).replace(/^-|-$/, ``);
   const wordsFirstUp = str => [...str.toLowerCase()].slice(1).reduce( (acc, v, i) =>
-    acc + ( !/\p{L}/u.test(acc.at(-1)) ? v.toUpperCase() : v.toLowerCase() ),
+    acc + ( !/\p{L}|[-']/u.test(acc.at(-1)) ? v.toUpperCase() : v.toLowerCase() ),
     str[0].toUpperCase()
   );
   const toCamelcase = str2Convert => str2Convert.toLowerCase()
@@ -140,9 +140,11 @@ function extensions(proxify, resolveTemplateString, {sanitize, sanitizer, silent
   return {
     isProxied: true,
     wordsFirstUC: str => casingFactory(str).wordsFirstUC,
+    capitalizeWords: str => casingFactory(str).wordsFirstUC,
     toCamelCase: str => casingFactory(str).camel,
     toDashedNotation: str => casingFactory(str).dashed,
     ucFirst: str => casingFactory(str).firstUC,
+    capitalizeFirst: str => casingFactory(str).firstUC,
     lower: str => casingFactory(str).lower,
     upper: str => casingFactory(str).upper,
     value: str => `${str}`,

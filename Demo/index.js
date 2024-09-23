@@ -117,10 +117,10 @@ const tokens = [
       yada2.truncate({at: 38}).toTag(`i`).rQuot}`);
   log(`<code>yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(\`b\`)</code><div>${
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
-  log(`<code>$S\`HELLO WORLDS\`.wordsFirstUC</code><div>${
-    $S`HELLO WORLDS`.wordsFirstUC.rQuot}</div>`);
-  log(`<code>$S\`HELLO home @ WORLDS@Milky way|ûniverSE\`.wordsFirstUC</code><div>${
-    $S`HELLO home @ WORLDS@Milky way|ûniverSE`.wordsFirstUC.rQuot}</div>`);
+  log(`<code>$S\`HELLO WORLDS\`.capitalizeWords</code><div>${
+    $S`HELLO WORLDS`.capitalizeWords.rQuot}</div>`);
+  log(`<code>$S\`HELLO home @ WORLDS@Milky way|ûniverSE\`.capitalizeWords</code><div>${
+    $S`HELLO home @ WORLDS@Milky way|ûniverSE, yes it's me all-right`.capitalizeWords.rQuot}</div>`);
   
   /* endregion manipulate */
   
@@ -275,8 +275,8 @@ ${$S`{ searched4: string // the term searched for,
     toJSON($S`Hello World, bye world, oh World!`.find({ terms: /^hello/i }))}`);
   log(`<code>$S\`Hello World, bye world, oh World!\`.find({ terms: /^hello/ })</code>${
     toJSON($S`Hello World, bye world, oh World!`.find({ terms: /^hello/ }))}`);
-  log(`<code>${$S`Hello World, bye world, oh World!`.wordsFirstUC}.find({ terms: [{}, \`hello\`] })</code>${
-    toJSON($S`Hello World, bye world, oh World!`.wordsFirstUC.find({ terms: [{}, `Hello`] }))}`);
+  log(`<code>${$S`Hello World, bye world, oh World!`.capitalizeWords}.find({ terms: [{}, \`hello\`] })</code>${
+    toJSON($S`Hello World, bye world, oh World!`.capitalizeWords.find({ terms: [{}, `Hello`] }))}`);
   /* endregion find */
   
   /* region utilities */
@@ -533,7 +533,7 @@ function setStyling() {
       display: inline-block;
       margin-top: 0.5rem }`,
     `@media (width > 1600px) {
-    code.codeblock { width: 40vw;  }
+      code.codeblock { width: 40vw;  }
     ul#log2screen, #log2screen .content { max-width: 40vw; } }`,
     `@media (width < 1600px) {
       code.codeblock { width: 70vw; }
