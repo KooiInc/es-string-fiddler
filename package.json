@@ -1,15 +1,16 @@
 {
   "name": "es-string-fiddler",
   "type": "module",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": false,
   "main": "./index.esm.js",
-  "description": "ES String helper",
+  "description": "ES String helper with chainable extensions",
   "keywords": [
     "ECMAScript",
-    "Date",
+    "String",
     "Utilities",
-    "ES20xx"
+    "ES20xx",
+    "Classfree Object Oriented"
   ],
   "exports": {
     "./Bundle": {
