@@ -150,7 +150,7 @@ The extension methods are (**Note**: '*string*' in this list mostly signifies a 
    The [demo](https://kooiinc.github.io/es-string-fiddler/Demo) contains examples of HTML-sanitation.
 - `trimAll(keepLines: boolean)`: trim all whitespace outside (remove) and within (multiple to one space) the string. Will not remove the line breaks (`\n`) when `keepLines` is true. 
 - `truncate({at: Number, html: boolean, wordBoundary: boolean})`: truncates the string on the [at] position (when the string is longer than [at]) and adds either `&hellip;` (html: true) or `...` to it. If [wordBoundary] is true, the string is truncated at the end of the last whole word before [at]. [html] and [wordBoundary] are default: false.
-- `ucFirst`: see `case.firstUC`
+- `ucFirst` OR `capitalizeFirst`: see `case.firstUC`
 - `upper`: see `case.upper`
 - `value`: the plain string value of the $S-string
-- `wordsFirstUC`: see `case.wordFirstUC`
+- `wordsFirstUC` OR `capitalizeWords`: see `case.wordFirstUC`

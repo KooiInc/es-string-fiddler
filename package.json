@@ -1,0 +1,33 @@
+{
+  "name": "es-string-fiddler",
+  "type": "module",
+  "version": "0.1.8",
+  "private": false,
+  "main": "./index.esm.js",
+  "description": "ES String helper",
+  "keywords": [
+    "ECMAScript",
+    "Date",
+    "Utilities",
+    "ES20xx"
+  ],
+  "exports": {
+    "./Bundle": {
+      "require": "./index.cjs.min.js",
+      "import": "./index.esm.min.js",
+      "browser": "./index.browser.min.js"
+    }
+  },
+  "author": "KooiInc",
+  "license": "GNU General Public License v3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KooiInc/es-date-fiddler"
+  },
+  "bugs": {
+    "url": "https://github.com/KooiInc/es-date-fiddler/issues"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.16"
+  }
+}
