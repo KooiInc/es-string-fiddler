@@ -119,7 +119,7 @@ const tokens = [
     yada2.truncate({at: 38, html: true, wordBoundary: true}).toTag(`b`).rQuot}`);
   log(`<code>$S\`HELLO WORLDS\`.capitalizeWords</code><div>${
     $S`HELLO WORLDS`.capitalizeWords.rQuot}</div>`);
-  log(`<code>$S\`HELLO home @ WORLDS@Milky way|ûniverSE\`.capitalizeWords</code><div>${
+  log(`<code>$S\`HELLO home @ WORLDS@Milky way|ûniverSE, yes it's me all-right\`.capitalizeWords</code><div>${
     $S`HELLO home @ WORLDS@Milky way|ûniverSE, yes it's me all-right`.capitalizeWords.rQuot}</div>`);
   
   /* endregion manipulate */
