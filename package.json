@@ -27,8 +27,5 @@
   },
   "bugs": {
     "url": "https://github.com/KooiInc/es-date-fiddler/issues"
-  },
-  "devDependencies": {
-    "esbuild": "^0.18.16"
   }
 }
