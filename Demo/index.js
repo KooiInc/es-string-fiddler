@@ -498,7 +498,7 @@ function createContent() {
   $.delegate(`click`, `b[id]`, () => {
     container.scrollTo(0, 0);
   });
-  $.delegate(`click`, `[data-target]`, (_, me) => {
+  $.delegate(`click`, `[data-target]`, ({me}) => {
     const target = $(me.data.all.target);
     container.scrollTo(0, container.scrollTop + Math.round(target.dimensions.top) - 12);
   });
